@@ -1,0 +1,45 @@
+fileFormatVersion: 2
+guid: c3d8754dbf40fbc49ae54c44920b5b0a
+ScriptedImporter:
+  fileIDToRecycleName:
+    100000: _main/mega-dad
+    400000: _main/mega-dad/Transform
+    2800000: mega-dad.Textures._0
+    2800002: mega-dad.Textures._1
+    2800004: mega-dad.Textures._2
+    2800006: mega-dad.Textures._3
+    2800008: mega-dad.Textures._4
+    2800010: mega-dad.Textures._5
+    2800012: mega-dad.Textures._6
+    2800014: mega-dad.Textures._7
+    7400004: mega-dad.Animations.Idle
+    7400010: mega-dad.Animations.Run
+    7400016: mega-dad.Animations.Climb1
+    7400018: mega-dad.Animations.Climb2
+    7400020: mega-dad.Animations.Jump
+    7400022: mega-dad.Animations.Untagged
+    9500000: _main/mega-dad/Animator
+    11400000: __atlas
+    21200000: _main/mega-dad/SpriteRenderer
+    21300000: mega-dad.Sprites._0
+    21300002: mega-dad.Sprites._1
+    21300004: mega-dad.Sprites._2
+    21300006: mega-dad.Sprites._3
+    21300008: mega-dad.Sprites._4
+    21300010: mega-dad.Sprites._5
+    21300012: mega-dad.Sprites._6
+    21300014: mega-dad.Sprites._7
+    100100000: _main
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b1577cdc41d01fa4dbf68ad51122a765, type: 3}
+  pixelsPerUnit: 1
+  spriteAtlas: {instanceID: 0}
+  frameRate: 30
+  sortingLayerName: 
+  sortingOrder: 0
+  animatorCullingMode: 2
+  animatorController: {fileID: 9100000, guid: 1264cfddb4233f04985194d16a0ec958, type: 2}
+  errors: []
