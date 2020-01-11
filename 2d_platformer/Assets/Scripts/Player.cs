@@ -38,18 +38,28 @@ public class Player : MonoBehaviour
     float oldPositionX;
     float oldPositionY;
     int jumpCount;
+    public int attackCount;
     Vector2 currentDirection;
     Vector2 RollVelocity;
     //float smpos;
 
     public bool doubleJump = false;
     public bool stopAllMove = false;
+    public bool stopAllInput = false;
     bool stopMoving;
     bool stopMoving_X;
     bool stopMoving_Y;
-    float RollDelay = 2.0f;
+    float RollDelay = 0.0f;
     float currentRollDelay;
+    float AttackDelay = 0.2f;
+    float currentAttackDelay;
+    bool canAttack = false;
     bool canRoll = false;
+
+    float attackTime = 0.6f;
+    float currentAttackTime;
+    float rollTime = 0.2f;
+    float currentRollTime;
 
     Vector2 directionalInput;
     bool wallSliding;
@@ -70,26 +80,26 @@ public class Player : MonoBehaviour
     
     void Update()
     {
+        CheckAllDelay();
+
         if (!stopAllMove)
         {
             CheckPositionY();
             CalculateVelocity();
             //HandleWallSliding();
             //on/off기능 추가?
-
             if (stopMoving_X)
             {
                 StopMovingX();
             }
-            if (stopMoving_Y)
-            {
-                StopMovingY();
-            }
+            //if (stopMoving_Y)
+            //{
+            //    StopMovingY();
+            //}
 
             controller.Move(velocity * Time.deltaTime, directionalInput);
             SetSpriteDirection();
             CheckAllAnim();
-            CheckAllDelay();
 
             if (controller.collisions.above || controller.collisions.below)
             {
@@ -112,27 +122,33 @@ public class Player : MonoBehaviour
     void ResetAllMove()
     {
         stopAllMove = false;
+        Debug.Log("reset all move");
     }
-    void StopMoving()
+    void ResetAllInput()
     {
-        if (stopMoving)
-        {
-            velocity.x = 0;
-            velocity.y = 0;
-        }
+        stopAllInput = false;
+        Debug.Log("reset all input");
     }
+    //void StopMoving()
+    //{
+    //    if (stopMoving)
+    //    {
+    //        velocity.x = 0;
+    //        velocity.y = 0;
+    //    }
+    //}
     void StopMovingX()
     {
         velocity.x = 0;
     }
-    void StopMovingY()
-    {
-        velocity.y = 0;
-    }
-    void ResetMoving()
-    {
-        stopMoving = false;
-    }
+    //void StopMovingY()
+    //{
+    //    velocity.y = 0;
+    //}
+    //void ResetMoving()
+    //{
+    //    stopMoving = false;
+    //}
 
     void SetSpriteDirection()
     {
@@ -156,22 +172,61 @@ public class Player : MonoBehaviour
     {
         CheckRollDelay();
         CheckAttackDelay();
+        CheckRollTime();
+        CheckAttackTime();
     }
     void CheckRollDelay()
     {
-        Debug.Log("Rolldelay : " + currentRollDelay);
-        currentRollDelay -= Time.deltaTime;
         if (currentRollDelay < 0)
         {
             canRoll = true;
         }
         else
+        {
             canRoll = false;
+            currentRollDelay -= Time.deltaTime;
+            Debug.Log("Rolldelay : " + currentRollDelay);
+        }
     }
     void CheckAttackDelay()
     {
-
+        if (currentAttackDelay < 0)
+        {
+            canAttack = true;
+        }
+        else
+        {
+            canAttack = false;
+            currentAttackDelay -= Time.deltaTime;
+            Debug.Log("Attackdelay : " + currentAttackDelay);
+        }
     }
+    void CheckAttackTime()
+    {
+        if(currentAttackTime < 0 && currentRollTime < 0)
+        {
+            //stopMoving_X = false;
+            stopAllInput = false;
+        }
+        else
+        {
+            currentAttackTime -= Time.deltaTime;
+        }
+        Debug.Log("Attacktime : " + currentAttackTime);
+    }
+    void CheckRollTime()
+    {
+        if (currentRollTime < 0 && currentAttackTime < 0)
+        {
+            stopAllInput = false;
+        }
+        else
+        {
+            currentRollTime -= Time.deltaTime;
+        }
+        Debug.Log("Attacktime : " + currentRollTime);
+    }
+
     void MoveAnim()//
     {
         if (directionalInput.x == 0)
@@ -213,9 +268,8 @@ public class Player : MonoBehaviour
                 if (controller.collisions.below) //landing
                 {
                     animator.SetBool("isGround", true);
-                    stopMoving = true;
-                    StopMoving();
-                    Invoke("ResetMoving", .2f);
+                    stopAllMove = true;
+                    Invoke("ResetAllMove", .07f);//equal to HasExitTime
                 }
             }
 
@@ -321,38 +375,23 @@ public class Player : MonoBehaviour
     {
         if (canRoll)
         {
+            stopAllInput = true;
             currentRollDelay = RollDelay;
-            stopMoving_X = false;
+            currentRollTime = rollTime;
+
             //animator.SetBool("isFalling", false);
             if (animator.GetBool("isGround"))
             {
                 animator.SetBool("isRolling", true);
 
-                if (directionalInput.x == 0 || directionalInput.y == -1)
+                directionalInput = new Vector2(0, 0);
+                if (transform.localScale.x == 1)
                 {
-                    if (transform.localScale.x == 1)
-                    {
-                        velocity = new Vector3(velocity.x + 30, 0);
-                        controller.Move(velocity * Time.deltaTime, new Vector2(1, 0));
-                    }
-                    if (transform.localScale.x == -1)
-                    {
-                        velocity = new Vector3(velocity.x - 30, 0);
-                        controller.Move(velocity * Time.deltaTime, new Vector2(-1, 0));
-                    }
+                    velocity = new Vector3(velocity.x + 30, 0);
                 }
-                else
+                else if (transform.localScale.x == -1)
                 {
-                    if (transform.localScale.x == 1)
-                    {
-                        velocity = new Vector3(velocity.x + 10, 0);
-                        controller.Move(velocity * Time.deltaTime, new Vector2(1, 0));
-                    }
-                    if (transform.localScale.x == -1)
-                    {
-                        velocity = new Vector3(velocity.x - 10, 0);
-                        controller.Move(velocity * Time.deltaTime, new Vector2(-1, 0));
-                    }
+                    velocity = new Vector3(velocity.x - 30, 0);
                 }
             }
             yield return new WaitForSeconds(0.1f);
@@ -364,6 +403,210 @@ public class Player : MonoBehaviour
     {
         StartCoroutine("RollCoroutine");
     }
+    IEnumerator AttackCoroutine()
+    {
+        if (canAttack)
+        {
+            StopAllCoroutines();
+            currentAttackTime = attackTime;
+            stopAllInput = true;
+            //stopMoving_X = true; 
+            //directionalInput = new Vector2(0, 0);
+            //stopAllMove = true;
+            if (animator.GetBool("isGround"))
+            {
+                directionalInput = new Vector2(0, 0);
+                if (transform.localScale.x == 1 /*|| Input.GetKey(KeyCode.RightArrow)*/)
+                {
+
+                    velocity = new Vector2(velocity.x + 10, 0);
+                    Debug.Log(velocity);
+                    animator.SetTrigger("isAttack");
+
+                }
+                else if (transform.localScale.x == -1 /*|| Input.GetKey(KeyCode.LeftArrow)*/)
+                {
+
+                    velocity = new Vector2(velocity.x - 10, 0);
+                    Debug.Log(velocity);
+                    animator.SetTrigger("isAttack");
+                }
+
+            }
+            if (animator.GetBool("isFalling"))
+            {
+                animator.SetTrigger("isAirAttack");
+            }
+            yield return new WaitForSeconds(0.001f);
+        }
+    }
+    //public void Attack()
+    //{
+    //    StartCoroutine("AttackCoroutine");
+    //}
+    //public void Attack()
+    //{
+
+    //}
+    public void Attack()
+    {
+        StartCoroutine("AttackCoroutine");
+    }
+    //IEnumerator Attack1Coroutine()
+    //{
+    //    if (canAttack)
+    //    {
+    //        Debug.Log("im atk1");
+    //        StopAllCoroutines();
+    //        currentAttackTime = attackTime;
+    //        stopAllInput = true;
+    //        if (animator.GetBool("isGround"))
+    //        {
+    //            if (directionalInput.x == 0 || directionalInput.y == -1)
+    //            {
+    //                if (transform.localScale.x == 1)
+    //                {
+    //                    velocity = new Vector2(velocity.x + 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //                else if (transform.localScale.x == -1)
+    //                {
+    //                    velocity = new Vector2(velocity.x - 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //            }
+    //            else
+    //            {
+    //                if (transform.localScale.x == 1)
+    //                {
+    //                    velocity = new Vector2(velocity.x + 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //                else if (transform.localScale.x == -1)
+    //                {
+    //                    velocity = new Vector2(velocity.x - 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //            }
+    //            if (attackCount == 2)
+    //            {
+    //                StartCoroutine("Attack2Coroutine");
+    //            }
+    //        }
+    //        if (animator.GetBool("isFalling"))
+    //        {
+    //            animator.SetTrigger("isAttack");
+    //        }
+    //        Invoke("ResetAllInput", .7f);
+    //        yield return new WaitForSeconds(0.001f);
+    //    }
+    //}
+    //IEnumerator Attack2Coroutine()
+    //{
+    //    if (canAttack)
+    //    {
+    //        Debug.Log("im atk2");
+    //        StopAllCoroutines();
+    //        currentAttackTime = attackTime;
+    //        stopAllInput = true;
+    //        if (animator.GetBool("isGround"))
+    //        {
+    //            if (directionalInput.x == 0 || directionalInput.y == -1)
+    //            {
+    //                if (transform.localScale.x == 1)
+    //                {
+    //                    velocity = new Vector2(velocity.x + 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //                else if (transform.localScale.x == -1)
+    //                {
+    //                    velocity = new Vector2(velocity.x - 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //            }
+    //            else
+    //            {
+    //                if (transform.localScale.x == 1)
+    //                {
+    //                    velocity = new Vector2(velocity.x + 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //                else if (transform.localScale.x == -1)
+    //                {
+    //                    velocity = new Vector2(velocity.x - 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //            }
+    //            if (attackCount == 2)
+    //            {
+    //                StartCoroutine("Attack2Coroutine");
+    //            }
+    //        }
+    //        if (animator.GetBool("isFalling"))
+    //        {
+    //            animator.SetTrigger("isAttack");
+    //        }
+    //        Invoke("ResetAllInput", .7f);
+    //        yield return new WaitForSeconds(0.001f);
+    //    }
+    //}
+    //IEnumerator Attack3Coroutine()
+    //{
+    //    if (canAttack)
+    //    {
+    //        Debug.Log("im atk3");
+    //        StopAllCoroutines();
+    //        currentAttackTime = attackTime;
+    //        stopAllInput = true;
+    //        if (animator.GetBool("isGround"))
+    //        {
+    //            if (directionalInput.x == 0 || directionalInput.y == -1)
+    //            {
+    //                if (transform.localScale.x == 1)
+    //                {
+    //                    velocity = new Vector2(velocity.x + 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //                else if (transform.localScale.x == -1)
+    //                {
+    //                    velocity = new Vector2(velocity.x - 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //            }
+    //            else
+    //            {
+    //                if (transform.localScale.x == 1)
+    //                {
+    //                    velocity = new Vector2(velocity.x + 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //                else if (transform.localScale.x == -1)
+    //                {
+    //                    velocity = new Vector2(velocity.x - 10, 0);
+    //                    Debug.Log(velocity);
+    //                    animator.SetTrigger("isAttack");
+    //                }
+    //            }
+    //        }
+    //        if (animator.GetBool("isFalling"))
+    //        {
+    //            animator.SetTrigger("isAttack");
+    //        }
+    //        Invoke("ResetAllInput", .7f);
+    //        yield return new WaitForSeconds(0.001f);
+    //    }
+    //}
 
     public void SetDirectionalInput(Vector2 input)
     {

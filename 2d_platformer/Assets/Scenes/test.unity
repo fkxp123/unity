@@ -273,8 +273,10 @@ MonoBehaviour:
   wallSlideSpeedMax: 3
   wallStickTime: 0.25
   rollPower: 1.2
+  attackCount: 0
   doubleJump: 0
   stopAllMove: 0
+  stopAllInput: 0
 --- !u!114 &272434594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -611,7 +613,7 @@ Transform:
   m_GameObject: {fileID: 444567728}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -35, y: 4.9, z: 0}
-  m_LocalScale: {x: 22, y: 1, z: 1}
+  m_LocalScale: {x: 88.55, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
@@ -4833,7 +4835,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5884,8 +5886,10 @@ MonoBehaviour:
   wallSlideSpeedMax: 3
   wallStickTime: 0.25
   rollPower: 1.2
+  attackCount: 0
   doubleJump: 0
   stopAllMove: 0
+  stopAllInput: 0
 --- !u!114 &1755512704
 MonoBehaviour:
   m_ObjectHideFlags: 0

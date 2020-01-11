@@ -148,7 +148,7 @@ public class Controller2D : RaycastController
                     {
                         continue;
                     }
-                    if (playerInput.y == -1 && Input.GetKeyDown(KeyCode.Space))
+                    if (playerInput.y == -1 && Input.GetKeyDown(KeyCode.A))
                     {
                         fallingThrough = true;
                         collisions.fallingThroughPlatform = true;
