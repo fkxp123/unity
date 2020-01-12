@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Through
   - Climbwall
+  - enemy
+  - player
   layers:
   - Default
   - TransparentFX

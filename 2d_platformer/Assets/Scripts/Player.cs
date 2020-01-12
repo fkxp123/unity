@@ -122,12 +122,10 @@ public class Player : MonoBehaviour
     void ResetAllMove()
     {
         stopAllMove = false;
-        Debug.Log("reset all move");
     }
     void ResetAllInput()
     {
         stopAllInput = false;
-        Debug.Log("reset all input");
     }
     //void StopMoving()
     //{
@@ -185,7 +183,6 @@ public class Player : MonoBehaviour
         {
             canRoll = false;
             currentRollDelay -= Time.deltaTime;
-            Debug.Log("Rolldelay : " + currentRollDelay);
         }
     }
     void CheckAttackDelay()
@@ -198,7 +195,6 @@ public class Player : MonoBehaviour
         {
             canAttack = false;
             currentAttackDelay -= Time.deltaTime;
-            Debug.Log("Attackdelay : " + currentAttackDelay);
         }
     }
     void CheckAttackTime()
@@ -212,7 +208,6 @@ public class Player : MonoBehaviour
         {
             currentAttackTime -= Time.deltaTime;
         }
-        Debug.Log("Attacktime : " + currentAttackTime);
     }
     void CheckRollTime()
     {
@@ -224,7 +219,6 @@ public class Player : MonoBehaviour
         {
             currentRollTime -= Time.deltaTime;
         }
-        Debug.Log("Attacktime : " + currentRollTime);
     }
 
     void MoveAnim()//
@@ -420,7 +414,6 @@ public class Player : MonoBehaviour
                 {
 
                     velocity = new Vector2(velocity.x + 10, 0);
-                    Debug.Log(velocity);
                     animator.SetTrigger("isAttack");
 
                 }
@@ -428,7 +421,6 @@ public class Player : MonoBehaviour
                 {
 
                     velocity = new Vector2(velocity.x - 10, 0);
-                    Debug.Log(velocity);
                     animator.SetTrigger("isAttack");
                 }
 

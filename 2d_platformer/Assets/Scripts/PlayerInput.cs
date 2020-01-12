@@ -11,6 +11,8 @@ public class PlayerInput : MonoBehaviour
     bool stopAllInput;
     float x;
     float y;
+    public Transform pos;
+    public Vector2 boxSize;
 
     void Start()
     {
@@ -41,16 +43,17 @@ public class PlayerInput : MonoBehaviour
             {
                 player.Roll();
             }
-            //if (Input.GetKeyDown(KeyCode.X))
-            //{
-            //    player.testAttack();
-            //}
             
         }
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             player.attackCount += 1;
             player.Attack();
+            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+            foreach(Collider2D collider in collider2Ds)
+            {
+                Debug.Log(collider.tag);
+            }
         }
 
     }
@@ -77,5 +80,10 @@ public class PlayerInput : MonoBehaviour
         {
             y = 1;
         }
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(pos.position, boxSize);
     }
 }

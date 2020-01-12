@@ -1,0 +1,81 @@
+fileFormatVersion: 2
+guid: d1ac1d1cdd7603e4696f5edaebff6029
+ScriptedImporter:
+  fileIDToRecycleName:
+    100000: _main/test02
+    400000: _main/test02/Transform
+    2800000: test02.Textures._0
+    2800002: test02.Textures._1
+    2800004: test02.Textures._2
+    2800006: test02.Textures._3
+    2800008: test02.Textures._4
+    2800010: test02.Textures._5
+    2800012: test02.Textures._6
+    2800014: test02.Textures._7
+    2800016: test02.Textures._8
+    2800018: test02.Textures._9
+    2800020: test02.Textures._10
+    2800022: test02.Textures._11
+    2800024: test02.Textures._12
+    2800026: test02.Textures._13
+    2800028: test02.Textures._14
+    2800030: test02.Textures._15
+    2800032: test02.Textures._16
+    2800034: test02.Textures._17
+    2800036: test02.Textures._18
+    2800038: test02.Textures._19
+    2800040: test02.Textures._20
+    2800042: test02.Textures._21
+    2800044: test02.Textures._22
+    2800046: test02.Textures._23
+    2800048: test02.Textures._24
+    2800050: test02.Textures._25
+    2800052: test02.Textures._26
+    7400000: test02.Animations.walk
+    7400002: test02.Animations.attack
+    7400004: test02.Animations.idle
+    7400006: test02.Animations.Untagged
+    9500000: _main/test02/Animator
+    11400000: __atlas
+    21200000: _main/test02/SpriteRenderer
+    21300000: test02.Sprites._0
+    21300002: test02.Sprites._1
+    21300004: test02.Sprites._2
+    21300006: test02.Sprites._3
+    21300008: test02.Sprites._4
+    21300010: test02.Sprites._5
+    21300012: test02.Sprites._6
+    21300014: test02.Sprites._7
+    21300016: test02.Sprites._8
+    21300018: test02.Sprites._9
+    21300020: test02.Sprites._10
+    21300022: test02.Sprites._11
+    21300024: test02.Sprites._12
+    21300026: test02.Sprites._13
+    21300028: test02.Sprites._14
+    21300030: test02.Sprites._15
+    21300032: test02.Sprites._16
+    21300034: test02.Sprites._17
+    21300036: test02.Sprites._18
+    21300038: test02.Sprites._19
+    21300040: test02.Sprites._20
+    21300042: test02.Sprites._21
+    21300044: test02.Sprites._22
+    21300046: test02.Sprites._23
+    21300048: test02.Sprites._24
+    21300050: test02.Sprites._25
+    21300052: test02.Sprites._26
+    100100000: _main
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: b1577cdc41d01fa4dbf68ad51122a765, type: 3}
+  pixelsPerUnit: 16
+  spriteAtlas: {instanceID: 0}
+  frameRate: 60
+  sortingLayerName: 
+  sortingOrder: 0
+  animatorCullingMode: 0
+  animatorController: {instanceID: 0}
+  errors: []

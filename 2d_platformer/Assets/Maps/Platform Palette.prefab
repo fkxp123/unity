@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 537817299553681320}
   - component: {fileID: 4418407577035339514}
   - component: {fileID: 2665700595869272601}
-  m_Layer: 31
+  m_Layer: 10
   m_Name: Layer1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +261,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7657028883622600901}
   - component: {fileID: 4376162111791258336}
-  m_Layer: 31
+  m_Layer: 10
   m_Name: Platform Palette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
