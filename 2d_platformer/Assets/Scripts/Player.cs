@@ -401,12 +401,9 @@ public class Player : MonoBehaviour
     {
         if (canAttack)
         {
-            StopAllCoroutines();
+            //StopAllCoroutines();
             currentAttackTime = attackTime;
             stopAllInput = true;
-            //stopMoving_X = true; 
-            //directionalInput = new Vector2(0, 0);
-            //stopAllMove = true;
             if (animator.GetBool("isGround"))
             {
                 directionalInput = new Vector2(0, 0);
@@ -432,173 +429,10 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.001f);
         }
     }
-    //public void Attack()
-    //{
-    //    StartCoroutine("AttackCoroutine");
-    //}
-    //public void Attack()
-    //{
-
-    //}
     public void Attack()
     {
         StartCoroutine("AttackCoroutine");
     }
-    //IEnumerator Attack1Coroutine()
-    //{
-    //    if (canAttack)
-    //    {
-    //        Debug.Log("im atk1");
-    //        StopAllCoroutines();
-    //        currentAttackTime = attackTime;
-    //        stopAllInput = true;
-    //        if (animator.GetBool("isGround"))
-    //        {
-    //            if (directionalInput.x == 0 || directionalInput.y == -1)
-    //            {
-    //                if (transform.localScale.x == 1)
-    //                {
-    //                    velocity = new Vector2(velocity.x + 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //                else if (transform.localScale.x == -1)
-    //                {
-    //                    velocity = new Vector2(velocity.x - 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //            }
-    //            else
-    //            {
-    //                if (transform.localScale.x == 1)
-    //                {
-    //                    velocity = new Vector2(velocity.x + 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //                else if (transform.localScale.x == -1)
-    //                {
-    //                    velocity = new Vector2(velocity.x - 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //            }
-    //            if (attackCount == 2)
-    //            {
-    //                StartCoroutine("Attack2Coroutine");
-    //            }
-    //        }
-    //        if (animator.GetBool("isFalling"))
-    //        {
-    //            animator.SetTrigger("isAttack");
-    //        }
-    //        Invoke("ResetAllInput", .7f);
-    //        yield return new WaitForSeconds(0.001f);
-    //    }
-    //}
-    //IEnumerator Attack2Coroutine()
-    //{
-    //    if (canAttack)
-    //    {
-    //        Debug.Log("im atk2");
-    //        StopAllCoroutines();
-    //        currentAttackTime = attackTime;
-    //        stopAllInput = true;
-    //        if (animator.GetBool("isGround"))
-    //        {
-    //            if (directionalInput.x == 0 || directionalInput.y == -1)
-    //            {
-    //                if (transform.localScale.x == 1)
-    //                {
-    //                    velocity = new Vector2(velocity.x + 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //                else if (transform.localScale.x == -1)
-    //                {
-    //                    velocity = new Vector2(velocity.x - 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //            }
-    //            else
-    //            {
-    //                if (transform.localScale.x == 1)
-    //                {
-    //                    velocity = new Vector2(velocity.x + 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //                else if (transform.localScale.x == -1)
-    //                {
-    //                    velocity = new Vector2(velocity.x - 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //            }
-    //            if (attackCount == 2)
-    //            {
-    //                StartCoroutine("Attack2Coroutine");
-    //            }
-    //        }
-    //        if (animator.GetBool("isFalling"))
-    //        {
-    //            animator.SetTrigger("isAttack");
-    //        }
-    //        Invoke("ResetAllInput", .7f);
-    //        yield return new WaitForSeconds(0.001f);
-    //    }
-    //}
-    //IEnumerator Attack3Coroutine()
-    //{
-    //    if (canAttack)
-    //    {
-    //        Debug.Log("im atk3");
-    //        StopAllCoroutines();
-    //        currentAttackTime = attackTime;
-    //        stopAllInput = true;
-    //        if (animator.GetBool("isGround"))
-    //        {
-    //            if (directionalInput.x == 0 || directionalInput.y == -1)
-    //            {
-    //                if (transform.localScale.x == 1)
-    //                {
-    //                    velocity = new Vector2(velocity.x + 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //                else if (transform.localScale.x == -1)
-    //                {
-    //                    velocity = new Vector2(velocity.x - 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //            }
-    //            else
-    //            {
-    //                if (transform.localScale.x == 1)
-    //                {
-    //                    velocity = new Vector2(velocity.x + 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //                else if (transform.localScale.x == -1)
-    //                {
-    //                    velocity = new Vector2(velocity.x - 10, 0);
-    //                    Debug.Log(velocity);
-    //                    animator.SetTrigger("isAttack");
-    //                }
-    //            }
-    //        }
-    //        if (animator.GetBool("isFalling"))
-    //        {
-    //            animator.SetTrigger("isAttack");
-    //        }
-    //        Invoke("ResetAllInput", .7f);
-    //        yield return new WaitForSeconds(0.001f);
-    //    }
-    //}
 
     public void SetDirectionalInput(Vector2 input)
     {
