@@ -21,9 +21,13 @@ public class Enemy : MonoBehaviour
     float AIDelay = 2.0f;
     float currentMoveTime;
     float moveTime = 2.0f;
+    float currentAttackTime;
+    float attackTime = 1.5f;
 
-    public Transform pos;
-    public Vector2 boxSize;
+    public Transform FindPlayerBoxPos;
+    public Vector2 FindPlayerBoxSize;
+    public Transform AtkPlayerBoxPos;
+    public Vector2 AtkPlayerBoxSize;
     public GameObject ExclamationMark;
     public GameObject PlayerPos;
 
@@ -34,8 +38,11 @@ public class Enemy : MonoBehaviour
     bool AiIdle;
     bool TimeToBehavior;
     bool stopMoving_X;
+    bool isAttack;
+    bool flag;
 
     int random = 0;
+    int dmg = 5;
 
     void Awake()
     {
@@ -47,7 +54,13 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        CheckPlayerIsNear();
+        CanAttackPlayer();
+        if (!isAttack)
+        {
+            CheckPlayerIsNear();
+        }
+        else
+            CheckAttackTime();
         if (!FindPlayer)
         {
             CheckAiDelay();
@@ -152,19 +165,14 @@ public class Enemy : MonoBehaviour
     void CheckPlayerIsNear()
     {
         bool flag = false;
-        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(FindPlayerBoxPos.position, FindPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
             Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
                 flag = true;
-                //FindPlayer = true;
-                //ExclamationMark.SetActive(true);
-                //FollowPlayer();
             }
-            //else
-            //    FindPlayer = false;
         }
         if (flag)
         {
@@ -174,6 +182,54 @@ public class Enemy : MonoBehaviour
         }
         else
             FindPlayer = false;
+    }
+    void CanAttackPlayer()
+    {
+        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
+        foreach (Collider2D collider in collider2Ds)
+        {
+            Debug.Log(collider.tag);
+            if (collider.tag == "player")
+            {
+                flag = true;
+            }
+        }
+        if (flag)
+        {
+            AttackPlayer();
+        }
+        //else
+        //    stopMoving_X = false;
+    }
+    void AttackPlayer()
+    {
+        StartCoroutine("AttackCoroutine");
+    }
+    IEnumerator AttackCoroutine()
+    {
+        //StopAllCoroutines();
+        isAttack = true;
+        stopMoving_X = true;
+        animator.SetBool("isWalking", false);
+        animator.SetTrigger("isAttack");
+        yield return new WaitUntil(() => !isAttack);
+    }
+    void CheckAttackTime()
+    {
+        if (currentAttackTime < attackTime)
+        {
+            currentAttackTime += Time.deltaTime;
+        }
+        else
+        {
+            currentAttackTime = 0;
+            stopMoving_X = false;
+            isAttack = false;
+            if (flag)
+            {
+                PlayerStat.instance.Hit(5);
+            }
+        }
     }
     void FollowPlayer()
     {
@@ -189,21 +245,10 @@ public class Enemy : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(pos.position, boxSize);
+        Gizmos.DrawWireCube(FindPlayerBoxPos.position, FindPlayerBoxSize);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(AtkPlayerBoxPos.position, AtkPlayerBoxSize);
     }
-    //void CheckAttackTime()
-    //{
-    //    if (currentAttackTime < 0 && currentRollTime < 0)
-    //    {
-    //        //stopMoving_X = false;
-    //        stopAllInput = false;
-    //    }
-    //    else
-    //    {
-    //        currentAttackTime -= Time.deltaTime;
-    //    }
-    //    Debug.Log("Attacktime : " + currentAttackTime);
-    //}
 }
 
 

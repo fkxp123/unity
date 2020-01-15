@@ -55,12 +55,12 @@
   <ItemGroup>
      <Compile Include="Assets\Aseprite2Unity\Examples\MegaDad\MegaDadScript.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\CameraManager.cs" />
      <Compile Include="Assets\Scripts\Controller2D.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\PlatformController.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\PlayerInput.cs" />
+     <Compile Include="Assets\Scripts\PlayerStat.cs" />
      <Compile Include="Assets\Scripts\RaycastController.cs" />
      <None Include="Assets\Aseprite2Unity\Examples\MegaDad\readme.txt" />
  <Reference Include="Unity.2D.PixelPerfect.Editor">

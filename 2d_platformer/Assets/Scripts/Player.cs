@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
 
     Controller2D controller;
     Animator animator;
+    BoxCollider2D boxcollider;
     //public Camera cam;
     //CameraFollow cf;
 
@@ -76,12 +77,13 @@ public class Player : MonoBehaviour
     void Awake()//
     {
         animator = GetComponent<Animator>();
+        boxcollider = GetComponent<BoxCollider2D>();
     }
     
     void Update()
     {
         CheckAllDelay();
-
+        Debug.Log("atkcount : " + attackCount);
         if (!stopAllMove)
         {
             CheckPositionY();
@@ -364,6 +366,10 @@ public class Player : MonoBehaviour
         }
         
     }
+    public void Roll()
+    {
+        StartCoroutine("RollCoroutine");
+    }
 
     IEnumerator RollCoroutine()
     {
@@ -372,6 +378,7 @@ public class Player : MonoBehaviour
             stopAllInput = true;
             currentRollDelay = RollDelay;
             currentRollTime = rollTime;
+            boxcollider.isTrigger = true;
 
             //animator.SetBool("isFalling", false);
             if (animator.GetBool("isGround"))
@@ -381,22 +388,25 @@ public class Player : MonoBehaviour
                 directionalInput = new Vector2(0, 0);
                 if (transform.localScale.x == 1)
                 {
-                    velocity = new Vector3(velocity.x + 30, 0);
+                    velocity = new Vector3(velocity.x + 50, 0);
                 }
                 else if (transform.localScale.x == -1)
                 {
-                    velocity = new Vector3(velocity.x - 30, 0);
+                    velocity = new Vector3(velocity.x - 50, 0);
                 }
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
             animator.SetBool("isRolling", false);
+            boxcollider.isTrigger = false;
         }
         
     }
-    public void Roll()
+
+    public void Attack()
     {
-        StartCoroutine("RollCoroutine");
+        StartCoroutine("AttackCoroutine");
     }
+
     IEnumerator AttackCoroutine()
     {
         if (canAttack)
@@ -428,10 +438,6 @@ public class Player : MonoBehaviour
             }
             yield return new WaitForSeconds(0.001f);
         }
-    }
-    public void Attack()
-    {
-        StartCoroutine("AttackCoroutine");
     }
 
     public void SetDirectionalInput(Vector2 input)

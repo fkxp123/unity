@@ -231,6 +231,7 @@ GameObject:
   - component: {fileID: 272434595}
   - component: {fileID: 272434592}
   - component: {fileID: 272434593}
+  - component: {fileID: 272434599}
   - component: {fileID: 272434594}
   m_Layer: 8
   m_Name: player
@@ -413,6 +414,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &272434599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272434591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbc159687818a5d49a2b5dd2f592bccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Hp: 100
+  CurrentHp: 0
+  atk: 5
 --- !u!1 &370194938
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,6 +666,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1397520455}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &586518904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 586518905}
+  m_Layer: 10
+  m_Name: melee
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &586518905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 586518904}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.1, y: 0.32, z: 0}
+  m_LocalScale: {x: 15, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1397520455}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &632699191
 GameObject:
@@ -5789,11 +5835,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d1ac1d1cdd7603e4696f5edaebff6029, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -55.54
+      value: -55.61
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d1ac1d1cdd7603e4696f5edaebff6029, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.13
+      value: 9.26
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d1ac1d1cdd7603e4696f5edaebff6029, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5862,8 +5908,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxJumpHeight: 4
   timeToJumpApex: 0.4
-  pos: {fileID: 560715960}
-  boxSize: {x: 35, y: 5}
+  FindPlayerBoxPos: {fileID: 560715960}
+  FindPlayerBoxSize: {x: 30, y: 5}
+  AtkPlayerBoxPos: {fileID: 586518905}
+  AtkPlayerBoxSize: {x: 8, y: 5}
   ExclamationMark: {fileID: 2015768693}
   PlayerPos: {fileID: 272434591}
 --- !u!114 &1397520451
@@ -6277,7 +6325,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1397520455}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2015768695
 SpriteRenderer:
@@ -6369,15 +6417,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 21200000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
       propertyPath: m_Color.r
-      value: 0.990566
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 21200000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
       propertyPath: m_Color.g
-      value: 0.990566
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 21200000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
       propertyPath: m_Color.b
-      value: 0.990566
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 21200000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
+      propertyPath: m_Color.a
+      value: 0.49803922
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
       propertyPath: m_LocalPosition.x
