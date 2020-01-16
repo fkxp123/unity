@@ -22,7 +22,8 @@ public class Enemy : MonoBehaviour
     float currentMoveTime;
     float moveTime = 2.0f;
     float currentAttackTime;
-    float attackTime = 1.5f;
+    float attackTime = 2.0f;
+    float currentAttackDelay;
 
     public Transform FindPlayerBoxPos;
     public Vector2 FindPlayerBoxSize;
@@ -38,8 +39,8 @@ public class Enemy : MonoBehaviour
     bool AiIdle;
     bool TimeToBehavior;
     bool stopMoving_X;
-    bool isAttack;
-    bool flag;
+    bool canAttack;
+    public bool isAttack;
 
     int random = 0;
     int dmg = 5;
@@ -55,12 +56,11 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         CanAttackPlayer();
+        CheckAttackDelay();
         if (!isAttack)
         {
             CheckPlayerIsNear();
         }
-        else
-            CheckAttackTime();
         if (!FindPlayer)
         {
             CheckAiDelay();
@@ -164,17 +164,17 @@ public class Enemy : MonoBehaviour
     }
     void CheckPlayerIsNear()
     {
-        bool flag = false;
+        bool flag1 = false;
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(FindPlayerBoxPos.position, FindPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
             Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
-                flag = true;
+                flag1 = true;
             }
         }
-        if (flag)
+        if (flag1)
         {
             FindPlayer = true;
             ExclamationMark.SetActive(true);
@@ -185,21 +185,26 @@ public class Enemy : MonoBehaviour
     }
     void CanAttackPlayer()
     {
+        bool flag2 = false;
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
             Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
-                flag = true;
+                flag2 = true;
             }
         }
-        if (flag)
+
+        if (flag2)
         {
             AttackPlayer();
         }
-        //else
-        //    stopMoving_X = false;
+        else
+        {
+            isAttack = false;
+            stopMoving_X = false;
+        }
     }
     void AttackPlayer()
     {
@@ -207,29 +212,79 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator AttackCoroutine()
     {
-        //StopAllCoroutines();
-        isAttack = true;
-        stopMoving_X = true;
-        animator.SetBool("isWalking", false);
-        animator.SetTrigger("isAttack");
-        yield return new WaitUntil(() => !isAttack);
-    }
-    void CheckAttackTime()
-    {
-        if (currentAttackTime < attackTime)
+        if (canAttack)
         {
-            currentAttackTime += Time.deltaTime;
+            //StopAllCoroutines();
+            currentAttackDelay = attackTime;
+            //isAttack = true;
+            //stopMoving_X = true;
+            //currentAttackTime = attackTime;
+            animator.SetBool("isWalking", false);
+            animator.SetTrigger("isAttack");
+            yield return new WaitForSeconds(0.8f);
+            bool flag = false;
+            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
+            foreach (Collider2D collider in collider2Ds)
+            {
+                Debug.Log(collider.tag);
+                if (collider.tag == "player")
+                {
+                    flag = true;
+                }
+            }
+            if (flag)
+            {
+                //Debug.Log("playerhit");
+                PlayerStat.instance.Hit(5);
+            }
+            //yield return new WaitForSeconds(1.5f);
+            //stopMoving_X = false;
+            //isAttack = false;
+        }
+    }
+    void CheckAttackDelay()
+    {
+        if (currentAttackDelay < 0)
+        {
+            canAttack = true;
         }
         else
         {
-            currentAttackTime = 0;
-            stopMoving_X = false;
-            isAttack = false;
-            if (flag)
-            {
-                PlayerStat.instance.Hit(5);
-            }
+            canAttack = false;
+            isAttack = true;
+            stopMoving_X = true;
+            currentAttackDelay -= Time.deltaTime;
         }
+    }
+
+    void CheckAttackTime()
+    {
+        
+        //if (currentAttackTime > 0)
+        //{
+        //    currentAttackTime -= Time.deltaTime;
+        //}
+        //else
+        //{
+        //    stopMoving_X = false;
+        //    isAttack = false;
+        //    Debug.Log("imhere");
+        //    bool flag = false;
+        //    Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
+        //    foreach (Collider2D collider in collider2Ds)
+        //    {
+        //        Debug.Log(collider.tag);
+        //        if (collider.tag == "player")
+        //        {
+        //            flag = true;
+        //        }
+        //    }
+        //    if (flag)//flag가 아니라 따로 콜라이더충돌체크해야댐
+        //    {
+        //        PlayerStat.instance.Hit(5);
+        //    }
+        //    currentAttackTime = 0;
+        //}
     }
     void FollowPlayer()
     {
@@ -242,6 +297,7 @@ public class Enemy : MonoBehaviour
         currentMoveTime = 0;
         SetAiMove();
     }
+    
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

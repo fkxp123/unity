@@ -691,7 +691,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586518904}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.1, y: 0.32, z: 0}
+  m_LocalPosition: {x: 3.21, y: 0.32, z: 0}
   m_LocalScale: {x: 15, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1397520455}
@@ -5909,11 +5909,12 @@ MonoBehaviour:
   maxJumpHeight: 4
   timeToJumpApex: 0.4
   FindPlayerBoxPos: {fileID: 560715960}
-  FindPlayerBoxSize: {x: 30, y: 5}
+  FindPlayerBoxSize: {x: 15, y: 5}
   AtkPlayerBoxPos: {fileID: 586518905}
-  AtkPlayerBoxSize: {x: 8, y: 5}
+  AtkPlayerBoxSize: {x: 5, y: 5}
   ExclamationMark: {fileID: 2015768693}
   PlayerPos: {fileID: 272434591}
+  isAttack: 0
 --- !u!114 &1397520451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5986,10 +5987,10 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!1 &1636610993
 GameObject:
   m_ObjectHideFlags: 0
@@ -6265,7 +6266,7 @@ SpriteRenderer:
   m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1755512707
