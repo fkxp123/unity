@@ -4,11 +4,11 @@ using System.Collections;
 [RequireComponent(typeof(Player))]
 public class PlayerInput : MonoBehaviour
 {
-
+    public static PlayerInput instance;
     Player player;
     Animator animator;
     Controller2D controll;
-    bool stopAllInput;
+    public bool stopAllInput;
     float x;
     float y;
     public Transform pos;
@@ -16,8 +16,11 @@ public class PlayerInput : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         player = GetComponent<Player>();
+        //player = Player.instance;
         controll = GetComponent<Controller2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -27,35 +30,31 @@ public class PlayerInput : MonoBehaviour
         {
             CheckArrowKEY();
             Vector2 directionalInput = new Vector2(x, y);
-            //Vector2 directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
             player.SetDirectionalInput(directionalInput);
-            //player.SetDirectionalInput(new Vector2(1,0));
 
             if (Input.GetKeyDown(KeyCode.A))
             {
                 player.OnJumpInputDown();
             }
-            if (Input.GetKeyUp(KeyCode.A))
+            else if (Input.GetKeyUp(KeyCode.A))
             {
                 player.OnJumpInputUp();
             }
-            if (Input.GetKeyDown(KeyCode.Q))
+            else if (Input.GetKeyDown(KeyCode.Q))
             {
                 player.Roll();
             }
-            
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            player.attackCount += 1;
-            player.Attack();
-            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
-            foreach(Collider2D collider in collider2Ds)
+            else if (Input.GetKeyDown(KeyCode.S))
             {
-                Debug.Log(collider.tag);
+                player.attackCount += 1;
+                player.Attack();
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+                foreach (Collider2D collider in collider2Ds)
+                {
+                    Debug.Log(collider.tag);
+                }
             }
         }
-
     }
     void CheckStopAllInput()
     {

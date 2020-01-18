@@ -31,10 +31,14 @@ ScriptedImporter:
     2800048: test02.Textures._24
     2800050: test02.Textures._25
     2800052: test02.Textures._26
+    2800054: test02.Textures._27
+    2800056: test02.Textures._28
+    2800058: test02.Textures._29
     7400000: test02.Animations.walk
     7400002: test02.Animations.attack
     7400004: test02.Animations.idle
-    7400006: test02.Animations.Untagged
+    7400006: test02.Animations.hurt
+    7400008: test02.Animations.Untagged
     9500000: _main/test02/Animator
     11400000: __atlas
     21200000: _main/test02/SpriteRenderer
@@ -65,6 +69,9 @@ ScriptedImporter:
     21300048: test02.Sprites._24
     21300050: test02.Sprites._25
     21300052: test02.Sprites._26
+    21300054: test02.Sprites._27
+    21300056: test02.Sprites._28
+    21300058: test02.Sprites._29
     100100000: _main
   externalObjects: {}
   userData: 

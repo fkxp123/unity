@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public static Enemy instance;
+    public int Hp = 100;
+    int CurrentHp;
+    public int atk = 5;
+
     public float maxJumpHeight = 4;
     public float timeToJumpApex = .4f;
     float accelerationTimeAirborne = .2f;
@@ -47,6 +52,7 @@ public class Enemy : MonoBehaviour
 
     void Awake()
     {
+        instance = this;
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         controller = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
@@ -235,7 +241,7 @@ public class Enemy : MonoBehaviour
             if (flag)
             {
                 //Debug.Log("playerhit");
-                PlayerStat.instance.Hit(5);
+                PlayerStat.instance.Hit(atk);
             }
             //yield return new WaitForSeconds(1.5f);
             //stopMoving_X = false;
@@ -252,7 +258,7 @@ public class Enemy : MonoBehaviour
         {
             canAttack = false;
             isAttack = true;
-            stopMoving_X = true;
+            //stopMoving_X = true;
             currentAttackDelay -= Time.deltaTime;
         }
     }
@@ -297,7 +303,18 @@ public class Enemy : MonoBehaviour
         currentMoveTime = 0;
         SetAiMove();
     }
-    
+    public void Hit(int enemyAtk)
+    {
+        CurrentHp -= enemyAtk;
+        Debug.Log("hp : " + CurrentHp);
+        animator.SetTrigger("takeDamage");
+        if (CurrentHp <= 0)
+        {
+            Debug.Log("game over");
+        }
+    }
+
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Controller2D))]
+//[RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
 {
-
+    public static Player instance;
     public float maxJumpHeight = 4;
     public float minJumpHeight = 1;
     public float timeToJumpApex = .4f;
@@ -25,11 +25,11 @@ public class Player : MonoBehaviour
     float minJumpVelocity;
     Vector3 velocity;
     float velocityXSmoothing;
-    public float rollPower = 1.2f;
+    //public float rollPower = 1.2f;
 
     Controller2D controller;
     Animator animator;
-    BoxCollider2D boxcollider;
+    BoxCollider2D boxCollider;
     //public Camera cam;
     //CameraFollow cf;
 
@@ -66,47 +66,77 @@ public class Player : MonoBehaviour
     bool wallSliding;
     int wallDirX;
 
+    Rigidbody2D rigid;
+    int a = 0;
+
     void Start()
     {
+        instance = this;
         //cf = GetComponent<CameraFollow>();
         controller = GetComponent<Controller2D>();
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
+        rigid = GetComponent<Rigidbody2D>();
     }
     void Awake()//
     {
         animator = GetComponent<Animator>();
-        boxcollider = GetComponent<BoxCollider2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
     
     void Update()
     {
         CheckAllDelay();
         Debug.Log("atkcount : " + attackCount);
+        //if (!stopAllMove)
+        //{
+        //    CheckPositionY();
+        //    CalculateVelocity();
+        //    //HandleWallSliding();
+        //    //on/off기능 추가?
+        //    if (stopMoving_X)
+        //    {
+        //        StopMovingX();
+        //    }
+        //    //if (stopMoving_Y)
+        //    //{
+        //    //    StopMovingY();
+        //    //}
+
+        //    controller.Move(velocity * Time.deltaTime, directionalInput);
+        //    SetSpriteDirection();
+        //    CheckAllAnim();
+
+        //    if (controller.collisions.above || controller.collisions.below)
+        //    {
+        //        velocity.y = 0;
+        //    }
+        //}
+
+        CheckPositionY();
+        CalculateVelocity();
+        //HandleWallSliding();
+        //on/off기능 추가?
+        if (stopMoving_X)
+        {
+            StopMovingX();
+        }
+        //if (stopMoving_Y)
+        //{
+        //    StopMovingY();
+        //}
+
         if (!stopAllMove)
         {
-            CheckPositionY();
-            CalculateVelocity();
-            //HandleWallSliding();
-            //on/off기능 추가?
-            if (stopMoving_X)
-            {
-                StopMovingX();
-            }
-            //if (stopMoving_Y)
-            //{
-            //    StopMovingY();
-            //}
-
             controller.Move(velocity * Time.deltaTime, directionalInput);
-            SetSpriteDirection();
-            CheckAllAnim();
+        }
+        SetSpriteDirection();
+        CheckAllAnim();
 
-            if (controller.collisions.above || controller.collisions.below)
-            {
-                velocity.y = 0;
-            }
+        if (controller.collisions.above || controller.collisions.below)
+        {
+            velocity.y = 0;
         }
     }
     void LateUpdate()
@@ -172,8 +202,8 @@ public class Player : MonoBehaviour
     {
         CheckRollDelay();
         CheckAttackDelay();
-        CheckRollTime();
-        CheckAttackTime();
+        //CheckRollTime();
+        //CheckAttackTime();
     }
     void CheckRollDelay()
     {
@@ -376,9 +406,10 @@ public class Player : MonoBehaviour
         if (canRoll)
         {
             stopAllInput = true;
+            stopAllMove = true;
             currentRollDelay = RollDelay;
             currentRollTime = rollTime;
-            boxcollider.isTrigger = true;
+            boxCollider.isTrigger = true;
 
             //animator.SetBool("isFalling", false);
             if (animator.GetBool("isGround"))
@@ -388,16 +419,19 @@ public class Player : MonoBehaviour
                 directionalInput = new Vector2(0, 0);
                 if (transform.localScale.x == 1)
                 {
-                    velocity = new Vector3(velocity.x + 50, 0);
+                    rigid.velocity = new Vector2(20, rigid.velocity.y);
                 }
                 else if (transform.localScale.x == -1)
                 {
-                    velocity = new Vector3(velocity.x - 50, 0);
+                    rigid.velocity = new Vector2(-20, rigid.velocity.y);
                 }
             }
             yield return new WaitForSeconds(0.2f);
+            rigid.velocity = new Vector2(0, 0);
+            stopAllInput = false;
+            stopAllMove = false;
             animator.SetBool("isRolling", false);
-            boxcollider.isTrigger = false;
+            boxCollider.isTrigger = false;
         }
         
     }
@@ -411,32 +445,31 @@ public class Player : MonoBehaviour
     {
         if (canAttack)
         {
-            //StopAllCoroutines();
-            currentAttackTime = attackTime;
+            velocity.x = 0;
             stopAllInput = true;
+            stopMoving_X = true;
+            //rigid.velocity = new Vector2(0, 0);
             if (animator.GetBool("isGround"))
             {
                 directionalInput = new Vector2(0, 0);
-                if (transform.localScale.x == 1 /*|| Input.GetKey(KeyCode.RightArrow)*/)
+                animator.SetTrigger("isAttack");
+                if (transform.localScale.x == 1)
                 {
-
-                    velocity = new Vector2(velocity.x + 10, 0);
-                    animator.SetTrigger("isAttack");
-
+                    rigid.velocity = new Vector2(5, rigid.velocity.y);
                 }
-                else if (transform.localScale.x == -1 /*|| Input.GetKey(KeyCode.LeftArrow)*/)
+                else if (transform.localScale.x == -1)
                 {
-
-                    velocity = new Vector2(velocity.x - 10, 0);
-                    animator.SetTrigger("isAttack");
+                    rigid.velocity = new Vector2(-5, rigid.velocity.y);
                 }
-
             }
             if (animator.GetBool("isFalling"))
             {
                 animator.SetTrigger("isAirAttack");
             }
-            yield return new WaitForSeconds(0.001f);
+            yield return new WaitForSeconds(0.4f);
+            rigid.velocity = new Vector2(0, 0);
+            stopAllInput = false;
+            stopMoving_X = false;
         }
     }
 

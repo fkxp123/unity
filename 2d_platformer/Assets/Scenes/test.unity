@@ -233,6 +233,7 @@ GameObject:
   - component: {fileID: 272434593}
   - component: {fileID: 272434599}
   - component: {fileID: 272434594}
+  - component: {fileID: 272434600}
   m_Layer: 8
   m_Name: player
   m_TagString: player
@@ -252,6 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abd13293e0eccc409570a7fc336a044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stopAllInput: 0
   pos: {fileID: 1636610994}
   boxSize: {x: 3, y: 2.4}
 --- !u!114 &272434593
@@ -275,7 +277,6 @@ MonoBehaviour:
   wallLeap: {x: 0, y: 0}
   wallSlideSpeedMax: 3
   wallStickTime: 0.25
-  rollPower: 1.2
   attackCount: 0
   doubleJump: 0
   stopAllMove: 0
@@ -429,6 +430,28 @@ MonoBehaviour:
   Hp: 100
   CurrentHp: 0
   atk: 5
+  HitDistance: 3
+--- !u!50 &272434600
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272434591}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 0.0001
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &370194938
 GameObject:
   m_ObjectHideFlags: 0
@@ -5882,6 +5905,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300052, guid: d1ac1d1cdd7603e4696f5edaebff6029,
         type: 3}
+    - target: {fileID: 21200000, guid: d1ac1d1cdd7603e4696f5edaebff6029, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9500000, guid: d1ac1d1cdd7603e4696f5edaebff6029, type: 3}
       propertyPath: m_Controller
       value: 
@@ -5906,10 +5933,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f5eab90ffc28b74ba2b89fa5ad6ab53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Hp: 100
+  atk: 5
   maxJumpHeight: 4
   timeToJumpApex: 0.4
   FindPlayerBoxPos: {fileID: 560715960}
-  FindPlayerBoxSize: {x: 15, y: 5}
+  FindPlayerBoxSize: {x: 20, y: 5}
   AtkPlayerBoxPos: {fileID: 586518905}
   AtkPlayerBoxSize: {x: 5, y: 5}
   ExclamationMark: {fileID: 2015768693}
@@ -6167,7 +6196,6 @@ MonoBehaviour:
   wallLeap: {x: 0, y: 0}
   wallSlideSpeedMax: 3
   wallStickTime: 0.25
-  rollPower: 1.2
   attackCount: 0
   doubleJump: 0
   stopAllMove: 0
@@ -6295,6 +6323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7abd13293e0eccc409570a7fc336a044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stopAllInput: 0
   pos: {fileID: 0}
   boxSize: {x: 0, y: 0}
 --- !u!1 &2015768693
