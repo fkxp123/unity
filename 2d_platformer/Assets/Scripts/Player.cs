@@ -32,6 +32,8 @@ public class Player : MonoBehaviour
     BoxCollider2D boxCollider;
     //public Camera cam;
     //CameraFollow cf;
+    PlayerStat playerStat;
+    Enemy enemy;
 
     //float campos;
     //float targetpos;
@@ -47,8 +49,7 @@ public class Player : MonoBehaviour
     public bool doubleJump = false;
     public bool stopAllMove = false;
     public bool stopAllInput = false;
-    bool stopMoving;
-    bool stopMoving_X;
+    public bool stopMoving_X;
     bool stopMoving_Y;
     float RollDelay = 0.0f;
     float currentRollDelay;
@@ -61,13 +62,17 @@ public class Player : MonoBehaviour
     float currentAttackTime;
     float rollTime = 0.2f;
     float currentRollTime;
+    public float attackDistance = 1.5f;
+    public float RollDistance = 25.0f;
 
     Vector2 directionalInput;
     bool wallSliding;
     int wallDirX;
 
     Rigidbody2D rigid;
-    int a = 0;
+
+    public Transform pos;
+    public Vector2 boxSize;
 
     void Start()
     {
@@ -78,6 +83,9 @@ public class Player : MonoBehaviour
         maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
         rigid = GetComponent<Rigidbody2D>();
+        enemy = Enemy.instance;
+        playerStat = PlayerStat.instance;
+
     }
     void Awake()//
     {
@@ -88,7 +96,6 @@ public class Player : MonoBehaviour
     void Update()
     {
         CheckAllDelay();
-        Debug.Log("atkcount : " + attackCount);
         //if (!stopAllMove)
         //{
         //    CheckPositionY();
@@ -406,12 +413,11 @@ public class Player : MonoBehaviour
         if (canRoll)
         {
             stopAllInput = true;
-            stopAllMove = true;
+            stopMoving_X = true;
             currentRollDelay = RollDelay;
             currentRollTime = rollTime;
             boxCollider.isTrigger = true;
 
-            //animator.SetBool("isFalling", false);
             if (animator.GetBool("isGround"))
             {
                 animator.SetBool("isRolling", true);
@@ -419,17 +425,17 @@ public class Player : MonoBehaviour
                 directionalInput = new Vector2(0, 0);
                 if (transform.localScale.x == 1)
                 {
-                    rigid.velocity = new Vector2(20, rigid.velocity.y);
+                    rigid.velocity = new Vector2(RollDistance, rigid.velocity.y);
                 }
                 else if (transform.localScale.x == -1)
                 {
-                    rigid.velocity = new Vector2(-20, rigid.velocity.y);
+                    rigid.velocity = new Vector2(-1 * RollDistance, rigid.velocity.y);
                 }
             }
-            yield return new WaitForSeconds(0.2f);
-            rigid.velocity = new Vector2(0, 0);
+            yield return new WaitForSeconds(0.3f);
+            rigid.velocity = new Vector2(0, rigid.velocity.y);
             stopAllInput = false;
-            stopAllMove = false;
+            stopMoving_X = false;
             animator.SetBool("isRolling", false);
             boxCollider.isTrigger = false;
         }
@@ -448,18 +454,33 @@ public class Player : MonoBehaviour
             velocity.x = 0;
             stopAllInput = true;
             stopMoving_X = true;
-            //rigid.velocity = new Vector2(0, 0);
             if (animator.GetBool("isGround"))
             {
                 directionalInput = new Vector2(0, 0);
                 animator.SetTrigger("isAttack");
+                bool flag = false;
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+                foreach (Collider2D collider in collider2Ds)
+                {
+                    if (collider.tag == "enemy")
+                    {
+                        flag = true;
+                    }
+                }
+                if (flag)
+                {
+                    //Debug.Log("p atk" + playerStat.atk);
+                    Debug.Log("enemy hit");
+                    //enemy.isHit = true;
+                    enemy.HitbyPlayer(5);
+                }
                 if (transform.localScale.x == 1)
                 {
-                    rigid.velocity = new Vector2(5, rigid.velocity.y);
+                    rigid.velocity = new Vector2(attackDistance, rigid.velocity.y);
                 }
                 else if (transform.localScale.x == -1)
                 {
-                    rigid.velocity = new Vector2(-5, rigid.velocity.y);
+                    rigid.velocity = new Vector2(-1 * attackDistance, rigid.velocity.y);
                 }
             }
             if (animator.GetBool("isFalling"))
@@ -580,5 +601,10 @@ public class Player : MonoBehaviour
         float targetVelocityX = directionalInput.x * moveSpeed;
         velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
         velocity.y += gravity * Time.deltaTime;
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(pos.position, boxSize);
     }
 }

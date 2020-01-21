@@ -254,8 +254,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stopAllInput: 0
-  pos: {fileID: 1636610994}
-  boxSize: {x: 3, y: 2.4}
 --- !u!114 &272434593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +279,11 @@ MonoBehaviour:
   doubleJump: 0
   stopAllMove: 0
   stopAllInput: 0
+  stopMoving_X: 0
+  attackDistance: 3
+  RollDistance: 20
+  pos: {fileID: 1636610994}
+  boxSize: {x: 3, y: 3}
 --- !u!114 &272434594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,6 +434,8 @@ MonoBehaviour:
   CurrentHp: 0
   atk: 5
   HitDistance: 3
+  alpha: 0
+  isHit: 0
 --- !u!50 &272434600
 Rigidbody2D:
   serializedVersion: 4
@@ -4937,7 +4942,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5935,6 +5940,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Hp: 100
   atk: 5
+  HitDistance: 3
   maxJumpHeight: 4
   timeToJumpApex: 0.4
   FindPlayerBoxPos: {fileID: 560715960}
@@ -5942,8 +5948,8 @@ MonoBehaviour:
   AtkPlayerBoxPos: {fileID: 586518905}
   AtkPlayerBoxSize: {x: 5, y: 5}
   ExclamationMark: {fileID: 2015768693}
-  PlayerPos: {fileID: 272434591}
   isAttack: 0
+  isHit: 0
 --- !u!114 &1397520451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5980,7 +5986,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.15594482, y: -0.15405416}
+  m_Offset: {x: 0.024654388, y: -0.15405416}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -5991,7 +5997,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.380722, y: 3.6741648}
+  m_Size: {x: 2.6048431, y: 3.6741648}
   m_EdgeRadius: 0
 --- !u!4 &1397520455 stripped
 Transform:
@@ -6200,6 +6206,11 @@ MonoBehaviour:
   doubleJump: 0
   stopAllMove: 0
   stopAllInput: 0
+  stopMoving_X: 0
+  attackDistance: 3
+  RollDistance: 20
+  pos: {fileID: 0}
+  boxSize: {x: 0, y: 0}
 --- !u!114 &1755512704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6324,8 +6335,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stopAllInput: 0
-  pos: {fileID: 0}
-  boxSize: {x: 0, y: 0}
 --- !u!1 &2015768693
 GameObject:
   m_ObjectHideFlags: 0
@@ -6459,7 +6468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 21200000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
       propertyPath: m_Color.a
-      value: 0.49803922
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 0360d3b0a5edbb54089e49db032e613a, type: 3}
       propertyPath: m_LocalPosition.x

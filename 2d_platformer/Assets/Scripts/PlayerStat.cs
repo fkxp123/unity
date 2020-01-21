@@ -9,40 +9,43 @@ public class PlayerStat : MonoBehaviour
     public int CurrentHp;
     public int atk = 5;
     public float HitDistance = 3;
+    public int alpha = 0;
 
     Player player;
-    PlayerInput pi;
     Animator animator;
     Rigidbody2D rigid;
     Enemy enemy;
     BoxCollider2D boxCollider;
-    //GameObject enemy;
-    // Start is called before the first frame update
+    SpriteRenderer spriteRenderer;
+    public bool isHit;
+
     void Start()
     {
         instance = this;
-        pi = PlayerInput.instance;
         player = Player.instance;
-        //pi = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
-        //enemy = GameObject.FindGameObjectWithTag("enemy");
         boxCollider = GetComponent<BoxCollider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         enemy = Enemy.instance;
         CurrentHp = Hp;
     }
 
     public void Hit(int enemyAtk)
     {
-        StartCoroutine("HitCoroutine", enemyAtk);
+        if (!isHit)
+        {
+            StartCoroutine("HitCoroutine", enemyAtk);
+        }
     }
     IEnumerator HitCoroutine(int enemyAtk)
     {
+        isHit = true;
         CurrentHp -= enemyAtk;
         Debug.Log("hp : " + CurrentHp);
         animator.SetTrigger("takeDamage");
         player.stopAllInput = true;
-        player.stopAllMove = true;
+        player.stopMoving_X = true;
         boxCollider.isTrigger = true;
         if (CurrentHp <= 0)
         {
@@ -58,16 +61,31 @@ public class PlayerStat : MonoBehaviour
         }
         yield return new WaitForSeconds(0.6f);
         player.stopAllInput = false;
-        player.stopAllMove = false;
-        rigid.velocity = new Vector2(0, 0);
-
-        //반짝반짝모션~ <-무적상태 hit -x bool값으로 hit제어
-        yield return new WaitForSeconds(0.8f);
-        boxCollider.isTrigger = false;
-
+        player.stopMoving_X = false;
+        rigid.velocity = new Vector2(0, rigid.velocity.y);
     }
-
+    IEnumerator HitGracePeriod()
+    {
+        Debug.Log("im hit");
+        for (int i = 0; i < 10; i++)
+        {
+            spriteRenderer.material.color = new Color(1f, 1f, 1f, .5f);
+            yield return new WaitForSeconds(0.1f);
+            spriteRenderer.material.color = new Color(1f, 1f, 1f, 1f);
+            yield return new WaitForSeconds(0.1f);
+        }
+        isHit = false;
+        boxCollider.isTrigger = false;
+        StopCoroutine("HitGracePeriod");
+    }
     void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("enemy"))
+        {
+            Hit(enemy.atk);
+        }
+    }
+    void OnCollisionStay2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("enemy"))
         {
@@ -78,6 +96,10 @@ public class PlayerStat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Debug.Log("enemy atk" + enemy.atk);
+        if (isHit)
+        {
+            StartCoroutine("HitGracePeriod");
+        }
     }
 }

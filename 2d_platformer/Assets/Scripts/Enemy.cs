@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
     public int Hp = 100;
     int CurrentHp;
     public int atk = 5;
-
+    public float HitDistance = 3;
     public float maxJumpHeight = 4;
     public float timeToJumpApex = .4f;
     float accelerationTimeAirborne = .2f;
@@ -21,6 +21,10 @@ public class Enemy : MonoBehaviour
     Vector2 directionalInput;
     Animator animator;
     Controller2D controller;
+    GameObject playerPos;
+    Player player;
+    PlayerStat ps;
+    Rigidbody2D rigid;
 
     float currentAIDelay;
     float AIDelay = 2.0f;
@@ -35,17 +39,18 @@ public class Enemy : MonoBehaviour
     public Transform AtkPlayerBoxPos;
     public Vector2 AtkPlayerBoxSize;
     public GameObject ExclamationMark;
-    public GameObject PlayerPos;
+    //public GameObject PlayerPos;
 
     bool FindPlayer;
-    bool AIBehavior;
+    //bool AIBehavior;
     bool stopAllMove;
-    bool stopAi;
-    bool AiIdle;
+    //bool stopAi;
+    //bool AiIdle;
     bool TimeToBehavior;
     bool stopMoving_X;
     bool canAttack;
     public bool isAttack;
+    public bool isHit;
 
     int random = 0;
     int dmg = 5;
@@ -56,7 +61,12 @@ public class Enemy : MonoBehaviour
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         controller = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
+        rigid = GetComponent<Rigidbody2D>();
         directionalInput = new Vector2(0, 0);
+        player = Player.instance;
+        CurrentHp = Hp;
+        playerPos = GameObject.FindGameObjectWithTag("player");
+        ps = PlayerStat.instance;
     }
 
     void Update()
@@ -170,17 +180,17 @@ public class Enemy : MonoBehaviour
     }
     void CheckPlayerIsNear()
     {
-        bool flag1 = false;
+        bool flag = false;
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(FindPlayerBoxPos.position, FindPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
             Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
-                flag1 = true;
+                flag = true;
             }
         }
-        if (flag1)
+        if (flag)
         {
             FindPlayer = true;
             ExclamationMark.SetActive(true);
@@ -191,18 +201,18 @@ public class Enemy : MonoBehaviour
     }
     void CanAttackPlayer()
     {
-        bool flag2 = false;
+        bool flag = false;
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
             Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
-                flag2 = true;
+                flag = true;
             }
         }
 
-        if (flag2)
+        if (flag)
         {
             AttackPlayer();
         }
@@ -214,17 +224,14 @@ public class Enemy : MonoBehaviour
     }
     void AttackPlayer()
     {
+        StopAllCoroutines();
         StartCoroutine("AttackCoroutine");
     }
     IEnumerator AttackCoroutine()
     {
         if (canAttack)
         {
-            //StopAllCoroutines();
             currentAttackDelay = attackTime;
-            //isAttack = true;
-            //stopMoving_X = true;
-            //currentAttackTime = attackTime;
             animator.SetBool("isWalking", false);
             animator.SetTrigger("isAttack");
             yield return new WaitForSeconds(0.8f);
@@ -240,12 +247,9 @@ public class Enemy : MonoBehaviour
             }
             if (flag)
             {
-                //Debug.Log("playerhit");
+
                 PlayerStat.instance.Hit(atk);
             }
-            //yield return new WaitForSeconds(1.5f);
-            //stopMoving_X = false;
-            //isAttack = false;
         }
     }
     void CheckAttackDelay()
@@ -258,43 +262,13 @@ public class Enemy : MonoBehaviour
         {
             canAttack = false;
             isAttack = true;
-            //stopMoving_X = true;
             currentAttackDelay -= Time.deltaTime;
         }
     }
 
-    void CheckAttackTime()
-    {
-        
-        //if (currentAttackTime > 0)
-        //{
-        //    currentAttackTime -= Time.deltaTime;
-        //}
-        //else
-        //{
-        //    stopMoving_X = false;
-        //    isAttack = false;
-        //    Debug.Log("imhere");
-        //    bool flag = false;
-        //    Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
-        //    foreach (Collider2D collider in collider2Ds)
-        //    {
-        //        Debug.Log(collider.tag);
-        //        if (collider.tag == "player")
-        //        {
-        //            flag = true;
-        //        }
-        //    }
-        //    if (flag)//flag가 아니라 따로 콜라이더충돌체크해야댐
-        //    {
-        //        PlayerStat.instance.Hit(5);
-        //    }
-        //    currentAttackTime = 0;
-        //}
-    }
     void FollowPlayer()
     {
-        if(PlayerPos.transform.position.x - transform.position.x > 0)
+        if(playerPos.transform.position.x > transform.position.x)
         {
             transform.localScale = new Vector2(1, 1);
         }
@@ -303,15 +277,31 @@ public class Enemy : MonoBehaviour
         currentMoveTime = 0;
         SetAiMove();
     }
-    public void Hit(int enemyAtk)
+    public void HitbyPlayer(int playerAtk)
     {
-        CurrentHp -= enemyAtk;
-        Debug.Log("hp : " + CurrentHp);
+        StartCoroutine("HitCoroutine", playerAtk);
+    }
+    IEnumerator HitCoroutine(int playerAtk)
+    {
+        Debug.Log("in enemy hit");
+        CurrentHp -= playerAtk;
+        Debug.Log("enemy hp : " + CurrentHp);
         animator.SetTrigger("takeDamage");
+        stopMoving_X = true;
         if (CurrentHp <= 0)
         {
-            Debug.Log("game over");
+            Debug.Log("enemy die");
         }
+        if (player.transform.position.x <= transform.position.x)
+        {
+            rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
+        }
+        else
+        {
+            rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
+        }
+        yield return new WaitForSeconds(0.6f);
+        rigid.velocity = new Vector2(0, rigid.velocity.y);
     }
 
 
