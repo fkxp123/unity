@@ -112,6 +112,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &80322623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 80322624}
+  m_Layer: 8
+  m_Name: ArrowPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &80322624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80322623}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.66, y: 0.73, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 272434598}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &241405536
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,8 +312,11 @@ MonoBehaviour:
   stopMoving_X: 0
   attackDistance: 3
   RollDistance: 20
+  directionalInput: {x: 0, y: 0}
   pos: {fileID: 1636610994}
-  boxSize: {x: 3, y: 3}
+  ArrowPos: {fileID: 80322624}
+  MeleeBoxSize: {x: 3.5, y: 3}
+  Arrow: {fileID: 8213484347177165754, guid: 1ee8827867325ac44b50e3d8df64c215, type: 3}
 --- !u!114 &272434594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +358,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 6, y: 6}
-    newSize: {x: 6, y: 6}
+    newSize: {x: 0.96, y: 0.96}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -396,7 +429,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 6, y: 6}
+  m_Size: {x: 0.96, y: 0.96}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -415,6 +448,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1636610994}
+  - {fileID: 80322624}
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5986,7 +6020,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.024654388, y: -0.15405416}
+  m_Offset: {x: 0.12630081, y: -0.15405416}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -5997,7 +6031,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.6048431, y: 3.6741648}
+  m_Size: {x: 3.2147217, y: 3.6741648}
   m_EdgeRadius: 0
 --- !u!4 &1397520455 stripped
 Transform:
@@ -6036,7 +6070,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1636610994}
   m_Layer: 10
-  m_Name: melee
+  m_Name: MeleePos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6209,8 +6243,11 @@ MonoBehaviour:
   stopMoving_X: 0
   attackDistance: 3
   RollDistance: 20
+  directionalInput: {x: 0, y: 0}
   pos: {fileID: 0}
-  boxSize: {x: 0, y: 0}
+  ArrowPos: {fileID: 0}
+  MeleeBoxSize: {x: 0, y: 0}
+  Arrow: {fileID: 0}
 --- !u!114 &1755512704
 MonoBehaviour:
   m_ObjectHideFlags: 0

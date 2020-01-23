@@ -47,6 +47,7 @@ public class PlayerStat : MonoBehaviour
         player.stopAllInput = true;
         player.stopMoving_X = true;
         boxCollider.isTrigger = true;
+        player.directionalInput = new Vector2(0, 0);
         if (CurrentHp <= 0)
         {
             Debug.Log("game over");
@@ -60,9 +61,9 @@ public class PlayerStat : MonoBehaviour
             rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
         }
         yield return new WaitForSeconds(0.6f);
-        player.stopAllInput = false;
-        player.stopMoving_X = false;
         rigid.velocity = new Vector2(0, rigid.velocity.y);
+        player.stopMoving_X = false;
+        player.stopAllInput = false;
     }
     IEnumerator HitGracePeriod()
     {

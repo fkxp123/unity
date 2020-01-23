@@ -65,14 +65,16 @@ public class Player : MonoBehaviour
     public float attackDistance = 1.5f;
     public float RollDistance = 25.0f;
 
-    Vector2 directionalInput;
+    public Vector2 directionalInput;
     bool wallSliding;
     int wallDirX;
 
     Rigidbody2D rigid;
 
     public Transform pos;
-    public Vector2 boxSize;
+    public Transform ArrowPos;
+    public Vector2 MeleeBoxSize;
+    public GameObject Arrow;
 
     void Start()
     {
@@ -459,7 +461,7 @@ public class Player : MonoBehaviour
                 directionalInput = new Vector2(0, 0);
                 animator.SetTrigger("isAttack");
                 bool flag = false;
-                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, MeleeBoxSize, 0);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (collider.tag == "enemy")
@@ -492,6 +494,30 @@ public class Player : MonoBehaviour
             stopAllInput = false;
             stopMoving_X = false;
         }
+    }
+    public void BowAttack()
+    {
+        StartCoroutine("BowAttackCoroutine");
+    }
+    IEnumerator BowAttackCoroutine()
+    {
+        velocity.x = 0;
+        stopAllInput = true;
+        stopMoving_X = true;
+        if (animator.GetBool("isGround"))
+        {
+            directionalInput = new Vector2(0, 0);
+            Instantiate(Arrow, ArrowPos.position, transform.rotation);
+            animator.SetTrigger("isBowAttack");
+        }
+        if (animator.GetBool("isFalling"))
+        {
+            animator.SetTrigger("AirBowAttack");
+        }
+        yield return new WaitForSeconds(0.3f);
+        rigid.velocity = new Vector2(0, 0);
+        stopAllInput = false;
+        stopMoving_X = false;
     }
 
     public void SetDirectionalInput(Vector2 input)
@@ -605,6 +631,6 @@ public class Player : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(pos.position, boxSize);
+        Gizmos.DrawWireCube(pos.position, MeleeBoxSize);
     }
 }

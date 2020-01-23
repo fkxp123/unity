@@ -47,6 +47,10 @@ public class PlayerInput : MonoBehaviour
                 player.attackCount += 1;
                 player.Attack();
             }
+            else if (Input.GetKeyDown(KeyCode.D))
+            {
+                player.BowAttack();
+            }
         }
     }
     void CheckStopAllInput()

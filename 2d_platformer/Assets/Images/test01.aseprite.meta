@@ -284,6 +284,8 @@ ScriptedImporter:
     2800554: test01.Textures._277
     2800556: test01.Textures._278
     2800558: test01.Textures._279
+    2800560: test01.Textures._280
+    2800562: test01.Textures._281
     7400000: test01.Animations.atk1
     7400002: test01.Animations.atk2
     7400004: test01.Animations.atk3
@@ -322,7 +324,7 @@ ScriptedImporter:
     7400070: test01.Animations.landhard
     7400072: test01.Animations.landsoft
     7400074: test01.Animations.dash
-    7400076: test01.Animations.predash
+    7400076: test01.Animations.preDash
     7400078: test01.Animations.dashing
     7400080: test01.Animations.short
     7400082: test01.Animations.long
@@ -332,7 +334,9 @@ ScriptedImporter:
     7400090: test01.Animations.preTalk
     7400092: test01.Animations.cyc (4)
     7400094: test01.Animations.postTalk
-    7400096: test01.Animations.Untagged
+    7400096: test01.Animations.arrow1
+    7400098: test01.Animations.arrow2
+    7400100: test01.Animations.Untagged
     9500000: _main/test01/Animator
     11400000: __atlas
     21200000: _main/test01/SpriteRenderer
@@ -616,6 +620,8 @@ ScriptedImporter:
     21300554: test01.Sprites._277
     21300556: test01.Sprites._278
     21300558: test01.Sprites._279
+    21300560: test01.Sprites._280
+    21300562: test01.Sprites._281
     100100000: _main
   externalObjects: {}
   userData: 

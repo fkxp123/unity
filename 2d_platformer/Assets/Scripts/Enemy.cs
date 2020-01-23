@@ -55,6 +55,10 @@ public class Enemy : MonoBehaviour
     int random = 0;
     int dmg = 5;
 
+    void Start()
+    {
+        ps = PlayerStat.instance;
+    }
     void Awake()
     {
         instance = this;
@@ -66,7 +70,7 @@ public class Enemy : MonoBehaviour
         player = Player.instance;
         CurrentHp = Hp;
         playerPos = GameObject.FindGameObjectWithTag("player");
-        ps = PlayerStat.instance;
+        //ps = GetComponent<PlayerStat>();
     }
 
     void Update()
@@ -224,7 +228,7 @@ public class Enemy : MonoBehaviour
     }
     void AttackPlayer()
     {
-        StopAllCoroutines();
+        //StopAllCoroutines();
         StartCoroutine("AttackCoroutine");
     }
     IEnumerator AttackCoroutine()
@@ -247,8 +251,7 @@ public class Enemy : MonoBehaviour
             }
             if (flag)
             {
-
-                PlayerStat.instance.Hit(atk);
+                ps.Hit(atk);
             }
         }
     }
@@ -279,6 +282,7 @@ public class Enemy : MonoBehaviour
     }
     public void HitbyPlayer(int playerAtk)
     {
+        StopAllCoroutines();
         StartCoroutine("HitCoroutine", playerAtk);
     }
     IEnumerator HitCoroutine(int playerAtk)
@@ -292,7 +296,7 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("enemy die");
         }
-        if (player.transform.position.x <= transform.position.x)
+        if (playerPos.transform.position.x <= transform.position.x)
         {
             rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
         }
