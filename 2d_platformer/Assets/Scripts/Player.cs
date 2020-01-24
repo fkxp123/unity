@@ -504,16 +504,22 @@ public class Player : MonoBehaviour
         velocity.x = 0;
         stopAllInput = true;
         stopMoving_X = true;
+
         if (animator.GetBool("isGround"))
         {
             directionalInput = new Vector2(0, 0);
-            Instantiate(Arrow, ArrowPos.position, transform.rotation);
             animator.SetTrigger("isBowAttack");
         }
-        if (animator.GetBool("isFalling"))
+        else if (animator.GetBool("isFalling") || animator.GetBool("doubleJump"))
         {
             animator.SetTrigger("AirBowAttack");
         }
+        else if (animator.GetBool("isCrouching"))
+        {
+            directionalInput = new Vector2(0, 0);
+            animator.SetTrigger("CrouchBowAttack");
+        }
+        Instantiate(Arrow, ArrowPos.position, transform.rotation);
         yield return new WaitForSeconds(0.3f);
         rigid.velocity = new Vector2(0, 0);
         stopAllInput = false;
