@@ -97,7 +97,6 @@ public class PlayerStat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("enemy atk" + enemy.atk);
         if (isHit)
         {
             StartCoroutine("HitGracePeriod");

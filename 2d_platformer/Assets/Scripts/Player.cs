@@ -331,50 +331,50 @@ public class Player : MonoBehaviour
         }
         else
             stopMoving_X = false;
-
         if (directionalInput.y == -1 && animator.GetBool("isGround"))
         {
-            oldPositionX = transform.position.x;
-            transform.position = new Vector2(oldPositionX, transform.position.y);
+            //oldPositionX = transform.position.x;
+            //transform.position = new Vector2(oldPositionX, transform.position.y);
             animator.SetBool("isCrouching", true);
         }
         else
         {
             animator.SetBool("isCrouching", false);
         }
-            //float vel = 0.0f;
+        
+        //float vel = 0.0f;
         //    if (directionalInput.y == -1 && animator.GetBool("isGround"))
         //{
         //    oldPositionX = transform.position.x;
         //    transform.position = new Vector2(oldPositionX, transform.position.y);
         //    animator.SetBool("isCrouching", true);
-            //cam.GetComponent<CameraFollow>().enabled = false;
-            //if (directionalInput.x == 1)
-            //{
-            //    targetpos = transform.position.x + 1;
-            //    Debug.Log(cam.transform.position);
-            //    campos = Mathf.SmoothDamp(cam.transform.position.x, targetpos, ref vel, 0.03f);
+        //cam.GetComponent<CameraFollow>().enabled = false;
+        //if (directionalInput.x == 1)
+        //{
+        //    targetpos = transform.position.x + 1;
+        //    Debug.Log(cam.transform.position);
+        //    campos = Mathf.SmoothDamp(cam.transform.position.x, targetpos, ref vel, 0.03f);
 
-            //    cam.transform.position = new Vector3(campos, cam.transform.position.y, cam.transform.position.z);
-            //    Debug.Log("!!!!!"+cam.transform.position);
-            //}
-            //else if (directionalInput.x == -1)
-            //{
-            //    targetpos = transform.position.x - 1;
-            //    campos = Mathf.SmoothDamp(cam.transform.position.x, targetpos, ref vel, 0.03f);
+        //    cam.transform.position = new Vector3(campos, cam.transform.position.y, cam.transform.position.z);
+        //    Debug.Log("!!!!!"+cam.transform.position);
+        //}
+        //else if (directionalInput.x == -1)
+        //{
+        //    targetpos = transform.position.x - 1;
+        //    campos = Mathf.SmoothDamp(cam.transform.position.x, targetpos, ref vel, 0.03f);
 
-            //    cam.transform.position = new Vector3(campos, cam.transform.position.y, cam.transform.position.z); 
-            //}
+        //    cam.transform.position = new Vector3(campos, cam.transform.position.y, cam.transform.position.z); 
+        //}
         //}
         //else
         //{
         //    animator.SetBool("isCrouching", false);
-            //campos = Mathf.SmoothDamp(campos, transform.position.x, ref vel, 0.03f);//return to original camera setting
-            //cam.transform.position = new Vector3(campos, cam.transform.position.y, cam.transform.position.z);
-            //if(Mathf.Abs(campos - transform.position.x) < 0.01)
-            //{
-            //    cam.GetComponent<CameraFollow>().enabled = true;
-            //}
+        //campos = Mathf.SmoothDamp(campos, transform.position.x, ref vel, 0.03f);//return to original camera setting
+        //cam.transform.position = new Vector3(campos, cam.transform.position.y, cam.transform.position.z);
+        //if(Mathf.Abs(campos - transform.position.x) < 0.01)
+        //{
+        //    cam.GetComponent<CameraFollow>().enabled = true;
+        //}
         //}
     }
     void JumpAnim()//
@@ -405,11 +405,11 @@ public class Player : MonoBehaviour
         }
         
     }
+
     public void Roll()
     {
         StartCoroutine("RollCoroutine");
     }
-
     IEnumerator RollCoroutine()
     {
         if (canRoll)
@@ -448,7 +448,6 @@ public class Player : MonoBehaviour
     {
         StartCoroutine("AttackCoroutine");
     }
-
     IEnumerator AttackCoroutine()
     {
         if (canAttack)
@@ -504,33 +503,40 @@ public class Player : MonoBehaviour
         velocity.x = 0;
         stopAllInput = true;
         stopMoving_X = true;
-
-        if (animator.GetBool("isGround"))
+        if (animator.GetBool("isCrouching"))
         {
-            directionalInput = new Vector2(0, 0);
-            animator.SetTrigger("isBowAttack");
-        }
-        else if (animator.GetBool("isFalling") || animator.GetBool("doubleJump"))
-        {
-            animator.SetTrigger("AirBowAttack");
-        }
-        else if (animator.GetBool("isCrouching"))
-        {
-            directionalInput = new Vector2(0, 0);
+            ArrowPos.transform.Translate(0, -0.7f, 0);
             animator.SetTrigger("CrouchBowAttack");
+            Instantiate(Arrow, ArrowPos.position, transform.rotation);
+            yield return new WaitForSeconds(0.3f);
+            rigid.velocity = new Vector2(0, 0);
+            stopAllInput = false;
+            stopMoving_X = false;
+            ArrowPos.transform.Translate(0, +0.7f, 0);
         }
-        Instantiate(Arrow, ArrowPos.position, transform.rotation);
-        yield return new WaitForSeconds(0.3f);
-        rigid.velocity = new Vector2(0, 0);
-        stopAllInput = false;
-        stopMoving_X = false;
+        else
+        {
+            if (animator.GetBool("isGround"))
+            {
+                directionalInput = new Vector2(0, 0);
+                animator.SetTrigger("isBowAttack");
+            }
+            else if (animator.GetBool("isFalling") || animator.GetBool("doubleJump"))
+            {
+                animator.SetTrigger("AirBowAttack");
+            }
+            Instantiate(Arrow, ArrowPos.position, transform.rotation);
+            yield return new WaitForSeconds(0.3f);
+            rigid.velocity = new Vector2(0, 0);
+            stopAllInput = false;
+            stopMoving_X = false;
+        }
     }
 
     public void SetDirectionalInput(Vector2 input)
     {
         directionalInput = input;
     }
-
     public void OnJumpInputDown()
     {
         if (!animator.GetBool("isRolling"))
@@ -582,7 +588,6 @@ public class Player : MonoBehaviour
         }
         
     }
-
     public void OnJumpInputUp()
     {
         if (velocity.y > minJumpVelocity)
@@ -590,8 +595,6 @@ public class Player : MonoBehaviour
             velocity.y = minJumpVelocity;
         }
     }
-
-
 
     void HandleWallSliding()
     {

@@ -75,25 +75,28 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        CanAttackPlayer();
-        CheckAttackDelay();
-        if (!isAttack)
+        if (!isHit)
         {
-            CheckPlayerIsNear();
-        }
-        if (!FindPlayer)
-        {
-            CheckAiDelay();
-        }
-        CalculateVelocity();
-        if (stopMoving_X)
-        {
-            velocity.x = 0;
-        }
-        controller.Move(velocity * Time.deltaTime, directionalInput);
-        if (controller.collisions.above || controller.collisions.below)
-        {
-            velocity.y = 0;
+            CanAttackPlayer();
+            CheckAttackDelay();
+            if (!isAttack)
+            {
+                CheckPlayerIsNear();
+            }
+            if (!FindPlayer)
+            {
+                CheckAiDelay();
+            }
+            CalculateVelocity();
+            if (stopMoving_X)
+            {
+                velocity.x = 0;
+            }
+            controller.Move(velocity * Time.deltaTime, directionalInput);
+            if (controller.collisions.above || controller.collisions.below)
+            {
+                velocity.y = 0;
+            }
         }
     }
     public void SetDirectionalInput(Vector2 input)
@@ -287,11 +290,11 @@ public class Enemy : MonoBehaviour
     }
     IEnumerator HitCoroutine(int playerAtk)
     {
-        Debug.Log("in enemy hit");
         CurrentHp -= playerAtk;
         Debug.Log("enemy hp : " + CurrentHp);
         animator.SetTrigger("takeDamage");
         stopMoving_X = true;
+        isHit = true;
         if (CurrentHp <= 0)
         {
             Debug.Log("enemy die");
@@ -305,6 +308,7 @@ public class Enemy : MonoBehaviour
             rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
         }
         yield return new WaitForSeconds(0.6f);
+        isHit = false;
         rigid.velocity = new Vector2(0, rigid.velocity.y);
     }
 
