@@ -17,6 +17,7 @@ public class PlayerStat : MonoBehaviour
     Enemy enemy;
     BoxCollider2D boxCollider;
     SpriteRenderer spriteRenderer;
+    HealthBar healthBar;
     public bool isHit;
 
     void Start()
@@ -27,6 +28,7 @@ public class PlayerStat : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        healthBar = HealthBar.instance;
         enemy = Enemy.instance;
         CurrentHp = Hp;
     }
@@ -42,6 +44,7 @@ public class PlayerStat : MonoBehaviour
     {
         isHit = true;
         CurrentHp -= enemyAtk;
+        healthBar.currentHp -= 25;
         Debug.Log("hp : " + CurrentHp);
         animator.SetTrigger("takeDamage");
         player.stopAllInput = true;

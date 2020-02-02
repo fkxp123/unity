@@ -288,7 +288,7 @@ public class Enemy : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine("HitCoroutine", playerAtk);
     }
-    IEnumerator HitCoroutine(int playerAtk)
+    IEnumerator HitCoroutine(int playerAtk)//공격타입을 파라미터로 받아 bow면 넉백x
     {
         CurrentHp -= playerAtk;
         Debug.Log("enemy hp : " + CurrentHp);
@@ -301,15 +301,18 @@ public class Enemy : MonoBehaviour
         }
         if (playerPos.transform.position.x <= transform.position.x)
         {
+            rigid.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
         }
         else
         {
+            rigid.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
             rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
         }
         yield return new WaitForSeconds(0.6f);
         isHit = false;
         rigid.velocity = new Vector2(0, rigid.velocity.y);
+        rigid.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation;
     }
 
 
