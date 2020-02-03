@@ -14,12 +14,25 @@ public class PlayerInput : MonoBehaviour
 
     void Start()
     {
-        instance = this;
         player = GetComponent<Player>();
         //player = Player.instance;
         controll = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
     }
+    #region Singleton
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    #endregion Sigleton
 
     void Update()
     {

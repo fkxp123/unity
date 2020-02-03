@@ -58,10 +58,6 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         ps = PlayerStat.instance;
-    }
-    void Awake()
-    {
-        instance = this;
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         controller = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
@@ -70,8 +66,22 @@ public class Enemy : MonoBehaviour
         player = Player.instance;
         CurrentHp = Hp;
         playerPos = GameObject.FindGameObjectWithTag("player");
-        //ps = GetComponent<PlayerStat>();
     }
+
+    #region Singleton
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    #endregion Sigleton
 
     void Update()
     {

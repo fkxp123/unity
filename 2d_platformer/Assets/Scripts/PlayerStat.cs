@@ -22,7 +22,6 @@ public class PlayerStat : MonoBehaviour
 
     void Start()
     {
-        instance = this;
         player = Player.instance;
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
@@ -32,6 +31,20 @@ public class PlayerStat : MonoBehaviour
         enemy = Enemy.instance;
         CurrentHp = Hp;
     }
+    #region Singleton
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    #endregion Sigleton
 
     public void Hit(int enemyAtk)
     {
@@ -44,7 +57,8 @@ public class PlayerStat : MonoBehaviour
     {
         isHit = true;
         CurrentHp -= enemyAtk;
-        healthBar.currentHp -= 25;
+        healthBar.currentHp -= enemyAtk;
+        healthBar.SetBlinkImg(enemyAtk);
         Debug.Log("hp : " + CurrentHp);
         animator.SetTrigger("takeDamage");
         player.stopAllInput = true;

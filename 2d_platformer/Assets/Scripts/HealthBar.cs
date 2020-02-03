@@ -12,13 +12,25 @@ public class HealthBar : MonoBehaviour
     public float currentHp;
     public float Hp;
     public float hurtSpeed = 0.005f;
-
     // Start is called before the first frame update
     void Start()
     {
-        instance = this;
         currentHp = Hp;
     }
+    #region Singleton
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    #endregion Sigleton
 
     // Update is called once per frame
     void Update()
@@ -31,7 +43,14 @@ public class HealthBar : MonoBehaviour
         else
         {
             effectImg.fillAmount = fill.fillAmount;
+        } 
+    }
+    public void SetBlinkImg(float moveDistance)
+    {
+        if(currentHp >= 0)
+        {
+            blinkImg.rectTransform.anchoredPosition =
+            new Vector2(blinkImg.rectTransform.anchoredPosition.x - moveDistance, blinkImg.rectTransform.anchoredPosition.y);
         }
-
     }
 }

@@ -78,7 +78,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        instance = this;
         //cf = GetComponent<CameraFollow>();
         controller = GetComponent<Controller2D>();
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
@@ -87,14 +86,25 @@ public class Player : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         enemy = Enemy.instance;
         playerStat = PlayerStat.instance;
-
-    }
-    void Awake()//
-    {
         animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
     }
-    
+
+    #region Singleton
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    #endregion Sigleton
+
     void Update()
     {
         CheckAllDelay();
