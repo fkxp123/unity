@@ -8,6 +8,7 @@ public class PlayerInput : MonoBehaviour
     Player player;
     Animator animator;
     Controller2D controll;
+    Menu menu;
     public bool stopAllInput;
     float x;
     float y;
@@ -18,6 +19,7 @@ public class PlayerInput : MonoBehaviour
         //player = Player.instance;
         controll = GetComponent<Controller2D>();
         animator = GetComponent<Animator>();
+        menu = Menu.instance;
     }
     #region Singleton
     private void Awake()
@@ -36,11 +38,21 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        CheckStopAllInput();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (menu.GameIsPaused)
+            {
+                menu.Resume();
+            }
+            else
+            {
+                menu.Pause();
+            }
+        }
+        //CheckStopAllInput();
         if (!stopAllInput)
         {
-            CheckArrowKEY();
-            Vector2 directionalInput = new Vector2(x, y);
+            Vector2 directionalInput = CheckArrowKEY();
             player.SetDirectionalInput(directionalInput);
 
             if (Input.GetKeyDown(KeyCode.A))
@@ -66,11 +78,12 @@ public class PlayerInput : MonoBehaviour
             }
         }
     }
-    void CheckStopAllInput()
-    {
-        stopAllInput = player.stopAllInput;
-    }
-    void CheckArrowKEY()
+
+    //void CheckStopAllInput()
+    //{
+    //    stopAllInput = player.stopAllInput;
+    //}
+    Vector2 CheckArrowKEY()
     {
         x = 0; y = 0;
         if (Input.GetKey(KeyCode.RightArrow))
@@ -89,5 +102,6 @@ public class PlayerInput : MonoBehaviour
         {
             y = 1;
         }
+        return new Vector2(x, y);
     }
 }

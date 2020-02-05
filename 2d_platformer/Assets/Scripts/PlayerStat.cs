@@ -96,16 +96,30 @@ public class PlayerStat : MonoBehaviour
         boxCollider.isTrigger = false;
         StopCoroutine("HitGracePeriod");
     }
-    void OnCollisionEnter2D(Collision2D col)
+    //void OnCollisionEnter2D(Collision2D col)
+    //{
+    //    if (col.gameObject.CompareTag("enemy") && !player.isRoll)
+    //    {
+    //        Hit(enemy.atk);
+    //    }
+    //}
+    //void OnCollisionStay2D(Collision2D col)
+    //{
+    //    if (col.gameObject.CompareTag("enemy") && !player.isRoll)
+    //    {
+    //        Hit(enemy.atk);
+    //    }
+    //}
+    void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.CompareTag("enemy"))
+        if (col.gameObject.CompareTag("enemy") && !player.isRoll)
         {
             Hit(enemy.atk);
         }
     }
-    void OnCollisionStay2D(Collision2D col)
+    void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject.CompareTag("enemy"))
+        if (col.gameObject.CompareTag("enemy") && !player.isRoll)
         {
             Hit(enemy.atk);
         }

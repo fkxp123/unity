@@ -167,10 +167,11 @@ public class Enemy : MonoBehaviour
             animator.SetBool("isWalking", true);
             if(transform.localScale.x == 1)
             {
-                velocity.x += 0.25f;
+                velocity.x = 2f;
             }
             else
-                velocity.x -= 0.25f;
+                velocity.x = -2f;
+
             random = 1;
         }
         else

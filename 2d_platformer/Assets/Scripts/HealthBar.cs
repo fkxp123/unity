@@ -12,9 +12,12 @@ public class HealthBar : MonoBehaviour
     public float currentHp;
     public float Hp;
     public float hurtSpeed = 0.005f;
+    PlayerStat ps;
     // Start is called before the first frame update
     void Start()
     {
+        ps = PlayerStat.instance;
+        Hp = ps.Hp;
         currentHp = Hp;
     }
     #region Singleton

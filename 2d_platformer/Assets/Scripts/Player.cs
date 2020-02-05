@@ -25,7 +25,6 @@ public class Player : MonoBehaviour
     float minJumpVelocity;
     Vector3 velocity;
     float velocityXSmoothing;
-    //public float rollPower = 1.2f;
 
     Controller2D controller;
     Animator animator;
@@ -35,8 +34,6 @@ public class Player : MonoBehaviour
     PlayerStat playerStat;
     Enemy enemy;
 
-    //float campos;
-    //float targetpos;
     float oldVelocityY;
     float oldPositionX;
     float oldPositionY;
@@ -44,7 +41,7 @@ public class Player : MonoBehaviour
     public int attackCount;
     Vector2 currentDirection;
     Vector2 RollVelocity;
-    //float smpos;
+
 
     public bool doubleJump = false;
     public bool stopAllMove = false;
@@ -58,9 +55,7 @@ public class Player : MonoBehaviour
     bool canAttack = false;
     bool canRoll = false;
 
-    float attackTime = 0.6f;
     float currentAttackTime;
-    float rollTime = 0.2f;
     float currentRollTime;
     public float attackDistance = 1.5f;
     public float RollDistance = 25.0f;
@@ -75,6 +70,9 @@ public class Player : MonoBehaviour
     public Transform ArrowPos;
     public Vector2 MeleeBoxSize;
     public GameObject Arrow;
+    public bool isRoll;
+    public bool isPause;
+    PlayerInput pi;
 
     void Start()
     {
@@ -88,6 +86,7 @@ public class Player : MonoBehaviour
         playerStat = PlayerStat.instance;
         animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+        pi = GetComponent<PlayerInput>();
     }
 
     #region Singleton
@@ -107,56 +106,35 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        CheckAllDelay();
-        //if (!stopAllMove)
-        //{
-        //    CheckPositionY();
-        //    CalculateVelocity();
-        //    //HandleWallSliding();
-        //    //on/off기능 추가?
-        //    if (stopMoving_X)
-        //    {
-        //        StopMovingX();
-        //    }
-        //    //if (stopMoving_Y)
-        //    //{
-        //    //    StopMovingY();
-        //    //}
-
-        //    controller.Move(velocity * Time.deltaTime, directionalInput);
-        //    SetSpriteDirection();
-        //    CheckAllAnim();
-
-        //    if (controller.collisions.above || controller.collisions.below)
-        //    {
-        //        velocity.y = 0;
-        //    }
-        //}
-
-        CheckPositionY();
-        CalculateVelocity();
-        //HandleWallSliding();
-        //on/off기능 추가?
-        if (stopMoving_X)
+        if (!isPause)
         {
-            StopMovingX();
-        }
-        //if (stopMoving_Y)
-        //{
-        //    StopMovingY();
-        //}
+            CheckAllDelay();
+            CheckPositionY();
+            CalculateVelocity();
+            //HandleWallSliding();
+            //on/off기능 추가?
+            if (stopMoving_X)
+            {
+                StopMovingX();
+            }
+            //if (stopMoving_Y)
+            //{
+            //    StopMovingY();
+            //}
 
-        if (!stopAllMove)
-        {
-            controller.Move(velocity * Time.deltaTime, directionalInput);
-        }
-        SetSpriteDirection();
-        CheckAllAnim();
+            if (!stopAllMove)
+            {
+                controller.Move(velocity * Time.deltaTime, directionalInput);
+            }
+            SetSpriteDirection();
+            CheckAllAnim();
 
-        if (controller.collisions.above || controller.collisions.below)
-        {
-            velocity.y = 0;
+            if (controller.collisions.above || controller.collisions.below)
+            {
+                velocity.y = 0;
+            }
         }
+        
     }
     void LateUpdate()
     {
@@ -248,29 +226,6 @@ public class Player : MonoBehaviour
             currentAttackDelay -= Time.deltaTime;
         }
     }
-    void CheckAttackTime()
-    {
-        if(currentAttackTime < 0 && currentRollTime < 0)
-        {
-            //stopMoving_X = false;
-            stopAllInput = false;
-        }
-        else
-        {
-            currentAttackTime -= Time.deltaTime;
-        }
-    }
-    void CheckRollTime()
-    {
-        if (currentRollTime < 0 && currentAttackTime < 0)
-        {
-            stopAllInput = false;
-        }
-        else
-        {
-            currentRollTime -= Time.deltaTime;
-        }
-    }
 
     void MoveAnim()//
     {
@@ -324,11 +279,9 @@ public class Player : MonoBehaviour
 
         if (controller.collisions.below == true) //checking landing
         {
-            
             animator.SetBool("isGround", true);
-            //animator.SetBool("isJumping", false);
+            animator.SetBool("isJumping", false);
             animator.SetBool("isFalling", false);
-            //canDoubleJump = false;
             jumpCount = 0;
         }
 
@@ -424,12 +377,12 @@ public class Player : MonoBehaviour
     {
         if (canRoll)
         {
-            stopAllInput = true;
+            pi.stopAllInput = true;
             stopMoving_X = true;
             currentRollDelay = RollDelay;
-            currentRollTime = rollTime;
-            boxCollider.isTrigger = true;
-
+            isRoll = true;
+            //boxCollider.isTrigger = true;
+            rigid.bodyType = RigidbodyType2D.Dynamic;
             if (animator.GetBool("isGround"))
             {
                 animator.SetBool("isRolling", true);
@@ -438,6 +391,7 @@ public class Player : MonoBehaviour
                 if (transform.localScale.x == 1)
                 {
                     rigid.velocity = new Vector2(RollDistance, rigid.velocity.y);
+                    //controller.Move(new Vector2(velocity.x * 2 * Time.deltaTime,0), new Vector2(1,0));
                 }
                 else if (transform.localScale.x == -1)
                 {
@@ -445,8 +399,10 @@ public class Player : MonoBehaviour
                 }
             }
             yield return new WaitForSeconds(0.3f);
-            rigid.velocity = new Vector2(0, rigid.velocity.y);
-            stopAllInput = false;
+            rigid.bodyType = RigidbodyType2D.Kinematic;
+            rigid.velocity = new Vector2(0, 0);
+            isRoll = false;
+            pi.stopAllInput = false;
             stopMoving_X = false;
             animator.SetBool("isRolling", false);
             boxCollider.isTrigger = false;
@@ -463,7 +419,7 @@ public class Player : MonoBehaviour
         if (canAttack)
         {
             velocity.x = 0;
-            stopAllInput = true;
+            pi.stopAllInput = true;
             stopMoving_X = true;
             if (animator.GetBool("isGround"))
             {
@@ -500,7 +456,7 @@ public class Player : MonoBehaviour
             }
             yield return new WaitForSeconds(0.4f);
             rigid.velocity = new Vector2(0, 0);
-            stopAllInput = false;
+            pi.stopAllInput = false;
             stopMoving_X = false;
         }
     }
@@ -511,7 +467,7 @@ public class Player : MonoBehaviour
     IEnumerator BowAttackCoroutine()
     {
         velocity.x = 0;
-        stopAllInput = true;
+        pi.stopAllInput = true;
         stopMoving_X = true;
         if (animator.GetBool("isCrouching"))
         {
@@ -520,7 +476,7 @@ public class Player : MonoBehaviour
             Instantiate(Arrow, ArrowPos.position, transform.rotation);
             yield return new WaitForSeconds(0.3f);
             rigid.velocity = new Vector2(0, 0);
-            stopAllInput = false;
+            pi.stopAllInput = false;
             stopMoving_X = false;
             ArrowPos.transform.Translate(0, +0.7f, 0);
         }
@@ -538,7 +494,7 @@ public class Player : MonoBehaviour
             Instantiate(Arrow, ArrowPos.position, transform.rotation);
             yield return new WaitForSeconds(0.3f);
             rigid.velocity = new Vector2(0, 0);
-            stopAllInput = false;
+            pi.stopAllInput = false;
             stopMoving_X = false;
         }
     }
@@ -652,4 +608,5 @@ public class Player : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(pos.position, MeleeBoxSize);
     }
+
 }
