@@ -19,6 +19,7 @@ public class PlayerStat : MonoBehaviour
     SpriteRenderer spriteRenderer;
     HealthBar healthBar;
     public bool isHit;
+    public bool noHitMode;
 
     void Start()
     {
@@ -48,9 +49,12 @@ public class PlayerStat : MonoBehaviour
 
     public void Hit(int enemyAtk)
     {
-        if (!isHit)
+        if (!noHitMode)
         {
-            StartCoroutine("HitCoroutine", enemyAtk);
+            if (!isHit)
+            {
+                StartCoroutine("HitCoroutine", enemyAtk);
+            }
         }
     }
     IEnumerator HitCoroutine(int enemyAtk)
@@ -96,20 +100,7 @@ public class PlayerStat : MonoBehaviour
         boxCollider.isTrigger = false;
         StopCoroutine("HitGracePeriod");
     }
-    //void OnCollisionEnter2D(Collision2D col)
-    //{
-    //    if (col.gameObject.CompareTag("enemy") && !player.isRoll)
-    //    {
-    //        Hit(enemy.atk);
-    //    }
-    //}
-    //void OnCollisionStay2D(Collision2D col)
-    //{
-    //    if (col.gameObject.CompareTag("enemy") && !player.isRoll)
-    //    {
-    //        Hit(enemy.atk);
-    //    }
-    //}
+
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("enemy") && !player.isRoll)

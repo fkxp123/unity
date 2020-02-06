@@ -381,7 +381,7 @@ public class Player : MonoBehaviour
             stopMoving_X = true;
             currentRollDelay = RollDelay;
             isRoll = true;
-            //boxCollider.isTrigger = true;
+            playerStat.noHitMode = true;
             rigid.bodyType = RigidbodyType2D.Dynamic;
             if (animator.GetBool("isGround"))
             {
@@ -391,7 +391,6 @@ public class Player : MonoBehaviour
                 if (transform.localScale.x == 1)
                 {
                     rigid.velocity = new Vector2(RollDistance, rigid.velocity.y);
-                    //controller.Move(new Vector2(velocity.x * 2 * Time.deltaTime,0), new Vector2(1,0));
                 }
                 else if (transform.localScale.x == -1)
                 {
@@ -404,6 +403,7 @@ public class Player : MonoBehaviour
             isRoll = false;
             pi.stopAllInput = false;
             stopMoving_X = false;
+            playerStat.noHitMode = false;
             animator.SetBool("isRolling", false);
             boxCollider.isTrigger = false;
         }

@@ -49,7 +49,6 @@ public class PlayerInput : MonoBehaviour
                 menu.Pause();
             }
         }
-        //CheckStopAllInput();
         if (!stopAllInput)
         {
             Vector2 directionalInput = CheckArrowKEY();
@@ -79,10 +78,6 @@ public class PlayerInput : MonoBehaviour
         }
     }
 
-    //void CheckStopAllInput()
-    //{
-    //    stopAllInput = player.stopAllInput;
-    //}
     Vector2 CheckArrowKEY()
     {
         x = 0; y = 0;

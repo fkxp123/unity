@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour
     Player player;
     PlayerStat ps;
     Rigidbody2D rigid;
+    BoxCollider2D boxCollider;
 
     float currentAIDelay;
     float AIDelay = 2.0f;
@@ -66,6 +67,7 @@ public class Enemy : MonoBehaviour
         player = Player.instance;
         CurrentHp = Hp;
         playerPos = GameObject.FindGameObjectWithTag("player");
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     #region Singleton
@@ -306,6 +308,7 @@ public class Enemy : MonoBehaviour
         animator.SetTrigger("takeDamage");
         stopMoving_X = true;
         isHit = true;
+
         if (CurrentHp <= 0)
         {
             Debug.Log("enemy die");
@@ -321,6 +324,7 @@ public class Enemy : MonoBehaviour
             rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
         }
         yield return new WaitForSeconds(0.6f);
+
         isHit = false;
         rigid.velocity = new Vector2(0, rigid.velocity.y);
         rigid.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation;
