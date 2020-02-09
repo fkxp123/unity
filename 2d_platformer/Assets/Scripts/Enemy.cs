@@ -135,12 +135,10 @@ public class Enemy : MonoBehaviour
         else
         {
             //stopAi = true;
-            Debug.Log("delay -> move");
 
             if (random == 0)
             {
                 random = Random.Range(1, 3);
-                Debug.Log(random);
             }
             else
             {
@@ -161,7 +159,6 @@ public class Enemy : MonoBehaviour
     void SetAiMove()
     {
         stopMoving_X = false;
-        Debug.Log("setaimove");
         if (currentMoveTime < moveTime)
         {
             currentMoveTime += Time.deltaTime;
@@ -178,7 +175,6 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Debug.Log("move -> delay");
             animator.SetBool("isWalking", false);
             currentMoveTime = 0;
             currentAIDelay = 0;
@@ -187,7 +183,6 @@ public class Enemy : MonoBehaviour
     }
     void SetAiDirection()
     {
-        Debug.Log("setaidirection");
         float r = Random.Range(0, 2);
         if(r == 0)
         {
@@ -204,7 +199,6 @@ public class Enemy : MonoBehaviour
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(FindPlayerBoxPos.position, FindPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
-            Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
                 flag = true;
@@ -225,7 +219,6 @@ public class Enemy : MonoBehaviour
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(AtkPlayerBoxPos.position, AtkPlayerBoxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
-            Debug.Log(collider.tag);
             if (collider.tag == "player")
             {
                 flag = true;

@@ -38,17 +38,6 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (menu.GameIsPaused)
-            {
-                menu.Resume();
-            }
-            else
-            {
-                menu.Pause();
-            }
-        }
         if (!stopAllInput)
         {
             Vector2 directionalInput = CheckArrowKEY();

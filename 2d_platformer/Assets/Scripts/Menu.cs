@@ -10,12 +10,15 @@ public class Menu : MonoBehaviour
 
     public GameObject SelectedSlot;
     public GameObject[] selectedSlots;
-    public GameObject Description;
-    public GameObject[] descriptions;
+    //public GameObject Description;
+    //public GameObject[] descriptions;
+    public Text Description;
     Image[] img;
 
     public GameObject menu_UI;
+    public GameObject selected_Menu;
     Player player;
+    PlayerInput pi;
     int selectedCount = 0;
 
     public GameObject inventoryUI;
@@ -25,16 +28,16 @@ public class Menu : MonoBehaviour
     public GameObject logoutUI;
 
     public bool activated;
+    public bool SelectedUI;
 
     // Start is called before the first frame update
     void Start()
     {
         player = Player.instance;
-        Debug.Log(SelectedSlot.transform.childCount);
         selectedSlots = new GameObject[SelectedSlot.transform.childCount];
         img = new Image[SelectedSlot.transform.childCount];
-        descriptions = new GameObject[Description.transform.childCount];
-        //pi = PlayerInput.instance;
+        pi = PlayerInput.instance;
+        Description.text = "";
     }
     #region Singleton
     private void Awake()
@@ -54,54 +57,122 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (activated)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (GameIsPaused)
             {
-                selectedCount += 1;
-                if (selectedCount >= SelectedSlot.transform.childCount)
-                {
-                    selectedCount = 0;
-                }
+                Resume();
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            else
             {
-                selectedCount -= 1;
-                if (selectedCount < 0)
-                {
-                    selectedCount = SelectedSlot.transform.childCount - 1;
-                }
+                Pause();
             }
-            for (int i = 0; i < SelectedSlot.transform.childCount; i++)
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            selectedCount += 1;
+            if (selectedCount >= SelectedSlot.transform.childCount)
             {
-                selectedSlots[i] = SelectedSlot.transform.GetChild(i).gameObject;
-                img[i] = selectedSlots[i].GetComponent<Image>();
-                img[i].color = new Color(1f, 1f, 1f, 0f);
+                selectedCount = 0;
             }
-            for (int i = 0; i < Description.transform.childCount; i++)
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            selectedCount -= 1;
+            if (selectedCount < 0)
             {
-                descriptions[i] = Description.transform.GetChild(i).gameObject;
-                descriptions[i].SetActive(false);
+                selectedCount = SelectedSlot.transform.childCount - 1;
             }
-            img[selectedCount].color = new Color(1f, 1f, 1f, 1f);
-            descriptions[selectedCount].SetActive(true);
+        }
+        for (int i = 0; i < SelectedSlot.transform.childCount; i++)
+        {
+            selectedSlots[i] = SelectedSlot.transform.GetChild(i).gameObject;
+            img[i] = selectedSlots[i].GetComponent<Image>();
+            img[i].color = new Color(1f, 1f, 1f, 0f);
+        }
+        switch (selectedCount)
+        {
+            case 0:
+                Description.text = "장비";
+                break;
+            case 1:
+                Description.text = "주요 아이템";
+                break;
+            case 2:
+                Description.text = "지도";
+                break;
+            case 3:
+                Description.text = "설정";
+                break;
+            case 4:
+                Description.text = "시작 화면으로 돌아가기";
+                break;
+            default:
+                break;
+        }
+        img[selectedCount].color = new Color(1f, 1f, 1f, 1f);
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SelectedUI = true;
+            selected_Menu.SetActive(true);
+            AllSelectedMenuSetActiveFalse();
+            switch (selectedCount)
+            {
+                case 0:
+                    inventoryUI.SetActive(true);
+                    break;
+                case 1:
+                    keyItemUI.SetActive(true);
+                    break;
+                case 2:
+                    mappingUI.SetActive(true);
+                    break;
+                case 3:
+                    settingUI.SetActive(true);
+                    break;
+                case 4:
+                    logoutUI.SetActive(true);//ui가 아니라 타이틀씬으로 이동?
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            if(GameIsPaused && !SelectedUI) Resume();
+            if (SelectedUI)
+            {
+                SelectedUI = false;
+                selected_Menu.SetActive(false);
+                AllSelectedMenuSetActiveFalse();
+            }
         }
     }
     public void Resume()
     {
-        activated = false;
+        //activated = false;
         selectedCount = 0;
         menu_UI.SetActive(false);
         Time.timeScale = 1f;
         GameIsPaused = false;
         player.enabled = true;
+        pi.enabled = true;
     }
     public void Pause()
     {
-        activated = true;
+        //sactivated = true;
         menu_UI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
         player.enabled = false;
+        pi.enabled = false;
+    }
+    public void AllSelectedMenuSetActiveFalse()
+    {
+        inventoryUI.SetActive(false);
+        keyItemUI.SetActive(false);
+        mappingUI.SetActive(false);
+        settingUI.SetActive(false);
+        logoutUI.SetActive(false);
     }
 }

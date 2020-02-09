@@ -12,6 +12,7 @@ public class HealthBar : MonoBehaviour
     public float currentHp;
     public float Hp;
     public float hurtSpeed = 0.005f;
+    public float setPositionX;
     PlayerStat ps;
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class HealthBar : MonoBehaviour
         ps = PlayerStat.instance;
         Hp = ps.Hp;
         currentHp = Hp;
+        setPositionX = blinkImg.rectTransform.anchoredPosition.x;
     }
     #region Singleton
     private void Awake()
@@ -48,12 +50,13 @@ public class HealthBar : MonoBehaviour
             effectImg.fillAmount = fill.fillAmount;
         } 
     }
-    public void SetBlinkImg(float moveDistance)
+    public void SetBlinkImg()
     {
-        if(currentHp >= 0)
+        float moveDistance = (1 - currentHp / Hp) * 100;//fill.x pixel size * scale(2)
+        if (currentHp >= 0)
         {
             blinkImg.rectTransform.anchoredPosition =
-            new Vector2(blinkImg.rectTransform.anchoredPosition.x - moveDistance, blinkImg.rectTransform.anchoredPosition.y);
+            new Vector2(setPositionX - moveDistance, blinkImg.rectTransform.anchoredPosition.y);
         }
     }
 }

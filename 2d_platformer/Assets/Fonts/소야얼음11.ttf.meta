@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 81ba80d21d2ceff4eb8a7b433246ca9a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: soya_ulum10
+  fontNames:
+  - soya_ulum10
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 4018355656aafa741bc94e8a68a0a47c, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

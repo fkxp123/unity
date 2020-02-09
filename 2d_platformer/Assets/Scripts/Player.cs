@@ -10,7 +10,10 @@ public class Player : MonoBehaviour
     public float timeToJumpApex = .4f;
     float accelerationTimeAirborne = .2f;
     float accelerationTimeGrounded = .1f;
+    float accelerationTimeDash = .05f;
     public float moveSpeed = 10;
+    public float dashSpeed = 10;
+    float targetVelocityX;
 
     public Vector2 wallJumpClimb;
     public Vector2 wallJumpOff;
@@ -110,6 +113,10 @@ public class Player : MonoBehaviour
         {
             CheckAllDelay();
             CheckPositionY();
+            //if (!stopAllMove)
+            //{
+            //    CalculateVelocity();
+            //}
             CalculateVelocity();
             //HandleWallSliding();
             //on/off기능 추가?
@@ -154,7 +161,8 @@ public class Player : MonoBehaviour
     }
     void ResetAllInput()
     {
-        stopAllInput = false;
+        pi.stopAllInput = false;
+        stopAllMove = false;
     }
     //void StopMoving()
     //{
@@ -250,11 +258,12 @@ public class Player : MonoBehaviour
 
     void LandAnim()
     {
+
         if (animator.GetBool("isFalling") == true)
         {
             if (oldPositionY - transform.position.y > 8)
             {
-                
+
                 if (controller.collisions.below) //landing
                 {
                     animator.SetBool("isGround", true);
@@ -285,6 +294,38 @@ public class Player : MonoBehaviour
             jumpCount = 0;
         }
 
+        //if (controller.collisions.below == true) //checking landing
+        //{
+        //    animator.SetBool("isGround", true);
+        //    animator.SetBool("isJumping", false);
+        //    animator.SetBool("isFalling", false);
+        //    jumpCount = 0;
+        //}
+        //else if (animator.GetBool("isFalling") == true)
+        //{
+        //    if (oldPositionY - transform.position.y > 8)
+        //    {
+
+        //        if (controller.collisions.below) //landing
+        //        {
+        //            animator.SetBool("isGround", true);
+        //            animator.SetBool("isJumpingHigh", true);
+        //            stopAllMove = true;
+        //            Invoke("ResetAllMove", .3f);//equal to HasExitTime
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (controller.collisions.below) //landing
+        //        {
+        //            animator.SetBool("isGround", true);
+        //            stopAllMove = true;
+        //            Invoke("ResetAllMove", .07f);//equal to HasExitTime
+        //        }
+        //    }
+        //}
+        //else
+        //    animator.SetBool("isJumpingHigh", false);
     }
     public void CrouchAnim()
     {
@@ -344,70 +385,123 @@ public class Player : MonoBehaviour
     {
         if (!animator.GetBool("isRolling"))
         {
-            if (controller.collisions.below == false) //checking ground
+            if(controller.collisions.below == false)
             {
                 animator.SetBool("isGround", false);
+                if (doubleJump)
+                {
+                    animator.SetBool("doubleJump", true);
+                }
+                if (doubleJump && oldVelocityY > velocity.y)
+                {
+                    animator.SetBool("doubleJump", false);
+                }
+                if(oldVelocityY > velocity.y)
+                {
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isFalling", true);
+                }
             }
-            if (controller.collisions.below == false && oldVelocityY > velocity.y) //checking falling
+            //if (controller.collisions.below == false && oldVelocityY > velocity.y) //checking falling
+            //{
+            //    animator.SetBool("isJumping", false);
+            //    animator.SetBool("isFalling", true);
+            //}
+            //if (controller.collisions.below == false && doubleJump) //checking doublejump
+            //{
+            //    animator.SetBool("doubleJump", true);
+            //}
+            //if (controller.collisions.below == false && oldVelocityY > velocity.y) //checking double falling
+            //{
+            //    animator.SetBool("doubleJump", false);
+            //    animator.SetBool("isJumping", false);
+            //    animator.SetBool("isFalling", true);
+            //    doubleJump = false;
+            //}
+            oldVelocityY = velocity.y;
+
+        }
+
+    }
+    public void OnJumpInputDown()
+    {
+        if (!animator.GetBool("isRolling"))
+        {
+            oldPositionY = transform.position.y;
+            CheckPositionY();
+            if (wallSliding)
             {
-                animator.SetBool("isJumping", false);
-                animator.SetBool("isFalling", true);
+                if (wallDirX == directionalInput.x)
+                {
+                    velocity.x = -wallDirX * wallJumpClimb.x;
+                    velocity.y = wallJumpClimb.y;
+                }
+                else if (directionalInput.x == 0)
+                {
+                    velocity.x = -wallDirX * wallJumpOff.x;
+                    velocity.y = wallJumpOff.y;
+                }
+                else
+                {
+                    velocity.x = -wallDirX * wallLeap.x;
+                    velocity.y = wallLeap.y;
+                }
             }
-            if (controller.collisions.below == false && doubleJump) //checking doublejump
+
+            if (jumpCount == 0)
             {
+                if (directionalInput.y != -1 || !controller.isThroughPlatform)//
+                {
+                    velocity.y = maxJumpVelocity;
+                    jumpCount += 1;
+                    animator.SetBool("isJumping", true);
+                }
+            }
+            else if (jumpCount == 1)
+            {
+                velocity.y = maxJumpVelocity;
+                doubleJump = true;
+                jumpCount += 1;
                 animator.SetBool("doubleJump", true);
             }
-            if (controller.collisions.below == false && oldVelocityY > velocity.y) //checking double falling
+            else if (jumpCount == 1 && controller.isThroughPlatform)//platform은 통과x throughPlatform은 통과
             {
-                animator.SetBool("doubleJump", false);
-                animator.SetBool("isJumping", false);
-                animator.SetBool("isFalling", true);
-                doubleJump = false;
+                velocity.y = maxJumpVelocity;
+                doubleJump = true;
+                jumpCount += 1;
+                animator.SetBool("doubleJump", true);
             }
-            oldVelocityY = velocity.y;
         }
-        
-    }
 
+    }
+    public void OnJumpInputUp()
+    {
+        if (velocity.y > minJumpVelocity)
+        {
+            velocity.y = minJumpVelocity;
+        }
+    }
     public void Roll()
     {
-        StartCoroutine("RollCoroutine");
+        if (!isRoll && animator.GetBool("isGround"))
+        {
+            StartCoroutine("RollCoroutine");
+        }
     }
     IEnumerator RollCoroutine()
     {
         if (canRoll)
         {
             pi.stopAllInput = true;
-            stopMoving_X = true;
             currentRollDelay = RollDelay;
             isRoll = true;
             playerStat.noHitMode = true;
-            rigid.bodyType = RigidbodyType2D.Dynamic;
-            if (animator.GetBool("isGround"))
-            {
-                animator.SetBool("isRolling", true);
-
-                directionalInput = new Vector2(0, 0);
-                if (transform.localScale.x == 1)
-                {
-                    rigid.velocity = new Vector2(RollDistance, rigid.velocity.y);
-                }
-                else if (transform.localScale.x == -1)
-                {
-                    rigid.velocity = new Vector2(-1 * RollDistance, rigid.velocity.y);
-                }
-            }
-            yield return new WaitForSeconds(0.3f);
-            rigid.bodyType = RigidbodyType2D.Kinematic;
-            rigid.velocity = new Vector2(0, 0);
+            animator.SetTrigger("isRolling");
+            yield return new WaitForSeconds(.6f);
             isRoll = false;
             pi.stopAllInput = false;
-            stopMoving_X = false;
             playerStat.noHitMode = false;
-            animator.SetBool("isRolling", false);
-            boxCollider.isTrigger = false;
-        }
-        
+        }       
     }
 
     public void Attack()
@@ -503,65 +597,6 @@ public class Player : MonoBehaviour
     {
         directionalInput = input;
     }
-    public void OnJumpInputDown()
-    {
-        if (!animator.GetBool("isRolling"))
-        {
-            oldPositionY = transform.position.y;
-            CheckPositionY();
-            if (wallSliding)
-            {
-                if (wallDirX == directionalInput.x)
-                {
-                    velocity.x = -wallDirX * wallJumpClimb.x;
-                    velocity.y = wallJumpClimb.y;
-                }
-                else if (directionalInput.x == 0)
-                {
-                    velocity.x = -wallDirX * wallJumpOff.x;
-                    velocity.y = wallJumpOff.y;
-                }
-                else
-                {
-                    velocity.x = -wallDirX * wallLeap.x;
-                    velocity.y = wallLeap.y;
-                }
-            }
-
-            if (jumpCount == 0)
-            {
-                if (directionalInput.y != -1 || !controller.isThroughPlatform)//
-                {
-                    velocity.y = maxJumpVelocity;
-                    jumpCount += 1;
-                    animator.SetBool("isJumping", true);
-                }
-            }
-            else if (jumpCount == 1)
-            {
-                velocity.y = maxJumpVelocity;
-                doubleJump = true;
-                jumpCount += 1;
-                animator.SetBool("doubleJump", true);
-            }
-            else if (jumpCount == 1 && controller.isThroughPlatform)//platform은 통과x throughPlatform은 통과
-            {
-                velocity.y = maxJumpVelocity;
-                doubleJump = true;
-                jumpCount += 1;
-                animator.SetBool("doubleJump", true);
-            }
-        }
-        
-    }
-    public void OnJumpInputUp()
-    {
-        if (velocity.y > minJumpVelocity)
-        {
-            velocity.y = minJumpVelocity;
-        }
-    }
-
     void HandleWallSliding()
     {
         wallDirX = (controller.collisions.left) ? -1 : 1;
@@ -596,17 +631,32 @@ public class Player : MonoBehaviour
 
         }
     }
-
     void CalculateVelocity()
     {
-        float targetVelocityX = directionalInput.x * moveSpeed;
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-        velocity.y += gravity * Time.deltaTime;
+        if (isRoll)
+        {
+            if(transform.localScale.x == 1)
+            {
+                directionalInput.x = 1;
+            }
+            else if (transform.localScale.x == -1)
+            {
+                directionalInput.x = -1;
+            }
+            targetVelocityX = directionalInput.x * dashSpeed;
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, accelerationTimeDash);
+            velocity.y += gravity * Time.deltaTime;
+        }
+        else
+        {
+            targetVelocityX = directionalInput.x * moveSpeed;
+            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+            velocity.y += gravity * Time.deltaTime;
+        }
     }
     void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(pos.position, MeleeBoxSize);
     }
-
 }

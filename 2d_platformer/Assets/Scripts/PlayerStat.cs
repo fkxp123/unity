@@ -62,7 +62,7 @@ public class PlayerStat : MonoBehaviour
         isHit = true;
         CurrentHp -= enemyAtk;
         healthBar.currentHp -= enemyAtk;
-        healthBar.SetBlinkImg(enemyAtk);
+        healthBar.SetBlinkImg();
         Debug.Log("hp : " + CurrentHp);
         animator.SetTrigger("takeDamage");
         player.stopAllInput = true;
