@@ -133,7 +133,7 @@ public class CameraFollow : MonoBehaviour
         focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
         //playerMovement.velocity.y 의 프로퍼티값을 가지고 event-post ?
         focusPosition += Vector2.right * currentLookAheadX;
-        transform.position = new Vector3(focusPosition.x, focusPosition.y, -10);
+        transform.position = (Vector3)focusPosition + Vector3.forward * -10;
     }
 
     void OnDrawGizmos()

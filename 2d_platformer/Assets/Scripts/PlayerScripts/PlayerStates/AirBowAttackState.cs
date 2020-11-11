@@ -11,8 +11,12 @@ public class AirBowAttackState : PlayerState
     public override void OperateEnter()
     {
         base.OperateEnter();
-        player.isPreAnimationFinished = false;
         playerInput.StopCheckKey();
+        if (player.stateMachine.OldState == player.airAttack)
+        {
+            return;
+        }
+        player.isPreAnimationFinished = false;
         playerMovement.animator.Play("airBowAttack");
     }
     public override void OperateUpdate()

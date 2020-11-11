@@ -71,6 +71,10 @@ public class PlayerInput : MonoBehaviour
         {
             isKeyDownBowAttack = true;
         }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            MenuManager.instance.Pause();
+        }
         if (isKeyDownAttack || isKeyDownBowAttack || isKeyDownJump || isKeyDownRoll)
         {
             isKeyDown = true;

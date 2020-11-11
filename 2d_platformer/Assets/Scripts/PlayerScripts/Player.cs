@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     #region Variables
     public PlayerMovement playerMovement;
     public PlayerInput playerInput;
-    public StateMachine stateMachine;
+    public PlayerStateMachine stateMachine;
 
     public bool stopAllInput;
     public bool stopCheckState;
@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
         airBowAttack = new AirBowAttackState(this);
         #endregion
 
-        stateMachine = new StateMachine(idle);
+        stateMachine = new PlayerStateMachine(idle);
     }
 
     void Update()
