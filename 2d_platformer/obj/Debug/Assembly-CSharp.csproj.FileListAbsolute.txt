@@ -1,2 +1,0 @@
-C:\Users\user\Documents\Unity_git\2d_platformer\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
-C:\Users\user\Documents\Unity_git\2d_platformer\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache
