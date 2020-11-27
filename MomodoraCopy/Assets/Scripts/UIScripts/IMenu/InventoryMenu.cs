@@ -1,30 +1,25 @@
 ﻿namespace MomodoraCopy
 {
-    public class InventoryMenu : SettingMenu
+    public class InventoryMenu : AbstractMenu
     {
-        public override void ShowMenu()
+        protected override void OnEnable()
         {
-            base.ShowMenu();
+            base.OnEnable();
         }
-        public override void SetMenuDisplay()
-        {
 
-        }
-        public override void CheckEscapeKey()
+        protected override void OnDisable()
         {
-            base.CheckEscapeKey();
+            base.OnDisable();
         }
+
         public override void CheckArrowKey()
         {
-
         }
         public override void CheckConfirmKey()
         {
-
         }
         public override void CheckCancleKey()
         {
-            base.CheckCancleKey();
         }
     }
 }

@@ -2,28 +2,26 @@
 
 namespace MomodoraCopy
 {
-    public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+    public class Singleton<T> : MonoBehaviour where T : Component
     {
-        protected static T instance;
+        public static T instance;
 
-        //Returns the instance of this singleton.
-        public static T Instance
+        public bool isPersistant = true;
+
+        public virtual void Awake()
         {
-            get
+            if (!isPersistant)
             {
-                if (instance == null)
-                {
-                    instance = (T)FindObjectOfType(typeof(T));
-
-                    if (instance == null)
-                    {
-                        Debug.LogError("An instance of " + typeof(T) +
-                           " is needed in the scene, but there is none.");
-                    }
-                }
-
-                return instance;
+                instance = this as T;
+                return;
             }
+            if (instance == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                instance = this as T;
+                return;
+            }
+            Destroy(gameObject);
         }
     }
 }

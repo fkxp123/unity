@@ -6,8 +6,8 @@ namespace MomodoraCopy
     {
         // reset animation speed 1
         // treat frame in animation clip 
-
         bool comboFlag;
+
         public AttackState(Player player) : base(player)
         {
 

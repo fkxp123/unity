@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace MomodoraCopy
 {
-
     public class PlayerStatus : MonoBehaviour
     {
         public static PlayerStatus instance;

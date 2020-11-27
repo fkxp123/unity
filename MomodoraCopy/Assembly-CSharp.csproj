@@ -61,10 +61,12 @@
      <Compile Include="Assets\Scripts\EventManager.cs" />
      <Compile Include="Assets\Scripts\EventTest.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\ChildGUI.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\Singleton.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\TestGUI.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\Controller2D.cs" />
-     <Compile Include="Assets\Scripts\PlayerScripts\HealthBar.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\KeyboardManager.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\Player.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerInput.cs" />
@@ -96,8 +98,12 @@
      <Compile Include="Assets\Scripts\PoolingScripts\Spawner\BigArrowSpawner.cs" />
      <Compile Include="Assets\Scripts\PostTest.cs" />
      <Compile Include="Assets\Scripts\UIScripts\AbstractMenu.cs" />
+     <Compile Include="Assets\Scripts\UIScripts\GUI.cs" />
+     <Compile Include="Assets\Scripts\UIScripts\HealthBar.cs" />
+     <Compile Include="Assets\Scripts\UIScripts\IMenu\BackgroundMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\IMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\InventoryMenu.cs" />
+     <Compile Include="Assets\Scripts\UIScripts\IMenu\KeyChangeMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\KeyItemMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\LogOutMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\MainMenu.cs" />

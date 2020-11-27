@@ -73,7 +73,7 @@ namespace MomodoraCopy
             }
             else if (Input.GetKeyDown(KeyCode.Escape))
             {
-                MenuManager.instance.Pause();
+                MenuManager.instance.IsGamePaused = true;
             }
             if (isKeyDownAttack || isKeyDownBowAttack || isKeyDownJump || isKeyDownRoll)
             {

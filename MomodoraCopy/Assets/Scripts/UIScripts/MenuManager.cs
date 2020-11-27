@@ -4,175 +4,219 @@ using UnityEngine.UI;
 
 namespace MomodoraCopy
 {
-    public class MenuManager : MonoBehaviour
+    public class MenuManager : Singleton<MenuManager>
     {
-        public GameObject playerObject;
-        public GameObject mainCameraObject;
-        MonoBehaviour[] cameraComponents;
-        MonoBehaviour[] playerComponents;
-
-        #region Menu
         public GameObject mainMenuObject;
-        public GameObject selectedSlot;
-        public Text descriptionText;
+        MainMenu mainMenu;
 
-        [HideInInspector]
-        public int selectedCount = 0;
-        [HideInInspector]
-        public GameObject[] selectedSlots;
-        [HideInInspector]
-        public Image[] img;
-        #endregion
+        //public GameObject playerObject;
+        //public GameObject mainCameraObject;
+        //MonoBehaviour[] cameraComponents;
+        //MonoBehaviour[] playerComponents;
 
-        #region SelectedMenu
-        public GameObject selectedMenuObject;
-        public GameObject inventoryMenuObject;
-        public GameObject keyItemMenuObject;
-        public GameObject mappingMenuObject;
-        public GameObject settingMenuObject;
-        public GameObject logOutMenuObject;
-        #endregion
-        [HideInInspector]
-        public List<GameObject> selectedMenuObjectList = new List<GameObject>();
+        //public Canvas mainMenuCanvasStatic;
+        //public Canvas mainMenuCanvasDynamic;
+        //public Canvas mainMenuCanvasDynamic2;
+        //public Canvas uiCanvas;
 
-        [HideInInspector]
-        public IMenu mainMenu;
-        IMenu inventoryMenu;
-        IMenu keyItemMenu;
-        IMenu mappingMenu;
-        IMenu settingMenu;
-        IMenu logOutMenu;
+        //[Header("Others")]
+        //public GameObject menuBackground;
+        //public GameObject keyDescriptionBar;
 
-        [HideInInspector]
-        public List<IMenu> selectedMenuList = new List<IMenu>();
+        //#region MainMenu
+        //[Header("MainMenu")]
+        //public GameObject mainMenuObjectStatic;
+        //public GameObject mainMenuObjectDynamic;
+        //public GameObject selectedMainMenuSlot;
+        //public Text mainMenuDescription;
 
-        public bool isGamePaused;
+        //[HideInInspector]
+        //public int mainMenuSlotCount = 0;
+        //[HideInInspector]
+        //public GameObject[] mainMenuSlots;
+        //[HideInInspector]
+        //public Image[] mainMenuSlotImage;
+        //#endregion
 
-        [HideInInspector]
-        public MenuHandler menuHandler;
+        //#region SelectedMenu
+        //[Header("SelectedMenu")]
+        //public GameObject selectedMenuObject;
+        //public Text selectedMenuInfo;
+        //public GameObject inventoryMenuObject;
+        //public GameObject keyItemMenuObject;
+        //public GameObject mappingMenuObject;
+        //public GameObject settingMenuObject;
+        //public GameObject logOutMenuObject;
+        //#endregion
 
-        #region Singleton
-        public static MenuManager instance;
-        private void Awake()
+        //#region InventoryMenu
+
+        //#endregion
+
+        //#region KeyItemMenu
+
+        //#endregion
+
+        //#region MappingMenu
+
+        //#endregion
+
+        //#region SettingMenu
+        //[Header("SettingMenu")]
+        //public GameObject SoundEffectArea;
+        //public GameObject AudioArea;
+        //public GameObject ResolutionArea;
+        //public GameObject QualityArea;
+        //public GameObject ScreenVibrationArea;
+        //public GameObject VibrationArea;
+        //public GameObject KeyChangeArea;
+        //public GameObject NormalSettingArea;
+        //public GameObject ApplyChangesArea;
+        //public GameObject ReturnArea;
+        //[HideInInspector]
+        //public List<GameObject> SettingMenuList = new List<GameObject>();
+        //#endregion
+
+        //#region LogOutMenu
+
+        //#endregion
+
+        //[HideInInspector]
+        //public List<GameObject> selectedMenuObjectList = new List<GameObject>();
+
+        //[HideInInspector]
+        //public IMenu mainMenu;
+        //IMenu inventoryMenu;
+        //IMenu keyItemMenu;
+        //IMenu mappingMenu;
+        //IMenu settingMenu;
+        //IMenu logOutMenu;
+
+        //[HideInInspector]
+        //public List<IMenu> selectedMenuList = new List<IMenu>();
+
+        public bool _isGamePaused;
+        public bool IsGamePaused
         {
-            if (instance == null)
+            get { return _isGamePaused; }
+            set
             {
-                DontDestroyOnLoad(this.gameObject);
-                instance = this;
-            }
-            else
-            {
-                Destroy(this.gameObject);
+                _isGamePaused = value;
+                if (value)
+                {
+                    GameManager.instance.Pause();
+                    mainMenu.enabled = true;
+                    return;
+                }
+                GameManager.instance.Resume();
             }
         }
-        #endregion Sigleton
 
         void Start()
         {
-            playerComponents = playerObject.GetComponents<MonoBehaviour>();
-            cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
-
-            selectedSlots = new GameObject[selectedSlot.transform.childCount];
-            img = new Image[selectedSlot.transform.childCount];
-            descriptionText.text = "";
-
-            selectedMenuObjectList.Add(inventoryMenuObject);
-            selectedMenuObjectList.Add(keyItemMenuObject);
-            selectedMenuObjectList.Add(mappingMenuObject);
-            selectedMenuObjectList.Add(settingMenuObject);
-            selectedMenuObjectList.Add(logOutMenuObject);
-
-            mainMenu = new MainMenu();
-            inventoryMenu = new InventoryMenu();
-            keyItemMenu = new KeyItemMenu();
-            mappingMenu = new MappingMenu();
-            settingMenu = new SettingMenu();
-            logOutMenu = new LogOutMenu();
-
-            selectedMenuList.Add(inventoryMenu);
-            selectedMenuList.Add(keyItemMenu);
-            selectedMenuList.Add(mappingMenu);
-            selectedMenuList.Add(settingMenu);
-            selectedMenuList.Add(logOutMenu);
-
-            menuHandler = new MenuHandler(mainMenu);
+            mainMenu = mainMenuObject.GetComponent<MainMenu>();
         }
+
+        //[HideInInspector]
+        //public MenuHandler menuHandler;
+
+        //void Start()
+        //{
+            //playerComponents = playerObject.GetComponents<MonoBehaviour>();
+            //cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
+
+            //mainMenuSlots = new GameObject[selectedMainMenuSlot.transform.childCount];
+            //mainMenuSlotImage = new Image[selectedMainMenuSlot.transform.childCount];
+            //mainMenuDescription.text = "";
+
+            //selectedMenuInfo.text = "";
+            //selectedMenuObjectList.Add(inventoryMenuObject);
+            //selectedMenuObjectList.Add(keyItemMenuObject);
+            //selectedMenuObjectList.Add(mappingMenuObject);
+            //selectedMenuObjectList.Add(settingMenuObject);
+            //selectedMenuObjectList.Add(logOutMenuObject);
+
+            //mainMenu = new MainMenu();
+            //inventoryMenu = new InventoryMenu();
+            //keyItemMenu = new KeyItemMenu();
+            //mappingMenu = new MappingMenu();
+            //settingMenu = new SettingMenu();
+            //logOutMenu = new LogOutMenu();
+
+            //selectedMenuList.Add(inventoryMenu);
+            //selectedMenuList.Add(keyItemMenu);
+            //selectedMenuList.Add(mappingMenu);
+            //selectedMenuList.Add(settingMenu);
+            //selectedMenuList.Add(logOutMenu);
+
+            //menuHandler = new MenuHandler();
+            //SetActiveFalseAllMenu();
+            //Pause();
+            //Resume();
+        //}
 
         // Update is called once per frame
-        void Update()
-        {
-            if (isGamePaused)
-            {
-                Debug.Log("menu type : " + menuHandler.CurrentMenu);
-                menuHandler.CurrentMenu.ShowMenu();
-            }
-        }
+        //void Update()
+        //{
+        //    if (IsGamePaused)
+        //    {
+        //        menuHandler.OperateUpdateMenu();
+        //    }
+        //}
 
-        public void Resume()
-        {
-            SetActiveFalseAllSelectedMenu();
-            selectedCount = 0;
-            mainMenuObject.SetActive(false);
-            Time.timeScale = 1f;
-            isGamePaused = false;
-            foreach (MonoBehaviour component in playerComponents)
-            {
-                component.enabled = true;
-            }
-            foreach (MonoBehaviour component in cameraComponents)
-            {
-                component.enabled = true;
-            }
-        }
-        public void Pause()
-        {
-            mainMenuObject.SetActive(true);
-            Time.timeScale = 0f;
-            isGamePaused = true;
-            foreach (MonoBehaviour component in playerComponents)
-            {
-                component.enabled = false;
-            }
-            foreach (MonoBehaviour component in cameraComponents)
-            {
-                component.enabled = false;
-            }
-        }
+        //void SetActiveFalseAllMenu()
+        //{
+        //    mainMenuObjectStatic.SetActive(false);
+        //    mainMenuObjectDynamic.SetActive(false);
+        //    menuBackground.SetActive(false);
+        //    keyDescriptionBar.SetActive(false);
+        //    SetActiveFalseAllSelectedMenu();
+        //}
 
-        #region SelectedMenu Function
-        public void SetActiveFalseAllSelectedMenu()
-        {
-            selectedMenuObject.SetActive(false);
-            inventoryMenuObject.SetActive(false);
-            keyItemMenuObject.SetActive(false);
-            mappingMenuObject.SetActive(false);
-            settingMenuObject.SetActive(false);
-            logOutMenuObject.SetActive(false);
-        }
-        public void SetActiveTrueSelectedMenu(int selectedCount)
-        {
-            switch (selectedCount)
-            {
-                case 0:
-                    inventoryMenuObject.SetActive(true);
-                    break;
-                case 1:
-                    keyItemMenuObject.SetActive(true);
-                    break;
-                case 2:
-                    mappingMenuObject.SetActive(true);
-                    break;
-                case 3:
-                    settingMenuObject.SetActive(true);
-                    break;
-                case 4:
-                    logOutMenuObject.SetActive(true);//ui가 아니라 타이틀씬으로 이동?
-                    break;
-                default:
-                    break;
-            }
-        }
-        #endregion
+        //public void Resume()
+        //{
+        //    SetActiveFalseAllMenu();
+        //    mainMenuSlotCount = 0;
+        //    IsGamePaused = false;
+        //    Time.timeScale = 1f;
+        //    foreach (MonoBehaviour component in playerComponents)
+        //    {
+        //        component.enabled = true;
+        //    }
+        //    foreach (MonoBehaviour component in cameraComponents)
+        //    {
+        //        component.enabled = true;
+        //    }
+        //}
+        //public void Pause()
+        //{
+        //    menuHandler.SetMenu(mainMenu);
+        //    IsGamePaused = true;
+        //    Time.timeScale = 0f;
+        //    foreach (MonoBehaviour component in playerComponents)
+        //    {
+        //        component.enabled = false;
+        //    }
+        //    foreach (MonoBehaviour component in cameraComponents)
+        //    {
+        //        component.enabled = false;
+        //    }
+        //}
+
+        //#region SelectedMenu Function
+        //public void SetActiveFalseAllSelectedMenu()
+        //{
+        //    selectedMenuObject.SetActive(false);
+        //    foreach (GameObject obj in selectedMenuObjectList)
+        //    {
+        //        obj.SetActive(false);
+        //    }
+        //}
+        //public void SetActiveTrueSelectedMenu(int selectedCount)
+        //{
+        //    selectedMenuObjectList[selectedCount].SetActive(true);
+        //}
+        //#endregion
     }
 
 }

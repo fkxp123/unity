@@ -2,29 +2,37 @@
 
 namespace MomodoraCopy
 {
-    public abstract class SelectedMenu : AbstractMenu
+    public abstract class SelectedMenu : MonoBehaviour, IMenu
     {
-        public override void ShowMenu()
+        Vector3 position = new Vector3(0, -240, 0);
+        public virtual void OnStartMenu()
         {
-            base.ShowMenu();
+            //menuManager.mainMenuObjectStatic.SetActive(false);
+            //menuManager.mainMenuObjectDynamic.SetActive(false);
+            //menuManager.selectedMenuObject.SetActive(true);
+            //SetBackgroundAlpha(0.5f);
+            //SetKeyDescriptionBarPosition(position);
         }
-        public override abstract void SetMenuDisplay();
+        public virtual void UpdateMenu()
+        {
 
-        public override void CheckEscapeKey()
-        {
-            base.CheckEscapeKey();
         }
-        public override abstract void CheckArrowKey();
-        public override abstract void CheckConfirmKey();
-        public override void CheckCancleKey()
+
+        public virtual void CheckEscapeKey()
         {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                menuManager.menuHandler.ChangeMenuType(menuManager.mainMenu);
-                menuManager.mainMenuObject.SetActive(true);
-                menuManager.selectedMenuObject.SetActive(false);
-                menuManager.selectedMenuObjectList[menuManager.selectedCount].SetActive(false);
-            }
+
+        }
+        public abstract void CheckArrowKey();
+        public abstract void CheckConfirmKey();
+
+        public virtual void CheckCancleKey()
+        {
+            //if (Input.GetKeyDown(KeyCode.S))
+            //{
+            //    menuManager.menuHandler.ChangeMenuType(menuManager.mainMenu);
+            //    menuManager.selectedMenuObject.SetActive(false);
+            //    menuManager.selectedMenuObjectList[menuManager.mainMenuSlotCount].SetActive(false);
+            //}
         }
     }
 

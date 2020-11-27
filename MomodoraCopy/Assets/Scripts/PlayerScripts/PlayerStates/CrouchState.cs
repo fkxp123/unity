@@ -30,6 +30,10 @@ namespace MomodoraCopy
             {
                 player.stateMachine.SetState(player.crouchBowAttack);
             }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                player.stateMachine.SetState(player.attack);
+            }
             if (playerInput.directionalInput.y != -1)
             {
                 playerMovement.ResetMovement();
@@ -39,10 +43,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
-            if (player.stateMachine.OldState == player.crouchBowAttack)
-            {
-                return;
-            }
+            playerMovement.ResetMovement();
             playerMovement.isPreAnimationFinished = false;
             playerMovement.animator.Play("breakCrouch");
         }

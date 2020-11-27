@@ -1,31 +1,30 @@
 ﻿namespace MomodoraCopy
 {
-    public class SampleMenu : SettingMenu
+    public class SampleMenu : AbstractMenu
     {
-        public override void ShowMenu()
+        protected override void Awake()
         {
-            base.ShowMenu();
+            base.Awake();
         }
-        public override void SetMenuDisplay()
-        {
 
-        }
-        public override void CheckEscapeKey()
+        protected override void OnEnable()
         {
-            base.CheckEscapeKey();
+            base.OnEnable();
         }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+        }
+
         public override void CheckArrowKey()
         {
-
         }
         public override void CheckConfirmKey()
         {
-
         }
         public override void CheckCancleKey()
         {
-            base.CheckCancleKey();
         }
     }
-
 }
