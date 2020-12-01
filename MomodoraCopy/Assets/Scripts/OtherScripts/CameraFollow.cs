@@ -58,7 +58,7 @@ namespace MomodoraCopy
         //}
         void CheckPlayerCrouch()
         {
-            if (player.stateMachine.CurState == player.crouch)
+            if (player.stateMachine.CurrentState == player.crouch)
             {
                 if (currentHangTime > 0)
                 {

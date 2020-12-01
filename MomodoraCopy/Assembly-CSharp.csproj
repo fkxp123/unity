@@ -109,10 +109,10 @@
      <Compile Include="Assets\Scripts\UIScripts\IMenu\MainMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\MappingMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\SampleMenu.cs" />
-     <Compile Include="Assets\Scripts\UIScripts\IMenu\SelectedMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\IMenu\SettingMenu.cs" />
      <Compile Include="Assets\Scripts\UIScripts\MenuHandler.cs" />
      <Compile Include="Assets\Scripts\UIScripts\MenuManager.cs" />
+     <Compile Include="Assets\Scripts\UIScripts\MenuMemento.cs" />
      <Compile Include="Assets\Scripts\test.cs" />
      <Compile Include="Assets\Scripts\test2.cs" />
      <Compile Include="Assets\Scripts\test3.cs" />
@@ -747,6 +747,18 @@
     <ProjectReference Include="SuperTiled2Unity.csproj">
       <Project>{B7387974-7D0C-C4E9-4329-098672047821}</Project>
       <Name>SuperTiled2Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.PlayerPrefsEditor.Editor.csproj">
+      <Project>{EF763892-96C4-8F6D-7FBA-33548CFB95A6}</Project>
+      <Name>Unity.PlayerPrefsEditor.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.PlayerPrefsEditor.EditorResources.csproj">
+      <Project>{1E9A0543-A072-4B53-26FD-AEAAC3A79DF9}</Project>
+      <Name>Unity.PlayerPrefsEditor.EditorResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.PlayerPrefsEditor.Samples.SampleScene.csproj">
+      <Project>{B59F74EE-EFFB-2755-7F64-180C5645749A}</Project>
+      <Name>Unity.PlayerPrefsEditor.Samples.SampleScene</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,15 +5,15 @@ namespace MomodoraCopy
 {
     public class PlayerStateMachine
     {
-        public IState CurState { get; private set; }//read only
-        public IState OldState { get; private set; }
+        public IState CurrentState { get; private set; }//read only
+        public IState PreviousState { get; private set; }
         public PlayerStateMachine(IState defaultState)
         {
-            CurState = defaultState;
+            CurrentState = defaultState;
         }
         public void SetState(IState state)
         {
-            if (CurState == state)
+            if (CurrentState == state)
             {
 #if SHOW_DEBUG_MESSAGE
                 Debug.Log("이미 " + state + "상태입니다");
@@ -26,17 +26,17 @@ namespace MomodoraCopy
         }
         public void DoOperateUpdate()
         {
-            CurState.OperateUpdate();
+            CurrentState.OperateUpdate();
         }
         public void ChangeState(IState state)
         {
 #if STATE_DEBUG_MOD
             ClearLog();
 #endif
-            CurState.OperateExit();
-            OldState = CurState;
-            CurState = state;
-            CurState.OperateEnter();
+            CurrentState.OperateExit();
+            PreviousState = CurrentState;
+            CurrentState = state;
+            CurrentState.OperateEnter();
         }
         public void ClearLog()
         {

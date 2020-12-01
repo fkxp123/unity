@@ -26,22 +26,22 @@ namespace MomodoraCopy
         public Vector2 CheckArrowKeyDown()
         {
             float x = 0, y = 0;
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                x = 1;
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyboardManager.instance.LeftKey))
             {
                 x = -1;
             }
-            else x = 0;
-            if (Input.GetKey(KeyCode.DownArrow))
+            else if (Input.GetKey(KeyboardManager.instance.RightKey))
             {
-                y = -1;
+                x = 1;
             }
-            else if (Input.GetKey(KeyCode.UpArrow))
+            else x = 0;
+            if (Input.GetKey(KeyboardManager.instance.UpKey))
             {
                 y = 1;
+            }
+            else if (Input.GetKey(KeyboardManager.instance.DownKey))
+            {
+                y = -1;
             }
             else y = 0;
             return new Vector2(x, y);
@@ -55,23 +55,23 @@ namespace MomodoraCopy
 
         public void CheckKeyDown()
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
                 isKeyDownJump = true;
             }
-            else if (Input.GetKeyDown(KeyCode.Q))
-            {
-                isKeyDownRoll = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
+            else if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
             {
                 isKeyDownAttack = true;
             }
-            else if (Input.GetKeyDown(KeyCode.D))
+            else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
             {
                 isKeyDownBowAttack = true;
             }
-            else if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(KeyboardManager.instance.RollKey))
+            {
+                isKeyDownRoll = true;
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.MenuKey))
             {
                 MenuManager.instance.IsGamePaused = true;
             }
@@ -87,21 +87,21 @@ namespace MomodoraCopy
 
         public void CheckKeyUp()
         {
-            if (Input.GetKeyUp(KeyCode.A))
+            if (Input.GetKeyUp(KeyboardManager.instance.JumpKey))
             {
                 isKeyDownJump = false;
             }
-            else if (Input.GetKeyUp(KeyCode.Q))
-            {
-                isKeyDownRoll = false;
-            }
-            else if (Input.GetKeyUp(KeyCode.S))
+            else if (Input.GetKeyUp(KeyboardManager.instance.AttackKey))
             {
                 isKeyDownAttack = false;
             }
-            else if (Input.GetKeyUp(KeyCode.D))
+            else if (Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
             {
                 isKeyDownBowAttack = false;
+            }
+            else if (Input.GetKeyUp(KeyboardManager.instance.RollKey))
+            {
+                isKeyDownRoll = false;
             }
         }
 

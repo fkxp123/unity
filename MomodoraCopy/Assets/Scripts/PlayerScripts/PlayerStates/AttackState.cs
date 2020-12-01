@@ -44,7 +44,7 @@ namespace MomodoraCopy
         }
         void CheckCanComboAttack()
         {
-            if (!playerMovement.isPreAnimationFinished && Input.GetKeyDown(KeyCode.S) &&
+            if (!playerMovement.isPreAnimationFinished && Input.GetKeyDown(KeyboardManager.instance.AttackKey) &&
                 !comboFlag && playerMovement.attackCount < playerMovement.maxAttackCount)
             {//need some hangtime?-canInputAttackKey(){if(isPreAnimationFinished)}
                 playerMovement.attackCount += 1;

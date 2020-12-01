@@ -17,13 +17,16 @@
             base.OnDisable();
         }
 
+        protected override void OperateMenuConfirm()
+        {
+        }
+        protected override void OperateMenuCancle()
+        {
+        }
+        protected override void OperateMenuEscape()
+        {
+        }
         public override void CheckArrowKey()
-        {
-        }
-        public override void CheckConfirmKey()
-        {
-        }
-        public override void CheckCancleKey()
         {
         }
     }

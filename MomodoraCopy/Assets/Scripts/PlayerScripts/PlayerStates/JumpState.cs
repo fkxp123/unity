@@ -37,7 +37,7 @@ namespace MomodoraCopy
             {
                 player.CheckState(player.playerInput.directionalInput);
             }
-            if (Input.GetKeyUp(KeyCode.A))
+            if (Input.GetKeyUp(KeyboardManager.instance.JumpKey))
             {
                 playerMovement.OperateJumpKeyUp();
             }

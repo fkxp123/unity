@@ -36,17 +36,10 @@ namespace MomodoraCopy
         
         List<AbstractMenu> selectedMenuList = new List<AbstractMenu>();
 
-        protected override void OnEnable()
+        protected override void Awake()
         {
-            base.OnEnable();
-            slotCount = 0;
-            mainMenuObjectStatic.SetActive(true);
-            mainMenuObjectDynamic.SetActive(true);
-            backgroundMenu.SetBackgroundAlpha(0.5f);
-            backgroundMenu.SetKeyDescriptionBarPosition(KeyDescriptionBarHighPos);
-        }
-        void Start()
-        {
+            base.Awake();
+
             mainMenuSlots = new GameObject[selectedMainMenuSlot.transform.childCount];
             slotImage = new Image[selectedMainMenuSlot.transform.childCount];
             for (int i = 0; i < selectedMainMenuSlot.transform.childCount; i++)
@@ -54,7 +47,7 @@ namespace MomodoraCopy
                 mainMenuSlots[i] = selectedMainMenuSlot.transform.GetChild(i).gameObject;
                 slotImage[i] = mainMenuSlots[i].GetComponent<Image>();
             }
-            
+
             inventoryMenu = inventoryMenuObject.GetComponent<InventoryMenu>();
             keyItemMenu = keyItemMenuObject.GetComponent<KeyItemMenu>();
             mappingMenu = mappingMenuObject.GetComponent<MappingMenu>();
@@ -66,8 +59,22 @@ namespace MomodoraCopy
             selectedMenuList.Add(mappingMenu);
             selectedMenuList.Add(settingMenu);
             selectedMenuList.Add(logOutMenu);
+        }
 
-            ChangeSelectedSlotMenu(slotCount);
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            if (MenuManager.instance.isDisableByEscapeKey)
+            {
+                slotCount = 0;
+            }
+            mainMenuObjectStatic.SetActive(true);
+            mainMenuObjectDynamic.SetActive(true);
+            backgroundMenu.SetBackgroundAlpha(0.5f);
+            backgroundMenu.SetKeyDescriptionBarPosition(KeyDescriptionBarHighPos);
+
+            ChangeSelectedSlotMenu(slotImage, slotCount);
+            ChangeMenuDescription(slotCount);
         }
         
         protected override void OnDisable()
@@ -75,6 +82,18 @@ namespace MomodoraCopy
             base.OnDisable();
             mainMenuObjectStatic.SetActive(false);
             mainMenuObjectDynamic.SetActive(false);
+        }
+
+        protected override void OperateMenuConfirm()
+        {
+            base.OperateMenuConfirm();
+            selectedMenuList[slotCount].enabled = true;
+        }
+        protected override void OperateMenuCancle()
+        {
+            enabled = false;
+            MenuManager.instance.isDisableByEscapeKey = true;
+            GameManager.instance.Resume();
         }
 
         public override void CheckArrowKey()
@@ -86,7 +105,8 @@ namespace MomodoraCopy
                 {
                     slotCount = 0;
                 }
-                ChangeSelectedSlotMenu(slotCount);
+                ChangeSelectedSlotMenu(slotImage, slotCount);
+                ChangeMenuDescription(slotCount);
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -95,46 +115,9 @@ namespace MomodoraCopy
                 {
                     slotCount = selectedMainMenuSlot.transform.childCount - 1;
                 }
-                ChangeSelectedSlotMenu(slotCount);
+                ChangeSelectedSlotMenu(slotImage, slotCount);
+                ChangeMenuDescription(slotCount);
             }
-        }
-        public override void CheckConfirmKey()
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                enabled = false;
-                selectedMenuList[slotCount].enabled = true;
-            }
-        }
-        public override void CheckCancleKey()
-        {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                enabled = false;
-                GameManager.instance.Resume();
-            }
-        }
-
-        void ChangeSelectedSlotMenu(int selectedCount)
-        {
-            ChangeMenuDescription(selectedCount);
-            SetInvisibleAllSelectedSlot();
-            SetVisibleSelectedSlot(selectedCount);
-        }
-        void SetInvisibleAllSelectedSlot()
-        {
-            for (int i = 0; i < selectedMainMenuSlot.transform.childCount; i++)
-            {
-                Color temp = slotImage[i].color;
-                temp.a = 0.0f;
-                slotImage[i].color = temp;
-            }
-        }
-        void SetVisibleSelectedSlot(int selectedCount)
-        {
-            Color temp = slotImage[selectedCount].color;
-            temp.a = 1.0f;
-            slotImage[selectedCount].color = temp;
         }
         void ChangeMenuDescription(int selectedCount)
         {
@@ -159,21 +142,6 @@ namespace MomodoraCopy
                     break;
             }
         }
-
-        #region SelectedMenu Function
-        //public void SetActiveFalseAllSelectedMenu()
-        //{
-        //    selectedMenuObject.SetActive(false);
-        //    foreach (GameObject obj in selectedMenuObjectList)
-        //    {
-        //        obj.SetActive(false);
-        //    }
-        //}
-        //public void SetActiveTrueSelectedMenu(int selectedCount)
-        //{
-        //    selectedMenuObjectList[selectedCount].SetActive(true);
-        //}
-        #endregion
     }
 
 }

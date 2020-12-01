@@ -3,32 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BackgroundMenu : MonoBehaviour
+namespace MomodoraCopy
 {
-    public GameObject menuBackground;
-    public GameObject keyDescriptionBar;
-
-    // Start is called before the first frame update
-    void Start()
+    public class BackgroundMenu : MonoBehaviour
     {
+        public GameObject menuBackground;
+        public GameObject keyDescriptionBar;
         
+        void Awake()
+        {
+            keyDescriptionBar.transform.GetChild(0).GetComponent<Text>().text = 
+                string.Format("확인 : {0}", KeyboardManager.instance.JumpKey.ToString());
+            keyDescriptionBar.transform.GetChild(1).GetComponent<Text>().text =
+                string.Format("취소 : {0}", KeyboardManager.instance.AttackKey.ToString());
+        }
+        public void SetBackgroundAlpha(float alpha)
+        {
+            Image img = menuBackground.GetComponent<Image>();
+            Color temp = img.color;
+            temp.a = alpha;
+            img.color = temp;
+        }
+        public void SetKeyDescriptionBarPosition(Vector3 position)
+        {
+            keyDescriptionBar.GetComponent<RectTransform>().localPosition = position;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SetBackgroundAlpha(float alpha)
-    {
-        Image img = menuBackground.GetComponent<Image>();
-        Color temp = img.color;
-        temp.a = alpha;
-        img.color = temp;
-    }
-    public void SetKeyDescriptionBarPosition(Vector3 position)
-    {
-        keyDescriptionBar.GetComponent<RectTransform>().localPosition = position;
-    }
 }

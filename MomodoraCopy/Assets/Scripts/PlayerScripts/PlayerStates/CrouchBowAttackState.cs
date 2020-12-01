@@ -29,7 +29,7 @@ namespace MomodoraCopy
             }
             playerMovement.ResetMovement();
             playerInput.ResetCheckKey();
-            if (Input.GetKey(KeyCode.DownArrow))
+            if (Input.GetKey(KeyboardManager.instance.DownKey))
             {
                 player.stateMachine.SetState(player.crouch);
                 return;

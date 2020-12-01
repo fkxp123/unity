@@ -12,7 +12,7 @@ namespace MomodoraCopy
         {
             base.OperateEnter();
             playerMovement.StopMovement();
-            if (player.stateMachine.OldState == player.crouchBowAttack)
+            if (player.stateMachine.PreviousState == player.crouchBowAttack)
             {
                 return;
             }
@@ -26,11 +26,11 @@ namespace MomodoraCopy
             {
                 playerMovement.animator.Play("crouch");
             }
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
             {
                 player.stateMachine.SetState(player.crouchBowAttack);
             }
-            else if (Input.GetKeyDown(KeyCode.S))
+            else if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
             {
                 player.stateMachine.SetState(player.attack);
             }

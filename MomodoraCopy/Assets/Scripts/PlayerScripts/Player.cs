@@ -64,7 +64,7 @@ namespace MomodoraCopy
             //check player's state in ground
             if (playerMovement.isGround)
             {
-                if (stateMachine.CurState == fall || stateMachine.CurState == jump)
+                if (stateMachine.CurrentState == fall || stateMachine.CurrentState == jump)
                 {
                     stateMachine.SetState(land);
                     return;

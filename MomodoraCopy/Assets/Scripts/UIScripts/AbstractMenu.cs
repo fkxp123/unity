@@ -25,10 +25,22 @@ namespace MomodoraCopy
 
         protected virtual void Update()
         {
-            CheckArrowKey();
-            CheckConfirmKey();
-            CheckCancleKey();
-            CheckEscapeKey();
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                OperateMenuConfirm();
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                OperateMenuCancle();
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                OperateMenuEscape();
+            }
+            else
+            {
+                CheckArrowKey();
+            }
         }
         protected virtual void OnDisable()
         {
@@ -38,17 +50,50 @@ namespace MomodoraCopy
             backgroundMenu.keyDescriptionBar.SetActive(false);
         }
 
-        public virtual void CheckEscapeKey()
+        protected virtual void OperateMenuConfirm()
+        {  
+            enabled = false;
+            MenuManager.instance.menuMemento.SetMenuMemento(gameObject);
+        }
+        protected virtual void OperateMenuCancle()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            enabled = false;
+            MenuManager.instance.isDisableByEscapeKey = false;
+            MenuManager.instance.menuMemento.componentsStack.Pop().enabled = true;
+        }
+        protected virtual void OperateMenuEscape()
+        {
+            enabled = false;
+            MenuManager.instance.isDisableByEscapeKey = true;
+            MenuManager.instance.menuMemento.componentsStack.Clear();
+            GameManager.instance.Resume();
+        }
+
+        public abstract void CheckArrowKey();
+
+        #region ChangeSlotImageFunctions
+        protected void ChangeSelectedSlotMenu(Image[] slotImage, int selectedCount)
+        {
+            SetInvisibleAllSelectedSlots(slotImage);
+            SetVisibleSelectedSlot(slotImage, selectedCount);
+        }
+        protected void SetInvisibleAllSelectedSlots(Image[] slotImage)
+        {
+            Color temp;
+            for (int i = 0; i < slotImage.Length; i++)
             {
-                GameManager.instance.Resume();
-                enabled = false;
+                temp = slotImage[i].color;
+                temp.a = 0.0f;
+                slotImage[i].color = temp;
             }
         }
-        public abstract void CheckArrowKey();
-        public abstract void CheckConfirmKey();
-        public abstract void CheckCancleKey();
+        protected void SetVisibleSelectedSlot(Image[] slotImage, int selectedCount)
+        {
+            Color temp = slotImage[selectedCount].color;
+            temp.a = 1.0f;
+            slotImage[selectedCount].color = temp;
+        }
+        #endregion
     }
 
 }
