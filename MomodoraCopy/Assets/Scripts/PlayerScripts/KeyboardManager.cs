@@ -17,8 +17,6 @@ namespace MomodoraCopy
         public KeyCode ChangeItemKey { get; set; }
         public KeyCode MappingKey { get; set; }
         public KeyCode MenuKey { get; set; }
-        public KeyCode ConfirmKey { get; set; }
-        public KeyCode CancleKey { get; set; }
 
         public List<KeyCode> keyCodeList = new List<KeyCode>();
         public List<string> keyNameList = new List<string>();
@@ -52,7 +50,7 @@ namespace MomodoraCopy
             ChangeItemKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[9], "E"));
             MappingKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[10], "Tab"));
             MenuKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[11], "Escape"));
-
+            
             keyCodeList.Add(UpKey);
             keyCodeList.Add(DownKey);
             keyCodeList.Add(LeftKey);
@@ -66,6 +64,36 @@ namespace MomodoraCopy
             keyCodeList.Add(MappingKey);
             keyCodeList.Add(MenuKey);
         }
-    }
 
+        public void GetKeyCodes()
+        {
+            UpKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[0], "UpArrow"));
+            DownKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[1], "DownArrow"));
+            LeftKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[2], "LeftArrow"));
+            RightKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[3], "RightArrow"));
+            JumpKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[4], "A"));
+            AttackKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[5], "S"));
+            BowAttackKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[6], "D"));
+            RollKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[7], "Q"));
+            UseItemKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[8], "W"));
+            ChangeItemKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[9], "E"));
+            MappingKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[10], "Tab"));
+            MenuKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[11], "Escape"));
+        }
+        public void SetDefaultKeyCodes()
+        {
+            PlayerPrefs.SetString(keyNameList[0], "UpArrow");
+            PlayerPrefs.SetString(keyNameList[1], "DownArrow");
+            PlayerPrefs.SetString(keyNameList[2], "LeftArrow");
+            PlayerPrefs.SetString(keyNameList[3], "RightArrow");
+            PlayerPrefs.SetString(keyNameList[4], "A");
+            PlayerPrefs.SetString(keyNameList[5], "S");
+            PlayerPrefs.SetString(keyNameList[6], "D");
+            PlayerPrefs.SetString(keyNameList[7], "Q");
+            PlayerPrefs.SetString(keyNameList[8], "W");
+            PlayerPrefs.SetString(keyNameList[9], "E");
+            PlayerPrefs.SetString(keyNameList[10], "Tab");
+            PlayerPrefs.SetString(keyNameList[11], "Escape");
+        }
+    }
 }

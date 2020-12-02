@@ -33,7 +33,7 @@ namespace MomodoraCopy
             {
                 OperateMenuCancle();
             }
-            else if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(KeyboardManager.instance.MenuKey))
             {
                 OperateMenuEscape();
             }

@@ -741,14 +741,6 @@
       <Project>{92C05839-6A96-25B7-EF80-9236BE95633A}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="SuperTiled2UnityEditor.csproj">
-      <Project>{A7E16BA7-D342-8C03-1179-9770579F8068}</Project>
-      <Name>SuperTiled2UnityEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="SuperTiled2Unity.csproj">
-      <Project>{B7387974-7D0C-C4E9-4329-098672047821}</Project>
-      <Name>SuperTiled2Unity</Name>
-    </ProjectReference>
     <ProjectReference Include="Unity.PlayerPrefsEditor.Editor.csproj">
       <Project>{EF763892-96C4-8F6D-7FBA-33548CFB95A6}</Project>
       <Name>Unity.PlayerPrefsEditor.Editor</Name>
@@ -756,6 +748,14 @@
     <ProjectReference Include="Unity.PlayerPrefsEditor.EditorResources.csproj">
       <Project>{1E9A0543-A072-4B53-26FD-AEAAC3A79DF9}</Project>
       <Name>Unity.PlayerPrefsEditor.EditorResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="SuperTiled2UnityEditor.csproj">
+      <Project>{A7E16BA7-D342-8C03-1179-9770579F8068}</Project>
+      <Name>SuperTiled2UnityEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="SuperTiled2Unity.csproj">
+      <Project>{B7387974-7D0C-C4E9-4329-098672047821}</Project>
+      <Name>SuperTiled2Unity</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.PlayerPrefsEditor.Samples.SampleScene.csproj">
       <Project>{B59F74EE-EFFB-2755-7F64-180C5645749A}</Project>

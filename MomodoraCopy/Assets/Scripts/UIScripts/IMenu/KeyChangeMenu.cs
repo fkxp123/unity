@@ -42,15 +42,18 @@ namespace MomodoraCopy
                 slotImage[i] = contentSlots[i].GetComponent<Image>();
             }
 
-            for(int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
+            scrollBarMoveAmount = 1.0f / (selectedContentSlot.transform.childCount - maxVisialbeSlotCount);
+
+            keyCodes = (KeyCode[])Enum.GetValues(typeof(KeyCode));
+        }
+
+        void Start()
+        {
+            for (int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
             {
                 selectedKeyCodeText[i] = contentSlots[i].transform.GetChild(0).GetComponent<Text>();
                 selectedKeyCodeText[i].text = KeyboardManager.instance.keyCodeList[i].ToString();
             }
-
-            scrollBarMoveAmount = 1.0f / (selectedContentSlot.transform.childCount - maxVisialbeSlotCount);
-
-            keyCodes = (KeyCode[])Enum.GetValues(typeof(KeyCode));
         }
 
         protected override void Update()
@@ -90,11 +93,23 @@ namespace MomodoraCopy
 
         protected override void OperateMenuConfirm()
         {
-            if(slotCount <= 12)
+            if(slotCount < 12)
             {
                 isWatingChangeKey = true;
                 selectedKeyName = selectedKeyCodeText[slotCount].text;
                 selectedKeyCodeText[slotCount].text = "아무 버튼이나 누르세요";
+            }
+            else if(slotCount == 12)
+            {
+
+            }
+            else if(slotCount == 13)
+            {
+                SetDefaultKeySetting();
+            }
+            else if(slotCount == 14)
+            {
+                OperateMenuCancle();
             }
             
         }
@@ -150,6 +165,7 @@ namespace MomodoraCopy
                     PlayerPrefs.SetString(KeyboardManager.instance.keyNameList[slotCount], keyCode.ToString());
                     isWatingChangeKey = false;
                     selectedKeyName = string.Empty;
+                    KeyboardManager.instance.GetKeyCodes();
                 }
             }
         }
@@ -163,6 +179,15 @@ namespace MomodoraCopy
                     PlayerPrefs.SetString(KeyboardManager.instance.keyNameList[i], selectedKeyName);
                 }
             }
+        }
+        void SetDefaultKeySetting()
+        {
+            KeyboardManager.instance.SetDefaultKeyCodes();
+            for (int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
+            {
+                selectedKeyCodeText[i].text = KeyboardManager.instance.keyCodeList[i].ToString();
+            }
+            KeyboardManager.instance.GetKeyCodes();
         }
     }
 }
