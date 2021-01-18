@@ -6,9 +6,9 @@ TagManager:
   tags:
   - Through
   - Climbwall
-  - enemy
-  - player
-  - platform
+  - Projectile
+  - Platform
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -18,10 +18,10 @@ TagManager:
   - UI
   - 
   - 
-  - player
-  - background
-  - platform
-  - damagable
+  - Player
+  - Background
+  - Platform
+  - Damagable
   - 
   - 
   - 
@@ -54,6 +54,9 @@ TagManager:
     locked: 0
   - name: ui
     uniqueID: 2817891049
+    locked: 0
+  - name: enemy
+    uniqueID: 717318121
     locked: 0
   - name: MenuBackground
     uniqueID: 4184272029

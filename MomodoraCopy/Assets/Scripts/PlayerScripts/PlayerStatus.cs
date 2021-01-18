@@ -8,6 +8,8 @@ namespace MomodoraCopy
         public static PlayerStatus instance;
         public int Hp = 100;
         public int CurrentHp;
+        public float meleeAtk = 10.0f;
+        //public float rangeAtk = 5;
         public int atk = 5;
         public float HitDistance = 3;
         public int alpha = 0;

@@ -1,4 +1,6 @@
-﻿namespace MomodoraCopy
+﻿using UnityEngine;
+
+namespace MomodoraCopy
 {
     public class RollState : PlayerState
     {
@@ -9,24 +11,30 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.isPreAnimationFinished = false;
-            playerInput.StopCheckKey();
+            playerMovement.isAnimationFinished = false;
             playerMovement.animator.Play("roll");
+            playerMovement.OperateRoll();
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            playerMovement.OperateRoll();
-            if (playerMovement.isPreAnimationFinished)
+            playerMovement.CheckCanFlip();
+            if (!playerMovement.isAnimationFinished && playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("roll"))
             {
-                playerInput.ResetCheckKey();
-                player.CheckState(playerInput.directionalInput);
+                return;
             }
+            if (playerMovement.velocity.y < 0)
+            {
+                player.stateMachine.SetState(player.fall);
+                return;
+            }
+            player.stateMachine.SetState(player.idle);
         }
         public override void OperateExit()
         {
             base.OperateExit();
-            playerInput.ResetCheckKey();
+            playerMovement.stopCheckFlip = false;
+            playerMovement.isAnimationFinished = true;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }

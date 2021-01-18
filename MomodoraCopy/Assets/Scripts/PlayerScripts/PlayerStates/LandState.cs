@@ -1,4 +1,6 @@
-﻿namespace MomodoraCopy
+﻿using UnityEngine;
+
+namespace MomodoraCopy
 {
     public class LandState : PlayerState
     {
@@ -9,41 +11,50 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            if (playerMovement.highPosY - playerMovement.transform.position.y > 8)
+            if (playerMovement.isLandHard)
             {
-                playerInput.StopCheckKey();
-                playerMovement.StopMovement();
+                playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+                playerMovement.isAnimationFinished = false;
                 playerMovement.animator.Play("landingHard");
                 return;
             }
             playerMovement.ResetPlayerVelocity();
-            playerMovement.isPreAnimationFinished = false;
+            playerMovement.isAnimationFinished = false;
             playerMovement.animator.Play("landingSoft");
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-
-            if (playerMovement.stopMovement)
+            if (playerMovement.isAnimationFinished)
+            {
+                player.stateMachine.SetState(player.idle);
+                return;
+            }
+            if(playerMovement.moveType == PlayerMovement.MoveType.StopMove)
             {
                 return;
             }
-            if (playerMovement.isPreAnimationFinished)
+            if (playerInput.isKeyDown)
             {
-                player.CheckState(player.playerInput.directionalInput);
+                player.stateMachine.SetState(player.idle);
+                return;
             }
-            else if (playerInput.isKeyDown && !playerMovement.stopMovement)
+            if(playerInput.directionalInput.y == -1)
             {
-                player.CheckState(player.playerInput.directionalInput);
+                player.stateMachine.SetState(player.crouch);
+                return;
             }
-            else if (playerInput.directionalInput.x != 0 && !playerMovement.stopMovement)
+            if (playerInput.directionalInput.x != 0)
             {
-                player.CheckState(player.playerInput.directionalInput);
+                player.stateMachine.SetState(player.run);
+                return;
             }
         }
         public override void OperateExit()
         {
             base.OperateExit();
+            playerMovement.isAnimationFinished = true;
+            playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }
 

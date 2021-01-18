@@ -15,10 +15,10 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.attackCount += 1;
-            if (playerMovement.attackCount == 1)
+            playerMovement.AttackCount += 1;
+            if (playerMovement.AttackCount == 1)
             {
-                playerMovement.isPreAnimationFinished = false;
+                playerMovement.isAnimationFinished = false;
                 playerMovement.animator.Play("firstAttack");
                 playerMovement.OperateFirstAttack();
             }
@@ -26,53 +26,52 @@ namespace MomodoraCopy
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            if (playerMovement.isPreAnimationFinished && !comboFlag)
+            playerMovement.CheckAttackArea();
+            CheckCanComboAttack();
+            playerMovement.CheckCanFlip();
+            OperateComboAttack();
+            if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("firstAttack") &&
+                !playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("secondAttack") &&
+                !playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("thirdAttack"))
+            {
+                playerMovement.isAnimationFinished = true;
+                player.stateMachine.SetState(player.idle);
+                return;
+            }
+            if (playerMovement.isAnimationFinished && !comboFlag)
             {
                 playerMovement.stopCheckFlip = false;
-                player.CheckState(playerInput.directionalInput);
+                player.stateMachine.SetState(player.idle);
             }
-            CheckCanComboAttack();
-            CheckCanFlip();
-            OperateComboAttack();
         }
         public override void OperateExit()
         {
             base.OperateExit();
-            playerMovement.attackCount = 0;
-            playerMovement.isPreAnimationFinished = true;
+            playerMovement.AttackCount = 0;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
         void CheckCanComboAttack()
         {
-            if (!playerMovement.isPreAnimationFinished && Input.GetKeyDown(KeyboardManager.instance.AttackKey) &&
-                !comboFlag && playerMovement.attackCount < playerMovement.maxAttackCount)
-            {//need some hangtime?-canInputAttackKey(){if(isPreAnimationFinished)}
-                playerMovement.attackCount += 1;
+            if (!playerMovement.isAnimationFinished && Input.GetKeyDown(KeyboardManager.instance.AttackKey) &&
+                !comboFlag && playerMovement.AttackCount < playerMovement.maxAttackCount)
+            {
+                playerMovement.AttackCount += 1;
                 comboFlag = true;
             }
         }
-        void CheckCanFlip()
-        {
-            if (!playerMovement.isPreAnimationFinished)
-            {
-                playerMovement.stopCheckFlip = true;
-                return;
-            }
-            playerMovement.stopCheckFlip = false;
-        }
         void OperateComboAttack()
         {
-            if (playerMovement.isPreAnimationFinished && comboFlag && playerMovement.attackCount == 2)
+            if (playerMovement.isAnimationFinished && comboFlag && playerMovement.AttackCount == 2)
             {
                 comboFlag = false;
-                playerMovement.isPreAnimationFinished = false;
+                playerMovement.isAnimationFinished = false;
                 playerMovement.animator.Play("secondAttack");
                 playerMovement.OperateSecondAttack();
             }
-            if (playerMovement.isPreAnimationFinished && comboFlag && playerMovement.attackCount == 3)
+            if (playerMovement.isAnimationFinished && comboFlag && playerMovement.AttackCount == 3)
             {
                 comboFlag = false;
-                playerMovement.isPreAnimationFinished = false;
+                playerMovement.isAnimationFinished = false;
                 playerMovement.animator.Play("thirdAttack");
                 playerMovement.OperateThirdAttack();
             }

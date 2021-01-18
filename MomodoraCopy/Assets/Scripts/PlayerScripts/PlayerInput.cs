@@ -5,7 +5,6 @@ namespace MomodoraCopy
     [RequireComponent(typeof(Player))]
     public class PlayerInput : MonoBehaviour
     {
-        public bool stopCheckKey;
         public bool isKeyDown;
         public Vector2 directionalInput;
 
@@ -14,13 +13,15 @@ namespace MomodoraCopy
         public bool isKeyDownRoll;
         public bool isKeyDownBowAttack;
 
+        PlayerMovement playerMovement;
+        void Start()
+        {
+            playerMovement = GetComponent<PlayerMovement>();
+        }
         void Update()
         {
-            if (!stopCheckKey)
-            {
-                directionalInput = CheckArrowKeyDown();
-                CheckInputKey();
-            }
+            directionalInput = CheckArrowKeyDown();
+            CheckInputKey();
         }
 
         public Vector2 CheckArrowKeyDown()
@@ -44,6 +45,11 @@ namespace MomodoraCopy
                 y = -1;
             }
             else y = 0;
+
+            //if(playerMovement.moveType == PlayerMovement.MoveType.StopMove)
+            //{
+            //    x = 0;
+            //}
             return new Vector2(x, y);
         }
 
@@ -105,23 +111,23 @@ namespace MomodoraCopy
             }
         }
 
-        public void StopCheckKey()
-        {
-            stopCheckKey = true;
+        //public void StopCheckKey()
+        //{
+        //    stopCheckKey = true;
 
-            /*키가 눌린상태에서 stopCheckKey가 true가 되면 
-             *해당 키가 눌린상태에서 멈추게되어 StopCheckKey상태에서 
-             *키를 누르지않아도 true로 설정되므로
-             *StopCheckKey에서 모든 키의 bool값을 초기화*/
-            isKeyDownAttack = false;
-            isKeyDownJump = false;
-            isKeyDownRoll = false;
-            isKeyDownBowAttack = false;
-        }
-        public void ResetCheckKey()
-        {
-            stopCheckKey = false;
-        }
+        //    /*키가 눌린상태에서 stopCheckKey가 true가 되면 
+        //     *해당 키가 눌린상태에서 멈추게되어 StopCheckKey상태에서 
+        //     *키를 누르지않아도 true로 설정되므로
+        //     *StopCheckKey에서 모든 키의 bool값을 초기화*/
+        //    isKeyDownAttack = false;
+        //    isKeyDownJump = false;
+        //    isKeyDownRoll = false;
+        //    isKeyDownBowAttack = false;
+        //}
+        //public void ResetCheckKey()
+        //{
+        //    stopCheckKey = false;
+        //}
     }
 
 }

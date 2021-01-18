@@ -41,14 +41,9 @@ namespace MomodoraCopy
         public Transform AtkPlayerBoxPos;
         public Vector2 AtkPlayerBoxSize;
         public GameObject ExclamationMark;
-        //public GameObject PlayerPos;
 
         bool FindPlayer;
-        //bool AIBehavior;
-        bool stopAllMove;
-        //bool stopAi;
-        //bool AiIdle;
-        bool TimeToBehavior;
+
         bool stopMoving_X;
         bool canAttack;
         public bool isAttack;

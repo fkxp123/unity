@@ -6,7 +6,8 @@ namespace MomodoraCopy
     {
         public GameObject prefab;
         public GameObject spawner;
-        public float objectRotateZ;
+        public Vector3 position;
+        public Quaternion objectRotation;
     }
 
 }

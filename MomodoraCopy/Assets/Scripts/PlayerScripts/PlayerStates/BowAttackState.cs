@@ -1,7 +1,11 @@
-﻿namespace MomodoraCopy
+﻿using UnityEngine;
+
+namespace MomodoraCopy
 {
     public class BowAttackState : PlayerState
     {
+        float bowPositionY = 0.65f;
+        bool isBowAttackKeyDown;
         public BowAttackState(Player player) : base(player)
         {
             arrowSpawner = player.arrowSpawner;
@@ -10,29 +14,45 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.StopMovement();
-            playerInput.StopCheckKey();
-            arrowSpawner.SetSpawnerPosition(player.transform.position, arrowSpawner.standingArrowSpawnerPosition);
-            arrowSpawner.arrowRotateZ = arrowSpawner.SetPoolingObjectRotateZ(playerMovement.spriteRenderer.flipX);
-            arrowSpawner.OperateSpawn(info, arrowSpawner.arrowRotateZ, ArrowSpawner.ACTIVATE_TIME);
-            playerMovement.isPreAnimationFinished = false;
-            playerMovement.animator.Play("bowAttack");
+            playerMovement.isAnimationFinished = false;
+            playerMovement.animator.Play("bowAttack", -1, 0f);
+
+            playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+            playerMovement.stopCheckFlip = true;
+            OperateBowAttack();
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            if (playerMovement.isPreAnimationFinished)
+            playerMovement.CheckCanFlip();
+            playerInput.directionalInput.x = 0;
+            if (!playerMovement.isAnimationFinished)
             {
-                playerMovement.ResetMovement();
-                playerInput.ResetCheckKey();
-                player.CheckState(playerInput.directionalInput);
+                return;
             }
+            player.stateMachine.SetState(player.idle);
         }
         public override void OperateExit()
         {
-            playerMovement.ResetMovement();
-            playerInput.ResetCheckKey();
             base.OperateExit();
+            playerMovement.isAnimationFinished = true;
+            playerMovement.stopCheckFlip = false;
+            playerMovement.moveType = PlayerMovement.MoveType.Normal;
+        }
+        void OperateBowAttack()
+        {
+            info.position = new Vector3(player.transform.position.x, player.transform.position.y + bowPositionY, Random.Range(0.0f, 1.0f));
+            info.objectRotation = player.transform.rotation;
+            arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);
+        }
+
+        void CheckSomething()
+        {
+            if (playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("bowAttack"))
+            {
+                player.stateMachine.SetState(player.idle);
+                return;
+            }
         }
     }
 }

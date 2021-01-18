@@ -50,7 +50,13 @@ namespace MomodoraCopy
             ChangeItemKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[9], "E"));
             MappingKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[10], "Tab"));
             MenuKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[11], "Escape"));
-            
+
+            ResetKeyCodeList();
+        }
+
+        void ResetKeyCodeList()
+        {
+            keyCodeList.Clear();
             keyCodeList.Add(UpKey);
             keyCodeList.Add(DownKey);
             keyCodeList.Add(LeftKey);
@@ -79,6 +85,7 @@ namespace MomodoraCopy
             ChangeItemKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[9], "E"));
             MappingKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[10], "Tab"));
             MenuKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[11], "Escape"));
+            ResetKeyCodeList();
         }
         public void SetDefaultKeyCodes()
         {

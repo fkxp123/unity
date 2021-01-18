@@ -11,9 +11,12 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.SaveJumpPosY();
+            if (playerMovement.isGround)
+            {
+                playerMovement.SaveJumpPosY();
+            }
             playerMovement.jumpCount += 1;
-            playerMovement.isPreAnimationFinished = false;
+            playerMovement.isAnimationFinished = false;
             if (playerMovement.jumpCount == 1)
             {
                 playerMovement.animator.Play("jump");
@@ -21,7 +24,9 @@ namespace MomodoraCopy
             }
             else if (playerMovement.jumpCount > 1)
             {
-                playerMovement.animator.Play("doubleJump");
+                player.doubleJumpEffect.transform.position = playerMovement.transform.position;
+                player.doubleJumpEffect.Play();
+                playerMovement.animator.Play("jump");
                 playerMovement.OperateJumpKeyDown();
             }
         }
@@ -29,17 +34,33 @@ namespace MomodoraCopy
         {
             base.OperateUpdate();
             playerMovement.SaveHighPosY();
-            if (playerMovement.velocity.y < 0)
+            if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
             {
-                player.CheckState(player.playerInput.directionalInput);
+                player.stateMachine.SetState(player.airAttack);
+                return;
             }
-            if (playerInput.isKeyDown)
+            else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
             {
-                player.CheckState(player.playerInput.directionalInput);
+                player.stateMachine.SetState(player.airBowAttack);
+                return;
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
+            {
+                if (playerMovement.jumpCount < playerMovement.maxJumpCount)
+                {
+                    OperateEnter();
+                    return;
+                }
+            }
+            else if (playerMovement.velocity.y < 0)
+            {
+                player.stateMachine.SetState(player.fall);
+                return;
             }
             if (Input.GetKeyUp(KeyboardManager.instance.JumpKey))
             {
                 playerMovement.OperateJumpKeyUp();
+                return;
             }
         }
         public override void OperateExit()

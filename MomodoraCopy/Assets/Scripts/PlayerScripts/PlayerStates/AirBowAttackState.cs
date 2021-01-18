@@ -1,7 +1,10 @@
-﻿namespace MomodoraCopy
+﻿using UnityEngine;
+
+namespace MomodoraCopy
 { 
     public class AirBowAttackState : PlayerState
     {
+        float airBowPositionY = 0.75f;
         public AirBowAttackState(Player player) : base(player)
         {
             arrowSpawner = player.arrowSpawner;
@@ -10,30 +13,49 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerInput.StopCheckKey();
-            arrowSpawner.SetSpawnerPosition(player.transform.position, arrowSpawner.airArrowSpawnerPosition);
-            arrowSpawner.arrowRotateZ = arrowSpawner.SetPoolingObjectRotateZ(playerMovement.spriteRenderer.flipX);
-            arrowSpawner.OperateSpawn(info, arrowSpawner.arrowRotateZ, ArrowSpawner.ACTIVATE_TIME);
-            playerMovement.isPreAnimationFinished = false;
-            playerMovement.animator.Play("airBowAttack");
+            if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("airBowAttack"))
+            {
+                playerMovement.isAnimationFinished = false;
+                playerMovement.animator.Play("airBowAttack", -1, 0f);
+            }
+            info.position = new Vector3(player.transform.position.x, player.transform.position.y + airBowPositionY, Random.Range(0.0f, 1.0f));
+            info.objectRotation = player.transform.rotation;
+            arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            if (playerMovement.isGround)
+            playerMovement.CheckCanFlip();
+            if (playerMovement.velocity.y == 0)
             {
-                playerMovement.ResetPlayerVelocity();
+                playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+                if (playerMovement.isLandHard)
+                {
+                    player.stateMachine.SetState(player.land);
+                    return;
+                }
             }
-            if (playerMovement.isPreAnimationFinished)
+            else if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
-                playerInput.ResetCheckKey();
-                player.stateMachine.SetState(player.fall);
+                if (playerMovement.jumpCount < playerMovement.maxJumpCount)
+                {
+                    player.stateMachine.SetState(player.jump);
+                    return;
+                }
             }
+
+            if (!playerMovement.isAnimationFinished)
+            {
+                return;
+            }
+            player.stateMachine.SetState(player.fall);
         }
         public override void OperateExit()
         {
-            playerInput.ResetCheckKey();
             base.OperateExit();
+            playerMovement.isAnimationFinished = true;
+            playerMovement.stopCheckFlip = false;
+            playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }
 

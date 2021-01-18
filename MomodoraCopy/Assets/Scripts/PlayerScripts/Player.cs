@@ -12,6 +12,9 @@ namespace MomodoraCopy
         public GameObject arrowSpawnerObject;
         public ArrowSpawner arrowSpawner;
 
+        public ParticleSystem doubleJumpEffect;
+        public ParticleSystem stepDustEffect;
+
         #region IState
         public IState idle;
         public IState crouch;
@@ -59,7 +62,7 @@ namespace MomodoraCopy
             stateMachine.DoOperateUpdate();
         }
 
-        public void CheckState(Vector2 input)
+        public void CheckStates(Vector2 input)
         {
             //check player's state in ground
             if (playerMovement.isGround)
@@ -94,9 +97,12 @@ namespace MomodoraCopy
                 }
                 else if (playerInput.isKeyDownBowAttack)
                 {
-                    playerInput.isKeyDownBowAttack = false;
-                    stateMachine.SetState(bowAttack);
-                    return;
+                    if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("bowAttack"))
+                    {
+                        playerInput.isKeyDownBowAttack = false;
+                        stateMachine.SetState(bowAttack);
+                        return;
+                    }
                 }
                 //-------------------------------------
                 //CheckState by PlayerInput.CheckArrowKeyDown
@@ -136,9 +142,12 @@ namespace MomodoraCopy
                 }
                 else if (playerInput.isKeyDownBowAttack)
                 {
-                    playerInput.isKeyDownBowAttack = false;
-                    stateMachine.SetState(airBowAttack);
-                    return;
+                    if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("airBowAttack"))
+                    {
+                        playerInput.isKeyDownBowAttack = false;
+                        stateMachine.SetState(airBowAttack);
+                        return;
+                    }
                 }
                 else
                 {

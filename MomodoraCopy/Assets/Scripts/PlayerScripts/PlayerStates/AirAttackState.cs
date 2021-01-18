@@ -9,7 +9,9 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            OperateAirAttack();
+            playerMovement.isAnimationFinished = false;
+            playerMovement.animator.Play("airAttack");
+            playerMovement.OperateAirAttack();
         }
         public override void OperateUpdate()
         {
@@ -18,23 +20,17 @@
             {
                 playerMovement.ResetPlayerVelocity();
             }
-            if (playerMovement.isPreAnimationFinished)
+            if (playerMovement.isAnimationFinished)
             {
-                playerInput.ResetCheckKey();
-                player.CheckState(playerInput.directionalInput);
+                player.stateMachine.SetState(player.fall);
+                return;
             }
+            playerMovement.CheckAirAttackArea();
+            playerMovement.CheckCanFlip();
         }
         public override void OperateExit()
         {
-            playerInput.ResetCheckKey();
             base.OperateExit();
-        }
-        void OperateAirAttack()
-        {
-            playerInput.StopCheckKey();
-            playerMovement.isPreAnimationFinished = false;
-            playerMovement.animator.Play("airAttack");
-            playerMovement.OperateAirAttack();
         }
     }
 }

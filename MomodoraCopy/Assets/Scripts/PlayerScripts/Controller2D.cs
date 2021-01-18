@@ -17,7 +17,7 @@ namespace MomodoraCopy
         public override void Start()
         {
             base.Start();
-            collisions.faceDir = 1;
+            collisions.faceDir = transform.rotation.y == 0 ? 1 : -1;
         }
 
         public void Move(Vector2 moveAmount, bool standingOnPlatform)
@@ -29,8 +29,10 @@ namespace MomodoraCopy
         {
             UpdateRaycastOrigins();
 
+            Vector2 newMoveAmount = moveAmount;
             collisions.Reset();
             collisions.moveAmountOld = moveAmount;
+
             playerInput = input;
 
             if (moveAmount.x != 0)
@@ -40,16 +42,16 @@ namespace MomodoraCopy
 
             if (moveAmount.y < 0)
             {
-                DescendSlope(ref moveAmount);
+                DescendSlope(ref newMoveAmount);
             }
 
-            HorizontalCollisions(ref moveAmount);
+            HorizontalCollisions(ref newMoveAmount);
             if (moveAmount.y != 0)
             {
-                VerticalCollisions(ref moveAmount);
+                VerticalCollisions(ref newMoveAmount);
             }
 
-            transform.Translate(moveAmount);
+            transform.Translate(newMoveAmount, Space.World);
 
             if (standingOnPlatform)
             {
@@ -70,6 +72,7 @@ namespace MomodoraCopy
             for (int i = 0; i < horizontalRayCount; i++)
             {
                 Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+
                 rayOrigin += Vector2.up * (horizontalRaySpacing * i);
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
 
@@ -146,8 +149,9 @@ namespace MomodoraCopy
                         {
                             continue;
                         }
-                        if (playerInput.y == -1 && Input.GetKeyDown(KeyCode.A))
+                        if (playerInput.y == -1 && Input.GetKeyDown(KeyboardManager.instance.JumpKey))
                         {
+                            Debug.Log("click");
                             fallingThrough = true;
                             collisions.fallingThroughPlatform = true;
                             Invoke("ResetFallingThroughPlatform", .5f);

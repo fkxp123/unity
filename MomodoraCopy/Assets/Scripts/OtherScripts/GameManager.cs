@@ -12,6 +12,10 @@ namespace MomodoraCopy
         MonoBehaviour[] playerComponents;
         public void Start()
         {
+            if (playerObject == null || playerObject.tag != "Player")
+            {
+                playerObject = GameObject.FindGameObjectWithTag("Player");
+            }
             playerComponents = playerObject.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }

@@ -9,7 +9,8 @@ namespace MomodoraCopy
         GAME_END,
         AMMO_CHANGE,
         HEALTH_CHANGE,
-        DEAD
+        DEAD,
+        PlayerDead
     };
 
     public interface IListener
@@ -17,26 +18,8 @@ namespace MomodoraCopy
         void OnEvent(EVENT_TYPE Event_Type, IListener Listener);
     }
 
-    public class EventManager : MonoBehaviour
+    public class EventManager : Singleton<EventManager>
     {
-        #region Singleton
-        public static EventManager Instance
-        {
-            get { return instance; }
-            set { }
-        }
-        void Awake()
-        {
-            if (instance == null)
-            {
-                instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-                DestroyImmediate(gameObject);
-        }
-        private static EventManager instance = null;
-        #endregion
         private Dictionary<EVENT_TYPE, List<IListener>> Listeners = new Dictionary<EVENT_TYPE, List<IListener>>();
 
         //구독자는 start에서 리스너로 등록해야한다

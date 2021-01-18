@@ -8,7 +8,7 @@ namespace MomodoraCopy
         Istate min = new Istate();
         void Start()
         {
-            EventManager.Instance.AddListener(EVENT_TYPE.GAME_INIT, this);
+            EventManager.instance.AddListener(EVENT_TYPE.GAME_INIT, this);
             min.OnEvent(EVENT_TYPE.DEAD, this);
         }
 
@@ -20,6 +20,10 @@ namespace MomodoraCopy
         public void OnEvent(EVENT_TYPE Event_Type, IListener Listener)
         {
             Debug.Log("Add " + Event_Type + " Event + in " + Listener);
+            if(Event_Type == EVENT_TYPE.GAME_END)
+            {
+                //~~~
+            }
         }
     }
     public class Istate : IListener

@@ -28,6 +28,9 @@ namespace MomodoraCopy
         bool isWatingChangeKey;
         string selectedKeyName;
 
+        public List<string> originKeyName = new List<string>();
+        public List<string> changeKeyName = new List<string>();
+
         protected override void Awake()
         {
             base.Awake();
@@ -45,15 +48,6 @@ namespace MomodoraCopy
             scrollBarMoveAmount = 1.0f / (selectedContentSlot.transform.childCount - maxVisialbeSlotCount);
 
             keyCodes = (KeyCode[])Enum.GetValues(typeof(KeyCode));
-        }
-
-        void Start()
-        {
-            for (int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
-            {
-                selectedKeyCodeText[i] = contentSlots[i].transform.GetChild(0).GetComponent<Text>();
-                selectedKeyCodeText[i].text = KeyboardManager.instance.keyCodeList[i].ToString();
-            }
         }
 
         protected override void Update()
@@ -74,6 +68,12 @@ namespace MomodoraCopy
                 slotCount = 0;
                 scrollBar.value = 1f;
             }
+            KeyboardManager.instance.GetKeyCodes();
+            for (int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
+            {
+                selectedKeyCodeText[i] = contentSlots[i].transform.GetChild(0).GetComponent<Text>();
+                selectedKeyCodeText[i].text = KeyboardManager.instance.keyCodeList[i].ToString();
+            }
             contentSlot.SetActive(true);
             selectedContentSlot.SetActive(true);
             menuInfo.gameObject.SetActive(true);
@@ -89,6 +89,8 @@ namespace MomodoraCopy
             contentSlot.SetActive(false);
             selectedContentSlot.SetActive(false);
             menuInfo.gameObject.SetActive(false);
+            originKeyName.Clear();
+            changeKeyName.Clear();
         }
 
         protected override void OperateMenuConfirm()
@@ -101,7 +103,7 @@ namespace MomodoraCopy
             }
             else if(slotCount == 12)
             {
-
+                SaveKeyChanges();
             }
             else if(slotCount == 13)
             {
@@ -162,10 +164,10 @@ namespace MomodoraCopy
                 {
                     CheckSameKeyCode(keyCode);
                     selectedKeyCodeText[slotCount].text = keyCode.ToString();
-                    PlayerPrefs.SetString(KeyboardManager.instance.keyNameList[slotCount], keyCode.ToString());
+                    originKeyName.Add(KeyboardManager.instance.keyNameList[slotCount]);
+                    changeKeyName.Add(keyCode.ToString());
                     isWatingChangeKey = false;
                     selectedKeyName = string.Empty;
-                    KeyboardManager.instance.GetKeyCodes();
                 }
             }
         }
@@ -176,16 +178,27 @@ namespace MomodoraCopy
                 if (selectedKeyCodeText[i].text.Equals(keyCode.ToString()))
                 {
                     selectedKeyCodeText[i].text = selectedKeyName;
-                    PlayerPrefs.SetString(KeyboardManager.instance.keyNameList[i], selectedKeyName);
+                    originKeyName.Add(KeyboardManager.instance.keyNameList[i]);
+                    changeKeyName.Add(selectedKeyName);
                 }
             }
         }
         void SetDefaultKeySetting()
         {
+            originKeyName.Clear();
+            changeKeyName.Clear();
             KeyboardManager.instance.SetDefaultKeyCodes();
+            KeyboardManager.instance.GetKeyCodes();
             for (int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
             {
                 selectedKeyCodeText[i].text = KeyboardManager.instance.keyCodeList[i].ToString();
+            }
+        }
+        void SaveKeyChanges()
+        {
+            for(int i = 0; i < originKeyName.Count; i++)
+            {
+                PlayerPrefs.SetString(originKeyName[i], changeKeyName[i]);
             }
             KeyboardManager.instance.GetKeyCodes();
         }

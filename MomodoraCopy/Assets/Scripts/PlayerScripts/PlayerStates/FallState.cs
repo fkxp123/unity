@@ -1,4 +1,6 @@
-﻿namespace MomodoraCopy
+﻿using UnityEngine;
+
+namespace MomodoraCopy
 {
     public class FallState : PlayerState
     {
@@ -9,30 +11,50 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.SaveFallPosY();
-            playerMovement.isPreAnimationFinished = false;
-            playerMovement.animator.Play("preFall");
+            if(playerMovement.fallPosY == 0)
+            {
+                playerMovement.SaveFallPosY();
+            }
+            playerMovement.isAnimationFinished = false;
+            playerMovement.animator.Play("preFall", -1, 0f);
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
             playerMovement.SaveHighPosY();
-            if (playerMovement.isPreAnimationFinished)
+            if (playerMovement.isAnimationFinished)
             {
                 playerMovement.animator.Play("fall");
             }
-            if (playerInput.isKeyDown)
+            if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
             {
-                player.CheckState(playerInput.directionalInput);
+                player.stateMachine.SetState(player.airAttack);
+                return;
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
+            {
+                if (playerMovement.jumpCount < playerMovement.maxJumpCount)
+                {
+                    player.stateMachine.SetState(player.jump);
+                    return;
+                }
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
+            {
+                player.stateMachine.SetState(player.airBowAttack);
+                return;
             }
             if (playerMovement.velocity.y == 0)
             {
-                player.CheckState(playerInput.directionalInput);
+                playerMovement.fallPosY = 0;
+                player.stateMachine.SetState(player.land);
+                return;
             }
         }
         public override void OperateExit()
         {
             base.OperateExit();
+            playerMovement.isAnimationFinished = true;
         }
     }
 

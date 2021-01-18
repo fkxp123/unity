@@ -290,7 +290,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: crouchBowAttack
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -342,7 +342,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: airBowAttack
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -420,7 +420,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: bowAttack
-  m_Speed: 1
+  m_Speed: 1.5
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -790,7 +790,7 @@ AnimatorStateMachine:
     m_Position: {x: 168, y: 48, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102624103842175424}
-    m_Position: {x: 168, y: 96, z: 0}
+    m_Position: {x: 170, y: 100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102012571326999338}
     m_Position: {x: 168, y: 144, z: 0}
@@ -832,16 +832,16 @@ AnimatorStateMachine:
     m_Position: {x: 610, y: 280, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102893340234821262}
-    m_Position: {x: 612, y: 216, z: 0}
+    m_Position: {x: 610, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102954205253035896}
     m_Position: {x: 396, y: -60, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102422784561266546}
-    m_Position: {x: 168, y: 216, z: 0}
+    m_Position: {x: 170, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102304588641235846}
-    m_Position: {x: 396, y: 216, z: 0}
+    m_Position: {x: 390, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102213381441084932}
     m_Position: {x: -48, y: 216, z: 0}

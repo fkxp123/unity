@@ -5,15 +5,15 @@ namespace MomodoraCopy
     public class BigArrowSpawner : BaseSpawner
     {
         public GameObject arrowPrefab;
-        float arrowRotateY;
+        Quaternion arrowRotation;
         public const float ACTIVATE_TIME = 1.5f;
         [HideInInspector]
         public PoolingObjectInfo info;
 
         void Start()
         {
-            arrowRotateY = 90.0f;
-            info = SetPoolingObjectInfo(arrowPrefab, gameObject, arrowRotateY);
+            arrowRotation = Quaternion.Euler(0, 0, 90);
+            info = SetPoolingObjectInfo(arrowPrefab, gameObject, gameObject.transform.position, arrowRotation);
             CreatePoolingObjectQueue(info, 1);
             SetAutoSpawn(info, ACTIVATE_TIME);
         }

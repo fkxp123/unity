@@ -9,18 +9,21 @@ namespace MomodoraCopy
     {
         #region Variables
         public bool isGround;
+        public bool isFall; //velocity.y < 0 -> isFall
         float gravity;
 
-        public bool stopMovement;
         public bool stopCheckFlip;
-        public bool isPreAnimationFinished = true;
+        public bool isAnimationFinished = true;
+
+        public GameObject attackBox;
 
         //bool stopMoving_X;
         #region Components
-        PlayerInput playerInput;
-        Controller2D controller;
-        public Animator animator;
         BoxCollider2D boxCollider;
+        Controller2D controller;
+        PlayerInput playerInput;
+
+        public Animator animator;
         public SpriteRenderer spriteRenderer;
         PlayerStatus playerStatus;
         Enemy enemy;
@@ -45,7 +48,8 @@ namespace MomodoraCopy
             FirstAttack,
             SecondAttack,
             ThirdAttack,
-            Roll
+            Roll,
+            StopMove
         }
         MoveType _moveType;
         public MoveType moveType
@@ -78,7 +82,8 @@ namespace MomodoraCopy
                     arrowInput.x = 1;
                     if (!stopCheckFlip)
                     {
-                        spriteRenderer.flipX = false;
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                        //spriteRenderer.flipX = false;
                     }
                 }
                 else if (value.x == -1)
@@ -86,7 +91,8 @@ namespace MomodoraCopy
                     arrowInput.x = -1;
                     if (!stopCheckFlip)
                     {
-                        spriteRenderer.flipX = true;
+                        transform.rotation = Quaternion.Euler(0, 180, 0);
+                        //spriteRenderer.flipX = true;
                     }
                 }
                 else if (value.y == 1)
@@ -114,12 +120,34 @@ namespace MomodoraCopy
         #region BowAttackState Variables
         public Transform arrowPos;
         public GameObject arrow;
+        public bool isLandHard;
         #endregion
 
         #region AttackState Variables
-        public Transform attackPos;
-        public Vector2 meleeBoxSize;
-        public int attackCount;
+        public Transform firstAttackPos;
+        public Transform secondAttackPos;
+        public Transform thirdAttackPos;
+        public Transform airAttackPos;
+        
+        public Vector2 firstAttackArea;
+        public Vector2 secondAttackArea;
+        public Vector2 thirdAttackArea;
+        public Vector2 airAttackArea;
+
+        [SerializeField]
+        int attackCount;
+        public int AttackCount
+        {
+            get
+            {
+                return attackCount;
+            }
+            set
+            {
+                Mathf.Clamp(value, 0, maxAttackCount);
+                attackCount = value;
+            }
+        }
         public int maxAttackCount = 3;
         public float comboAttackDelay = 0.5f;
         public float currentAttackDelay;
@@ -132,8 +160,10 @@ namespace MomodoraCopy
         float timeToJumpApex = .4f;
         float maxJumpVelocity;
         float minJumpVelocity;
-        int _jumpCount;
         public float highPosY;
+        public float jumpPosY;
+        public float fallPosY;
+        int _jumpCount;
         public int jumpCount
         {
             get { return _jumpCount; }
@@ -167,13 +197,11 @@ namespace MomodoraCopy
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
             boxCollider = GetComponent<BoxCollider2D>();
+            playerStatus = GetComponent<PlayerStatus>();
 
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
             maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
             minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
-
-            enemy = Enemy.instance;
-            playerStatus = PlayerStatus.instance;
 
             moveType = MoveType.Normal;
             MoveTypeDictionary.Add(MoveType.Normal, moveSpeed);
@@ -181,6 +209,7 @@ namespace MomodoraCopy
             MoveTypeDictionary.Add(MoveType.SecondAttack, SecondAttackSpeed);
             MoveTypeDictionary.Add(MoveType.ThirdAttack, ThirdAttackSpeed);
             MoveTypeDictionary.Add(MoveType.Roll, rollSpeed);
+            MoveTypeDictionary.Add(MoveType.StopMove, 0);
         }
         void Update()
         {
@@ -195,10 +224,6 @@ namespace MomodoraCopy
         }
         void SetPlayerMovement()
         {
-            if (stopMovement)
-            {
-                return;
-            }
             CalculateVelocity(moveType);
             controller.Move(velocity * Time.deltaTime, directionalInput);
         }
@@ -211,11 +236,11 @@ namespace MomodoraCopy
         }
         float SetDirection()
         {
-            if (spriteRenderer.flipX)
+            if (transform.rotation.y == 0)
             {
-                return -1;
+                return 1;
             }
-            return 1;
+            return -1;
         }
         void CalculateVelocity(MoveType moveType)
         {
@@ -243,22 +268,23 @@ namespace MomodoraCopy
             if (controller.collisions.below)
             {
                 jumpCount = 0;
+                jumpPosY = transform.position.y;
                 isGround = true;
                 return;
             }
             isGround = false;
         }
 
+        public void CheckCanFlip()
+        {
+            if (!isAnimationFinished)
+            {
+                stopCheckFlip = true;
+                return;
+            }
+            stopCheckFlip = false;
+        }
 
-        public void StopMovement()
-        {
-            ResetPlayerVelocity();
-            stopMovement = true;
-        }
-        public void ResetMovement()
-        {
-            stopMovement = false;
-        }
         public void ResetPlayerVelocity()
         {
             velocity.x = 0;
@@ -278,23 +304,8 @@ namespace MomodoraCopy
 
         public void SetPreAnimationFinished()
         {
-            isPreAnimationFinished = true;
+            isAnimationFinished = true;
         }
-
-        #region RunState Functions
-        public void PlayPreRunAnim()
-        {
-            animator.Play("preRun");
-        }
-        public void PlayRunAnim()
-        {
-            animator.Play("run");
-        }
-        public void PlayBreakRunAnim()
-        {
-            animator.Play("breakRun");
-        }
-        #endregion
 
         #region LandState Functions
         public void OperateLand()
@@ -314,23 +325,29 @@ namespace MomodoraCopy
         #region FallState Functions
         public void SaveFallPosY()
         {
+            fallPosY = transform.position.y;
             highPosY = transform.position.y;
         }
         #endregion
 
         #region JumpState Functions
-        public void SaveJumpPosY()//점프한 y값 저장
+        public void SaveJumpPosY()
         {
-            //점프키를 눌렀을때만 호출
+            jumpPosY = transform.position.y;
             highPosY = transform.position.y;
         }
-        public void SaveHighPosY()//공중에 있는도중 가장 높은 y값 저장
+        public void SaveHighPosY()
         {
-            //update문에서 계속 최고점의 y값으로 설정함
             if (transform.position.y > highPosY)
             {
                 highPosY = transform.position.y;
             }
+            if(highPosY - transform.position.y > 8)
+            {
+                isLandHard = true;
+                return;
+            }
+            isLandHard = false;
         }
         public void OperateJumpKeyDown()
         {
@@ -406,6 +423,66 @@ namespace MomodoraCopy
         #endregion
 
         #region AttackState Functions
+        public void CheckAttackArea()
+        {
+            Collider2D[] collider2Ds;
+            if (AttackFlag)
+            {
+                switch (AttackCount)
+                {
+                    case 1:
+                        collider2Ds = Physics2D.OverlapBoxAll(firstAttackPos.position, firstAttackArea, 0);
+                        foreach (Collider2D collider in collider2Ds)
+                        {
+                            if (collider.tag == "Enemy")
+                            {
+                                collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                            }
+                            AttackFlag = false;
+                        }
+                        break;
+                    case 2:
+                        collider2Ds = Physics2D.OverlapBoxAll(secondAttackPos.position, secondAttackArea, 0);
+                        foreach (Collider2D collider in collider2Ds)
+                        {
+                            if (collider.tag == "Enemy")
+                            {
+                                collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                            }
+                            AttackFlag = false;
+                        }
+                        break;
+                    case 3:
+                        collider2Ds = Physics2D.OverlapBoxAll(thirdAttackPos.position, thirdAttackArea, 0);
+                        foreach (Collider2D collider in collider2Ds)
+                        {
+                            if (collider.tag == "Enemy")
+                            {
+                                collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                            }
+                            AttackFlag = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        public void CheckAirAttackArea()
+        {
+            if (AttackFlag)
+            {
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(airAttackPos.position, airAttackArea, 0);
+                foreach (Collider2D collider in collider2Ds)
+                {
+                    if (collider.tag == "Enemy")
+                    {
+                        collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                    }
+                    AttackFlag = false;
+                }
+            }
+        }
         public void OperateFirstAttack()
         {
             moveType = MoveType.FirstAttack;
@@ -435,46 +512,15 @@ namespace MomodoraCopy
                 currentAttackDelay -= Time.deltaTime;
             }
         }
-        public void AbleAttackBox()
+        public void AbleAttack()
         {
             AttackFlag = true;
         }
-        public void DisableAttackBox()
+        public void DisableAttack()
         {
             AttackFlag = false;
         }
-        public void AttackBox()//Animation event
-        {
-            bool flag = false;
-            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(attackPos.position, meleeBoxSize, 0);
-            foreach (Collider2D collider in collider2Ds)
-            {
-                if (collider.tag == "enemy")
-                {
-                    flag = true;
-                }
-            }
-            if (flag)
-            {
-                enemy.HitbyPlayer(5);
-            }
-        }
-        IEnumerator AttackCoroutine()
-        {
-            if (AttackFlag)
-            {
-                AttackBox();
-            }
-            if (animator.GetBool("isGround"))
-            {
-                animator.Play("attack");
-            }
-            else if (animator.GetBool("isFalling") || animator.GetBool("isJumping"))
-            {
-                animator.Play("airAttack");
-            }
-            yield return new WaitForSeconds(.5f);
-        }
+
         #endregion
 
         #region BowAttackStateFunctions
@@ -548,11 +594,17 @@ namespace MomodoraCopy
             }
         }
 
-        void OnDrawGizmos()
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(attackPos.position, meleeBoxSize);
-        }
+        //void OnDrawGizmos()
+        //{
+        //    Gizmos.color = Color.red;
+        //    Gizmos.DrawWireCube(firstAttackPos.position, firstAttackArea);
+        //    Gizmos.color = Color.green;
+        //    Gizmos.DrawWireCube(secondAttackPos.position, secondAttackArea);
+        //    Gizmos.color = Color.blue;
+        //    Gizmos.DrawWireCube(thirdAttackPos.position, thirdAttackArea);
+        //    Gizmos.color = Color.yellow;
+        //    Gizmos.DrawWireCube(airAttackPos.position, airAttackArea);
+        //}
     }
 
 }
