@@ -41,6 +41,9 @@ namespace MomodoraCopy
         DaggerSpawner daggerSpawner;
         PoolingObjectInfo info;
 
+        [SerializeField]
+        ParticleSystem bloodEffect;
+
         protected override void Start()
         {
             base.Start();
@@ -158,10 +161,15 @@ namespace MomodoraCopy
             if (currentState == State.Hurt)
             {
                 //DoHurt();
+                bloodEffect.Play();
                 currentTime = 0;
                 animator.Play("hurt");
                 return;
             }
+            //else
+            //{
+            //    bloodEffect.Stop();
+            //}
             if (currentState != State.Chase && currentState != State.Attack)
             {
                 bool flag = false;

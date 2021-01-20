@@ -21,6 +21,10 @@ namespace MomodoraCopy
         }
         void Update()
         {
+            if (isStuckInWall)
+            {
+                return;
+            }
             Collider2D[] colliders = Physics2D.OverlapCircleAll(arrowHitArea.transform.position, areaRadius);
             foreach(Collider2D collider in colliders)
             {
@@ -37,9 +41,9 @@ namespace MomodoraCopy
                     collider.transform.GetComponent<EnemyStatus>().TakeDamage(arrowDamage, DamageType.Range, transform.rotation);
                 }
             }
+            transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);
             if (!isStuckInWall)
             {
-                transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);
             }
         }
         //void OnCollisionEnter2D(Collision2D other)
