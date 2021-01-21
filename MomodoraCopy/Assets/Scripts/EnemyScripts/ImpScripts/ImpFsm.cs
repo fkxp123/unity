@@ -43,6 +43,8 @@ namespace MomodoraCopy
 
         [SerializeField]
         ParticleSystem bloodEffect;
+        [SerializeField]
+        ParticleSystem hitEffect;
 
         protected override void Start()
         {
@@ -57,6 +59,9 @@ namespace MomodoraCopy
             daggerSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
             CachingAnimationTime();
 
+
+            var main = hitEffect.main;
+            main.startRotation3D = true;
             //StartCoroutine("CheckSomething");
             //StartCoroutine("Test");
         }
@@ -161,15 +166,19 @@ namespace MomodoraCopy
             if (currentState == State.Hurt)
             {
                 //DoHurt();
+                hitEffect.Play();
+                var main = hitEffect.main;
+                main.startRotationY = transform.rotation.y == 0 ? 135 : 0;
                 bloodEffect.Play();
                 currentTime = 0;
                 animator.Play("hurt");
                 return;
             }
-            //else
-            //{
-            //    bloodEffect.Stop();
-            //}
+            else
+            {
+                //bloodEffect.Stop();
+                hitEffect.Stop();
+            }
             if (currentState != State.Chase && currentState != State.Attack)
             {
                 bool flag = false;
