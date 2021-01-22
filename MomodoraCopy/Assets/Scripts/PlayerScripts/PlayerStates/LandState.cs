@@ -11,6 +11,11 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
+            foreach(ParticleSystem p in player.landEffect)
+            {
+                p.Play();
+            }
+            //player.landEffect.Play();
             if (playerMovement.isLandHard)
             {
                 playerMovement.moveType = PlayerMovement.MoveType.StopMove;

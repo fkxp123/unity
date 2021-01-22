@@ -65,6 +65,7 @@ namespace MomodoraCopy
                 return;
             }
             playerMovement.isAnimationFinished = false;
+            player.breakStepDustEffect.Play();
             playerMovement.animator.Play("breakRun");
             player.stepDustEffect.Stop();
         }

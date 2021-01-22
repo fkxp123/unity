@@ -8,12 +8,15 @@ namespace MomodoraCopy
         public PlayerMovement playerMovement;
         public PlayerInput playerInput;
         public PlayerStateMachine stateMachine;
+        BoxCollider2D boxCollider2D;
 
         public GameObject arrowSpawnerObject;
         public ArrowSpawner arrowSpawner;
 
+        public ParticleSystem[] landEffect;
         public ParticleSystem doubleJumpEffect;
         public ParticleSystem stepDustEffect;
+        public ParticleSystem breakStepDustEffect;
 
         #region IState
         public IState idle;
@@ -36,6 +39,7 @@ namespace MomodoraCopy
         {
             playerMovement = GetComponent<PlayerMovement>();
             playerInput = GetComponent<PlayerInput>();
+            boxCollider2D = GetComponent<BoxCollider2D>();
 
             arrowSpawner = arrowSpawnerObject.GetComponent<ArrowSpawner>();
 
@@ -60,6 +64,17 @@ namespace MomodoraCopy
         void Update()
         {
             stateMachine.DoOperateUpdate();
+        }
+
+        public void SetNormalBoxCollider2D()
+        {
+            boxCollider2D.offset = new Vector2(0.0f, 0.22f);
+            boxCollider2D.size = new Vector2(1.13f, 2.32f);
+        }
+        public void SetCrouchBoxCollider2D()
+        {
+            boxCollider2D.offset = new Vector2(0.0f, -0.19f);
+            boxCollider2D.size = new Vector2(1.13f, 1.5f);
         }
 
         public void CheckStates(Vector2 input)

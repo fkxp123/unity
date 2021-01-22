@@ -166,9 +166,12 @@ namespace MomodoraCopy
             if (currentState == State.Hurt)
             {
                 //DoHurt();
-                hitEffect.Play();
-                var main = hitEffect.main;
-                main.startRotationY = transform.rotation.y == 0 ? 135 : 0;
+                //if (!hitEffect.isPlaying)
+                //{
+                //    hitEffect.Play();
+                //}
+                //var main = hitEffect.main;
+                //main.startRotationY = transform.rotation.y == 0 ? 135 : 0;
                 bloodEffect.Play();
                 currentTime = 0;
                 animator.Play("hurt");

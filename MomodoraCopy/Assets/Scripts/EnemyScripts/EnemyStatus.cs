@@ -16,6 +16,10 @@ namespace MomodoraCopy
         BasicEnemyFsm fsm;
 
         [SerializeField]
+        ParticleSystem hitEffect;
+        ParticleSystemRenderer hitEffectRenderer;
+
+        [SerializeField]
         float maxHp = 100.0f;
         [SerializeField]
         float hp = 100.0f;
@@ -41,7 +45,7 @@ namespace MomodoraCopy
             enemyMovement = GetComponent<EnemyMovement>();
             animator = GetComponent<Animator>();
             fsm = GetComponent<BasicEnemyFsm>();
-            Debug.Log(fsm);
+            hitEffectRenderer = hitEffect.GetComponent<ParticleSystemRenderer>();
         }
 
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
@@ -50,6 +54,8 @@ namespace MomodoraCopy
             fsm.currentState = BasicEnemyFsm.State.Hurt;
             transform.rotation = Quaternion.Euler(transform.rotation.x, damagedRotation.y == 0 ? 180 : 0, transform.rotation.z);
             enemyMovement.direction.x = damagedRotation.y == 0 ? 1 : -1;
+            hitEffectRenderer.flip = transform.rotation.y == 0 ? new Vector3(1,0,0) : new Vector3(0,0,0);
+            hitEffect.Play();
             if(damageType == DamageType.Range)
             {
                 CancelInvoke();

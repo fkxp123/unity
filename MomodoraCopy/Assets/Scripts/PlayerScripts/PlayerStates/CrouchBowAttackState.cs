@@ -13,7 +13,7 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-
+            player.SetCrouchBoxCollider2D();
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + crouchBowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
             arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);
@@ -39,6 +39,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
+            player.SetNormalBoxCollider2D();
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }

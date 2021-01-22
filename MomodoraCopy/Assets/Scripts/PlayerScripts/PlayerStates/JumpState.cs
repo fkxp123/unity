@@ -11,6 +11,7 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
+            player.breakStepDustEffect.Stop();
             if (playerMovement.isGround)
             {
                 playerMovement.SaveJumpPosY();
