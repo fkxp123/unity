@@ -438,6 +438,10 @@ namespace MomodoraCopy
                             {
                                 collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                             }
+                            else if (collider.tag == "CheckPoint")
+                            {
+                                collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
+                            }
                             AttackFlag = false;
                         }
                         break;
@@ -449,6 +453,10 @@ namespace MomodoraCopy
                             {
                                 collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                             }
+                            else if (collider.tag == "CheckPoint")
+                            {
+                                collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
+                            }
                             AttackFlag = false;
                         }
                         break;
@@ -459,6 +467,10 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                            }
+                            else if (collider.tag == "CheckPoint")
+                            {
+                                collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                             }
                             AttackFlag = false;
                         }
@@ -478,6 +490,10 @@ namespace MomodoraCopy
                     if (collider.tag == "Enemy")
                     {
                         collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                    }
+                    else if(collider.tag == "CheckPoint")
+                    {
+                        collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                     }
                     AttackFlag = false;
                 }

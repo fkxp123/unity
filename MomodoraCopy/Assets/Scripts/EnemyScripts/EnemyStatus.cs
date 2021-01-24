@@ -46,6 +46,9 @@ namespace MomodoraCopy
             animator = GetComponent<Animator>();
             fsm = GetComponent<BasicEnemyFsm>();
             hitEffectRenderer = hitEffect.GetComponent<ParticleSystemRenderer>();
+
+            //maxHp += 20;
+            //Hp += 20;
         }
 
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)

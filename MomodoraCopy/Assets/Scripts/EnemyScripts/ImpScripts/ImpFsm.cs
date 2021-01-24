@@ -163,6 +163,11 @@ namespace MomodoraCopy
                 ExecuteState(executeState);
                 return;
             }
+            if(currentState == State.Die)
+            {
+                animator.Play("hurt");
+                return;
+            }
             if (currentState == State.Hurt)
             {
                 //DoHurt();
@@ -182,7 +187,7 @@ namespace MomodoraCopy
                 //bloodEffect.Stop();
                 hitEffect.Stop();
             }
-            if (currentState != State.Chase && currentState != State.Attack)
+            if (currentState != State.Chase && currentState != State.Attack && currentState != State.Hurt)
             {
                 bool flag = false;
                 Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxSize, 0);
