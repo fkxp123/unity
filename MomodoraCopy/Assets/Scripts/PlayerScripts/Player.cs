@@ -58,6 +58,7 @@ namespace MomodoraCopy
             airBowAttack = new AirBowAttackState(this);
             #endregion
 
+            GameManager.instance.Load();
             stateMachine = new PlayerStateMachine(idle);
         }
 
