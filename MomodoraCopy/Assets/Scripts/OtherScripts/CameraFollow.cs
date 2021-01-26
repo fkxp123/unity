@@ -48,6 +48,7 @@ namespace MomodoraCopy
         {
             focusArea = new FocusArea(target.collider.bounds, focusAreaSize);
             player = target.GetComponent<Player>();
+            DontDestroyOnLoad(gameObject);
         }
 
         //if you want player set crouchCameraMovement

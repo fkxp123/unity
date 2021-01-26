@@ -66,10 +66,13 @@
      <Compile Include="Assets\Scripts\EventManager.cs" />
      <Compile Include="Assets\Scripts\EventTest.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\OtherScripts\CheckPoint.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\CheckPoint\CheckPoint.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\CheckPoint\CheckPointsData.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\CheckPoint\StartPoint.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\ChildGUI.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\SceneTransferPoint.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\Singleton.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\TestGUI.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\CheckAirBowPos.cs" />

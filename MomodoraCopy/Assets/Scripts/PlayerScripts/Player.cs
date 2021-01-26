@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MomodoraCopy
 {
@@ -58,6 +59,7 @@ namespace MomodoraCopy
             airBowAttack = new AirBowAttackState(this);
             #endregion
 
+            DontDestroyOnLoad(transform.parent.gameObject);
             GameManager.instance.Load();
             stateMachine = new PlayerStateMachine(idle);
         }
