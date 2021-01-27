@@ -13,6 +13,7 @@ namespace MomodoraCopy
     public class PlayerData
     {
         public Vector3 playerPosition;
+        public string sceneName;
         public bool isDead;
     }
 
@@ -30,20 +31,14 @@ namespace MomodoraCopy
         public Dictionary<int, List<GameObject>> checkPointsDict = new Dictionary<int, List<GameObject>>();
         public List<GameObject> checkPointsList = new List<GameObject>();
 
-        public void AddCheckPoint(string sceneName, GameObject checkPoint)
+        public override void Awake()
         {
-            int hash = sceneName.GetHashCode();
-            checkPointsList.Add(checkPoint);
-            if (checkPointsDict.ContainsKey(hash))
-            {
-                checkPointsDict.Remove(hash);
-            }
-            checkPointsDict.Add(hash, checkPointsList);
+            base.Awake();
+            scene = SceneManager.GetActiveScene();
         }
 
         public void Start()
         {
-            scene = SceneManager.GetActiveScene();
 
             if (playerObject == null || playerObject.tag != "Player")
             {
@@ -56,6 +51,18 @@ namespace MomodoraCopy
             playerComponents = playerObject.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }
+
+        //public void AddCheckPoint(string sceneName, GameObject checkPoint)
+        //{
+        //    int hash = sceneName.GetHashCode();
+        //    checkPointsList.Add(checkPoint);
+        //    if (checkPointsDict.ContainsKey(hash))
+        //    {
+        //        checkPointsDict.Remove(hash);
+        //    }
+        //    checkPointsDict.Add(hash, checkPointsList);
+        //}
+
 
         public void Resume()
         {
@@ -84,7 +91,8 @@ namespace MomodoraCopy
         public void Save(GameObject checkPoint)
         {
             playerData.playerPosition = checkPoint.transform.position;
-            string jsonData = JsonUtility.ToJson(playerData);
+            playerData.sceneName = checkPoint.GetComponent<CheckPoint>().sceneName;
+            string jsonData = JsonUtility.ToJson(playerData, true);
             string path = Path.Combine(Application.dataPath, "playerData.json");
             File.WriteAllText(path, jsonData);
         }
@@ -92,11 +100,18 @@ namespace MomodoraCopy
         {
             if (File.Exists(Application.dataPath + "/playerData.json"))
             {
+                Debug.Log("Load by playerData");
                 string path = Path.Combine(Application.dataPath, "playerData.json");
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+                SceneManager.LoadScene(playerData.sceneName);
+                playerObject.transform.position = playerData.playerPosition;
             }
-            playerObject.transform.position = CheckPointsData.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
+            else
+            {
+                SceneManager.LoadScene("test");
+                playerObject.transform.position = CheckPointsData.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
+            }
         }
     }
 

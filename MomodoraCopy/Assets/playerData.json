@@ -1,1 +1,9 @@
-{"playerPosition":{"x":-79.44000244140625,"y":40.91999816894531,"z":0.0},"isDead":false}
+{
+    "playerPosition": {
+        "x": -68.33999633789063,
+        "y": 40.91999816894531,
+        "z": 0.0
+    },
+    "sceneName": "test",
+    "isDead": false
+}

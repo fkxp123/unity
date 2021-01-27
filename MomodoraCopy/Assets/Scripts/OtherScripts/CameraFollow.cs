@@ -4,7 +4,7 @@ namespace MomodoraCopy
 {
     public class CameraFollow : MonoBehaviour
     {
-
+        static CameraFollow instance;
         public Controller2D target;
         public float verticalOffset;
         public float lookAheadDstX;
@@ -43,6 +43,19 @@ namespace MomodoraCopy
         float startPosY;
         Vector3 crouchCameraPos;
         Player player;
+
+        void Awake()
+        {
+            if (instance == null)
+            {
+                DontDestroyOnLoad(this.gameObject);
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+        }
 
         void Start()
         {

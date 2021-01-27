@@ -10,6 +10,7 @@ namespace MomodoraCopy
         [SerializeField]
         GameObject bell;
 
+        public string sceneName;
         public float maxAngleDeflection;
         float playerDirection;
         float MaxAngleDeflection
@@ -31,6 +32,7 @@ namespace MomodoraCopy
         void Start()
         {
             scene = SceneManager.GetActiveScene();
+            sceneName = scene.name;
             CheckPointsData.AddCheckPoint(scene.name, gameObject);
             //Debug.Log(CheckPointsData.checkPointsDict[scene.name.GetHashCode()].Count);
             //SetPlayerPosition();
@@ -76,8 +78,6 @@ namespace MomodoraCopy
                 currentTime += 0.01f;
                 maxAngleDeflection -= 0.01f * pendulumSpeed;
                 bell.transform.localRotation = Quaternion.Euler(0, 0, angle);
-                Debug.Log("Angle : " + angle);
-                Debug.Log("maxAngleDeflection : " + maxAngleDeflection);
             }
         }
         public void SetBellAngle(float playerDirection)
