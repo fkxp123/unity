@@ -5,6 +5,8 @@ namespace MomodoraCopy
 {
     public class Player : MonoBehaviour
     {
+        static Player instance;
+
         #region Variables
         public PlayerMovement playerMovement;
         public PlayerInput playerInput;
@@ -35,9 +37,23 @@ namespace MomodoraCopy
         #endregion
 
         #endregion
+        void Awake()
+        {
+            if (instance == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Destroy(gameObject);
+            }
+        }
 
         void Start()
         {
+            //SceneManager.sceneLoaded += OnSceneLoaded;
+
             playerMovement = GetComponent<PlayerMovement>();
             playerInput = GetComponent<PlayerInput>();
             boxCollider2D = GetComponent<BoxCollider2D>();
@@ -59,10 +75,16 @@ namespace MomodoraCopy
             airBowAttack = new AirBowAttackState(this);
             #endregion
 
-            DontDestroyOnLoad(transform.parent.gameObject);
             GameManager.instance.Load();
+            DontDestroyOnLoad(transform.parent.gameObject);
             stateMachine = new PlayerStateMachine(idle);
         }
+
+        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        //{
+        //    Debug.Log("hi");
+        //    GameManager.instance.Load();
+        //}
 
         void Update()
         {

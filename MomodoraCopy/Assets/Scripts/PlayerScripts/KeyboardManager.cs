@@ -37,6 +37,7 @@ namespace MomodoraCopy
             keyNameList.Add("ChangeItem");
             keyNameList.Add("Mapping");
             keyNameList.Add("Menu");
+            //DownKey = (KeyCode)System.Enum.Parse(typeof(KeyCode),"DownArrow");
 
             UpKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[0], "UpArrow"));
             DownKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(keyNameList[1], "DownArrow"));

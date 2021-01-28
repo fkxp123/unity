@@ -48,12 +48,12 @@ namespace MomodoraCopy
         {
             if (instance == null)
             {
-                DontDestroyOnLoad(this.gameObject);
+                DontDestroyOnLoad(gameObject);
                 instance = this;
             }
             else if (instance != this)
             {
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
         }
 
