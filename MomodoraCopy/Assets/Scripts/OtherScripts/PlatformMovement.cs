@@ -7,8 +7,6 @@ namespace MomodoraCopy
     [RequireComponent(typeof(Controller2D))]
     public class PlatformMovement : MonoBehaviour
     {
-
-
         float maxJumpHeight = 4;
         float minJumpHeight = 1;
         float timeToJumpApex = .4f;
@@ -23,93 +21,131 @@ namespace MomodoraCopy
 
         public Vector3 velocity;
         public Vector2 direction;
-        Animator animator;
         Controller2D controller;
-        GameObject playerPos;
-
-        Player player;
-        PlayerStatus ps;
-
         BoxCollider2D boxCollider;
 
-        float currentAIDelay;
-        float AIDelay = 2.0f;
-        float currentMoveTime;
-        float moveTime = 2.0f;
-        float currentAttackTime;
-        float attackTime = 2.0f;
-        float currentAttackDelay;
+        public GameObject horizontalCheckArea;
+        public GameObject verticalCheckArea;
+        public Vector3 horizontalAreaSize;
+        public Vector3 verticalAreaSize;
+        bool findPlayer;
+        bool isWaiting;
 
-        public Transform FindPlayerBoxPos;
-        public Vector2 FindPlayerBoxSize;
-        public Transform AtkPlayerBoxPos;
-        public Vector2 AtkPlayerBoxSize;
-        public GameObject ExclamationMark;
-
-        bool FindPlayer;
-
-        public bool isAttack;
-        public bool isHit;
+        public float insideRadius;
+        public float outsideRadius;
+        bool inOutSide;
+        bool inInside;
 
         void Start()
         {
-            ps = PlayerStatus.instance;
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
-            maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
-            minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
 
             controller = GetComponent<Controller2D>();
-            animator = GetComponent<Animator>();
             direction = new Vector2(0, 0);
-            playerPos = GameObject.FindGameObjectWithTag("Player");
             boxCollider = GetComponent<BoxCollider2D>();
+        }
+
+        void WaitTime()
+        {
+            findPlayer = false;
+            isWaiting = false;
         }
 
         void Update()
         {
-            SetEnemyMovement();
+            if (velocity == Vector3.zero)
+            {
+                if (!isWaiting)
+                {
+                    isWaiting = true;
+                    Invoke("WaitTime", 1f);
+                }
+            }
+            if (!findPlayer)
+            {
+                Collider2D[] horizontalColls = Physics2D.OverlapBoxAll(horizontalCheckArea.transform.position, horizontalAreaSize, 0);
+                foreach (Collider2D collider in horizontalColls)
+                {
+                    if (collider.transform.CompareTag("Player"))
+                    {
+                        direction.x = collider.transform.position.x < transform.position.x ? 1 : -1;
+                        direction.y = 0;
+                        findPlayer = true;
+                    }
+                }
+                Collider2D[] verticalColls = Physics2D.OverlapBoxAll(verticalCheckArea.transform.position, verticalAreaSize, 0);
+                foreach (Collider2D collider in verticalColls)
+                {
+                    if (collider.transform.CompareTag("Player"))
+                    {
+                        direction.y = collider.transform.position.y < transform.position.y ? 1 : -1;
+                        direction.x = 0;
+                        findPlayer = true;
+                    }
+                }
+            }
+            Collider2D[] outsideColls = Physics2D.OverlapCircleAll(transform.position, outsideRadius);
+            foreach(Collider2D coll in outsideColls)
+            {
+                if (coll.transform.CompareTag("Player"))
+                {
+                    inOutSide = true;
+                }
+            }
+            Collider2D[] insideColls = Physics2D.OverlapCircleAll(transform.position, insideRadius);
+            foreach (Collider2D coll in insideColls)
+            {
+                if (coll.transform.CompareTag("Player"))
+                {
+                    inInside = true;
+                }
+                if (inInside && inOutSide)
+                {
+                    coll.GetComponent<PlayerStatus>().InstantDeath();
+                    inInside = false;
+                    inOutSide = false;
+                }
+            }
+            CalculateVelocity();
+            //CalculatePassengerMovement(velocity);
+
+            //MovePassengers(true);
+            controller.Move(velocity * Time.deltaTime, direction);
+            //MovePassengers(false);
             CheckVerticalCollision();
         }
-        void SetEnemyMovement()
-        {
-            CalculateVelocity();
-            controller.Move(velocity * Time.deltaTime, direction);
-        }
+
         void CheckVerticalCollision()
         {
+            if(controller.collisions.left || controller.collisions.right)
+            {
+                direction.x = 0;
+                velocity.x = 0;
+            }
             if (controller.collisions.above || controller.collisions.below)
             {
+                direction.y = 0;
                 velocity.y = 0;
             }
         }
-        public void SetDirection(Vector2 direction)
-        {
-            this.direction = direction;
-        }
+
         void CalculateVelocity()
         {
-            float targetVelocityX = direction.x * moveSpeed;
-            velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-            velocity.y += gravity * Time.deltaTime;
-        }
-        void OnJumpMovement()
-        {
-            velocity.y = maxJumpHeight;
-        }
-        void OffJumpMovement()
-        {
-            if (velocity.y > minJumpVelocity)
-            {
-                velocity.y = minJumpVelocity;
-            }
+            velocity.x += direction.x * gravity * Time.deltaTime;
+            velocity.y += direction.y * gravity * Time.deltaTime;
         }
 
-        //void OnDrawGizmos()
-        //{
-        //    Gizmos.color = Color.red;
-        //    Gizmos.DrawWireCube(FindPlayerBoxPos.position, FindPlayerBoxSize);
-        //    Gizmos.color = Color.blue;
-        //    Gizmos.DrawWireCube(AtkPlayerBoxPos.position, AtkPlayerBoxSize);
-        //}
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(horizontalCheckArea.transform.position, horizontalAreaSize);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(verticalCheckArea.transform.position, verticalAreaSize);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, insideRadius);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, outsideRadius);
+            
+        }
     }
 }

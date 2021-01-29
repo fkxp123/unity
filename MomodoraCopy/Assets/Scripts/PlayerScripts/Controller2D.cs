@@ -151,7 +151,6 @@ namespace MomodoraCopy
                         }
                         if (playerInput.y == -1 && Input.GetKeyDown(KeyboardManager.instance.JumpKey))
                         {
-                            Debug.Log("click");
                             fallingThrough = true;
                             collisions.fallingThroughPlatform = true;
                             Invoke("ResetFallingThroughPlatform", .5f);
