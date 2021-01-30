@@ -71,6 +71,7 @@
      <Compile Include="Assets\Scripts\OtherScripts\CheckPoint\StartPoint.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\ChildGUI.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\MovingTrapController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformMovement.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\SceneTransferPoint.cs" />

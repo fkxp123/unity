@@ -43,6 +43,8 @@ namespace MomodoraCopy
             controller = GetComponent<Controller2D>();
             direction = new Vector2(0, 0);
             boxCollider = GetComponent<BoxCollider2D>();
+
+            //InvokeRepeating("CheckArea", 0, 0.01f);
         }
 
         void WaitTime()
@@ -51,16 +53,8 @@ namespace MomodoraCopy
             isWaiting = false;
         }
 
-        void Update()
+        void CheckArea()
         {
-            if (velocity == Vector3.zero)
-            {
-                if (!isWaiting)
-                {
-                    isWaiting = true;
-                    Invoke("WaitTime", 1f);
-                }
-            }
             if (!findPlayer)
             {
                 Collider2D[] horizontalColls = Physics2D.OverlapBoxAll(horizontalCheckArea.transform.position, horizontalAreaSize, 0);
@@ -70,6 +64,7 @@ namespace MomodoraCopy
                     {
                         direction.x = collider.transform.position.x < transform.position.x ? 1 : -1;
                         direction.y = 0;
+                        velocity.y = 0;
                         findPlayer = true;
                     }
                 }
@@ -80,10 +75,66 @@ namespace MomodoraCopy
                     {
                         direction.y = collider.transform.position.y < transform.position.y ? 1 : -1;
                         direction.x = 0;
+                        velocity.x = 0;
                         findPlayer = true;
                     }
                 }
             }
+            else
+            {
+                if (!isWaiting)
+                {
+                    isWaiting = true;
+                    Invoke("WaitTime", 1f);
+                }
+            }
+
+        }
+
+        void Update()
+        {
+            //if (velocity == Vector3.zero)
+            //{
+            //    if (!isWaiting)
+            //    {
+            //        isWaiting = true;
+            //        Invoke("WaitTime", 1f);
+            //    }
+            //}
+            if (!findPlayer)
+            {
+                Collider2D[] horizontalColls = Physics2D.OverlapBoxAll(horizontalCheckArea.transform.position, horizontalAreaSize, 0);
+                foreach (Collider2D collider in horizontalColls)
+                {
+                    if (collider.transform.CompareTag("Player"))
+                    {
+                        direction.x = collider.transform.position.x < transform.position.x ? 1 : -1;
+                        direction.y = 0;
+                        velocity.y = 0;
+                        findPlayer = true;
+                    }
+                }
+                Collider2D[] verticalColls = Physics2D.OverlapBoxAll(verticalCheckArea.transform.position, verticalAreaSize, 0);
+                foreach (Collider2D collider in verticalColls)
+                {
+                    if (collider.transform.CompareTag("Player"))
+                    {
+                        direction.y = collider.transform.position.y < transform.position.y ? 1 : -1;
+                        direction.x = 0;
+                        velocity.x = 0;
+                        findPlayer = true;
+                    }
+                }
+            }
+            else
+            {
+                if (!isWaiting)
+                {
+                    isWaiting = true;
+                    Invoke("WaitTime", 1f);
+                }
+            }
+
             Collider2D[] outsideColls = Physics2D.OverlapCircleAll(transform.position, outsideRadius);
             foreach(Collider2D coll in outsideColls)
             {
@@ -101,11 +152,13 @@ namespace MomodoraCopy
                 }
                 if (inInside && inOutSide)
                 {
-                    coll.GetComponent<PlayerStatus>().InstantDeath();
+                    Debug.Log("u died");
+                    //coll.GetComponent<PlayerStatus>().InstantDeath();
                     inInside = false;
                     inOutSide = false;
                 }
             }
+
             CalculateVelocity();
             //CalculatePassengerMovement(velocity);
 
