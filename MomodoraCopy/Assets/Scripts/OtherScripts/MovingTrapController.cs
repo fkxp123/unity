@@ -20,43 +20,57 @@ namespace MomodoraCopy
         public Vector3 velocity;
         public Vector2 direction;
 
+        public bool findPlayer;
+
         public Vector3 horizontalAreaSize;
         public Vector3 verticalAreaSize;
-        bool findPlayer;
-        bool isWaiting;
 
         public float insideRadius;
         public float outsideRadius;
         bool inOutSide;
         bool inInside;
 
+        public float currentTime;
+
         public override void Start()
         {
             base.Start();
             collisions.faceDir = transform.rotation.y == 0 ? 1 : -1;
             direction = new Vector2(0, 0);
-            direction = new Vector2(-1, 0);
-            //InvokeRepeating("randomSet", 0, 1.0f);
+            //InvokeRepeating("FindPlayer", 0, 0.01f);
         }
 
-        void randomSet()
+        void ResetFindPlayer()
         {
-            int r = Random.Range(0, 3);
-            if(r == 1)
+            findPlayer = false;
+        }
+
+        void FindPlayer()
+        {
+            Collider2D[] horizontalColls = Physics2D.OverlapBoxAll(transform.position, horizontalAreaSize, 0);
+            foreach (Collider2D collider in horizontalColls)
             {
-                direction = new Vector2(1, 0);
+                if (collider.transform.CompareTag("Player") && !findPlayer)
+                {
+                    direction.x = collider.transform.position.x < transform.position.x ? -1 : 1;
+                    direction.y = 0;
+                    currentTime = 0;
+                    findPlayer = true;
+                    break;
+                }
             }
-            else if(r == 2)
+
+            Collider2D[] verticalColls = Physics2D.OverlapBoxAll(transform.position, verticalAreaSize, 0);
+            foreach (Collider2D collider in verticalColls)
             {
-                direction = new Vector2(-1, 0);
-            }
-            else if(r == 3)
-            {
-                direction = new Vector2(0, 1);
-            }
-            else if (r == 4)
-            {
-                direction = new Vector2(0, -1);
+                if (collider.transform.CompareTag("Player") && !findPlayer)
+                {
+                    direction.y = collider.transform.position.y < transform.position.y ? -1 : 1;
+                    direction.x = 0;
+                    currentTime = 0;
+                    findPlayer = true;
+                    break;
+                }
             }
         }
 
@@ -64,18 +78,21 @@ namespace MomodoraCopy
         {
             UpdateRaycastOrigins();
 
-            //FindPlayer();
-
             CalculateVelocity();
 
             CalculatePassengerMovement(velocity);
 
             MovePassengers(true);
-            Move(velocity * Time.deltaTime);
+            Move(velocity);
             MovePassengers(false);
 
             CheckVerticalCollision();
 
+            FindPlayer();
+            Debug.Log(collisions.left);
+            Debug.Log(collisions.right);
+            Debug.Log(collisions.above); //above랑 below가 벽에 닿아도 계속 true로 바뀌게해야댐
+            Debug.Log(collisions.below);
         }
 
         void CheckVerticalCollision()
@@ -84,11 +101,29 @@ namespace MomodoraCopy
             {
                 direction.x = 0;
                 velocity.x = 0;
+                if(currentTime <= 0)
+                {
+                    currentTime = waitTime;
+                }
+                currentTime -= Time.deltaTime;
+                if (currentTime <= 0)
+                {
+                    ResetFindPlayer();
+                }
             }
             if (collisions.above || collisions.below)
             {
                 direction.y = 0;
                 velocity.y = 0;
+                if (currentTime <= 0)
+                {
+                    currentTime = waitTime;
+                }
+                currentTime -= Time.deltaTime;
+                if (currentTime <= 0)
+                {
+                    ResetFindPlayer();
+                }
             }
         }
 
@@ -101,8 +136,8 @@ namespace MomodoraCopy
 
         void CalculateVelocity()
         {
-            velocity.x = direction.x * speed;
-            velocity.y = direction.y * speed;
+            velocity.x = direction.x * speed * Time.deltaTime;
+            velocity.y = direction.y * speed * Time.deltaTime;
         }
 
         void MovePassengers(bool beforeMovePlatform)
@@ -116,7 +151,7 @@ namespace MomodoraCopy
 
                 if (passenger.moveBeforePlatform == beforeMovePlatform)
                 {
-                    passengerDictionary[passenger.transform].Move(passenger.velocity * Time.deltaTime, passenger.standingOnPlatform);
+                    passengerDictionary[passenger.transform].Move(passenger.velocity, passenger.standingOnPlatform);
                 }
             }
         }
@@ -142,11 +177,15 @@ namespace MomodoraCopy
 
                     if (hit && hit.distance != 0)
                     {
+                        if (collisions.above || collisions.below)
+                        {
+                            return;
+                        }
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
                             float pushX = (directionY == 1) ? velocity.x : 0;
-                            float pushY = velocity.y - (hit.distance - skinWidth) * speed * directionY;
+                            float pushY = velocity.y - (hit.distance - skinWidth) * directionY;
 
                             passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), directionY == 1, true));
                         }
@@ -170,10 +209,8 @@ namespace MomodoraCopy
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
-                            float pushX = velocity.x - (hit.distance - skinWidth) * direction.x;
+                            float pushX = velocity.x - (hit.distance - skinWidth) * directionX;
                             float pushY = -skinWidth;
-                            Debug.Log(hit.distance);
-                            Debug.Log(pushX);
                             passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), false, true));
                         }
                     }
@@ -192,79 +229,14 @@ namespace MomodoraCopy
 
                     if (hit && hit.distance != 0)
                     {
-                        Debug.Log("hit");
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
                             float pushX = velocity.x;
                             float pushY = velocity.y;
-
                             passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), true, false));
                         }
                     }
-                }
-            }
-            //if(velocity.x != 0)
-            //{
-            //    float rayLength = skinWidth * 2;
-
-            //    for (int i = 0; i < horizontalRayCount; i++)
-            //    {
-            //        Vector2 rayOrigin = raycastOrigins.bottomRight + Vector2.up * (horizontalRaySpacing * i);
-            //        RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right, rayLength, passengerMask);
-
-            //        if (hit && hit.distance != 0)
-            //        {
-            //            if (!movedPassengers.Contains(hit.transform))
-            //            {
-            //                movedPassengers.Add(hit.transform);
-            //                float pushX = velocity.x;
-            //                float pushY = velocity.y;
-
-            //                passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), true, false));
-            //            }
-            //        }
-            //    }
-            //}
-        }
-
-        void WaitTime()
-        {
-            findPlayer = false;
-            isWaiting = false;
-        }
-
-        void FindPlayer()
-        {
-            if (!findPlayer)
-            {
-                Collider2D[] horizontalColls = Physics2D.OverlapBoxAll(transform.position, horizontalAreaSize, 0);
-                foreach (Collider2D collider in horizontalColls)
-                {
-                    if (collider.transform.CompareTag("Player"))
-                    {
-                        direction.x = collider.transform.position.x < transform.position.x ? -1 : 1;
-                        direction.y = 0;
-                        findPlayer = true;
-                    }
-                }
-                Collider2D[] verticalColls = Physics2D.OverlapBoxAll(transform.position, verticalAreaSize, 0);
-                foreach (Collider2D collider in verticalColls)
-                {
-                    if (collider.transform.CompareTag("Player"))
-                    {
-                        direction.y = collider.transform.position.y < transform.position.y ? -1 : 1;
-                        direction.x = 0;
-                        findPlayer = true;
-                    }
-                }
-            }
-            else
-            {
-                if (!isWaiting)
-                {
-                    isWaiting = true;
-                    Invoke("WaitTime", 1f);
                 }
             }
         }
@@ -394,7 +366,6 @@ namespace MomodoraCopy
             Gizmos.DrawWireSphere(transform.position, insideRadius);
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, outsideRadius);
-
         }
     }
 }
