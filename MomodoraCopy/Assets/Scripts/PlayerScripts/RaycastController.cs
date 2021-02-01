@@ -21,6 +21,7 @@ namespace MomodoraCopy
 
         [HideInInspector]
         public new BoxCollider2D collider = new BoxCollider2D();
+        public UnexpandedRaycastOrigins uRaycastOrigins;
         public RaycastOrigins raycastOrigins;
 
         public virtual void Awake()
@@ -36,6 +37,10 @@ namespace MomodoraCopy
         public void UpdateRaycastOrigins()
         {
             Bounds bounds = collider.bounds;
+            uRaycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+            uRaycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
+            uRaycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
+            uRaycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
             bounds.Expand(skinWidth * -2);
 
             raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
@@ -57,6 +62,12 @@ namespace MomodoraCopy
 
             horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
             verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
+        }
+
+        public struct UnexpandedRaycastOrigins
+        {
+            public Vector2 topLeft, topRight;
+            public Vector2 bottomLeft, bottomRight;
         }
 
         public struct RaycastOrigins

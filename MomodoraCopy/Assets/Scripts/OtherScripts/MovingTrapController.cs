@@ -15,6 +15,47 @@ namespace MomodoraCopy
         Dictionary<Transform, Controller2D> passengerDictionary = new Dictionary<Transform, Controller2D>();
 
         public Vector3 velocity;
+        Vector3 Velocity
+        {
+            get { return velocity; }
+            set
+            {
+                if (value.x < 0)
+                {
+                    dustCloudEffect.transform.position = transform.position + Vector3.left * 1.25f;
+                    dustCloudEffect.transform.rotation = Quaternion.Euler(0, 90, 0);
+                    crushedDeathEffect.transform.position = transform.position + Vector3.left;
+                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, -90);
+                }
+                else if (value.x > 0)
+                {
+                    dustCloudEffect.transform.position = transform.position + Vector3.right * 1.25f;
+                    dustCloudEffect.transform.rotation = Quaternion.Euler(0, -90, 0);
+                    crushedDeathEffect.transform.position = transform.position + Vector3.right;
+                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 90);
+                }
+                else if (value.y > 0)
+                {
+                    dustCloudEffect.transform.position = transform.position + Vector3.up * 1.25f;
+                    dustCloudEffect.transform.rotation = Quaternion.Euler(90, 0, 0);
+                    crushedDeathEffect.transform.position = transform.position + Vector3.up;
+                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 180);
+                }
+                else if (value.y < 0)
+                {
+                    dustCloudEffect.transform.position = transform.position + Vector3.down * 1.25f;
+                    dustCloudEffect.transform.rotation = Quaternion.Euler(-90, 0, 0);
+                    crushedDeathEffect.transform.position = transform.position + Vector3.down;
+                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                if (value != Vector3.zero)
+                {
+                    isFirst = false;
+                    currentTime = 0;
+                }
+                velocity = value;
+            }
+        }
         public Vector2 direction;
 
         public bool findPlayer;
@@ -27,6 +68,8 @@ namespace MomodoraCopy
         bool isFirst;
 
         public ParticleSystem dustCloudEffect;
+        public ParticleSystem crushedDeathEffect;
+        bool isPlayerDeath;
 
         public override void Start()
         {
@@ -42,46 +85,21 @@ namespace MomodoraCopy
             findPlayer = false;
         }
 
-        void FindPlayer()
-        {
-            Collider2D[] horizontalColls = Physics2D.OverlapBoxAll(transform.position, horizontalAreaSize, 0);
-            foreach (Collider2D collider in horizontalColls)
-            {
-                if (collider.transform.CompareTag("Player") && !findPlayer)
-                {
-                    direction.x = collider.transform.position.x < transform.position.x ? -1 : 1;
-                    direction.y = 0;
-                    findPlayer = true;
-                }
-            }
-
-            Collider2D[] verticalColls = Physics2D.OverlapBoxAll(transform.position, verticalAreaSize, 0);
-            foreach (Collider2D collider in verticalColls)
-            {
-                if (collider.transform.CompareTag("Player") && !findPlayer)
-                {
-                    direction.y = collider.transform.position.y < transform.position.y ? -1 : 1;
-                    direction.x = 0;
-                    findPlayer = true;
-                }
-            }
-        }
-
         void Update()
         {
             UpdateRaycastOrigins();
 
             CalculateVelocity();
 
-            CalculatePassengerMovement(velocity);
+            CalculatePassengerMovement(Velocity);
 
             MovePassengers(true);
-            Move(velocity);
+            Move(Velocity);
             MovePassengers(false);
 
             CheckVerticalCollision();
 
-            if(velocity != Vector3.zero)
+            if(Velocity != Vector3.zero)
             {
                 isFirst = false;
                 currentTime = 0;
@@ -96,48 +114,20 @@ namespace MomodoraCopy
 
         void CheckVerticalCollision()
         {
-            //if (collisions.left || collisions.right)
-            //{
-            //    direction.x = 0;
-            //    //velocity.x = 0;
-            //}
-            //if (collisions.above || collisions.below)
-            //{
-            //    direction.y = 0;
-            //    //velocity.y = 0;
-            //}
             if(collisions.left || collisions.right ||
                collisions.above || collisions.below)
             {
                 if (currentTime <= 0 && !isFirst)
                 {
-                    if (collisions.left)
+                    if (collisions.left || collisions.right)
                     {
-                        dustCloudEffect.transform.position = transform.position + Vector3.left * 1.25f;
-                        dustCloudEffect.transform.rotation = Quaternion.Euler(0, 90, 0);
                         direction.x = 0;
-                        velocity.x = 0;
+                        Velocity = new Vector3(0, Velocity.y);
                     }
-                    if (collisions.right)
+                    if (collisions.above || collisions.below)
                     {
-                        dustCloudEffect.transform.position = transform.position + Vector3.right * 1.25f;
-                        dustCloudEffect.transform.rotation = Quaternion.Euler(0, -90, 0);
-                        direction.x = 0;
-                        velocity.x = 0;
-                    }
-                    if (collisions.above)
-                    {
-                        dustCloudEffect.transform.position = transform.position + Vector3.up * 1.25f;
-                        dustCloudEffect.transform.rotation = Quaternion.Euler(90, 0, 0);
                         direction.y = 0;
-                        velocity.y = 0;
-                    }
-                    if (collisions.below)
-                    {
-                        dustCloudEffect.transform.position = transform.position + Vector3.down * 1.25f;
-                        dustCloudEffect.transform.rotation = Quaternion.Euler(-90, 0, 0);
-                        direction.y = 0;
-                        velocity.y = 0;
+                        Velocity = new Vector3(Velocity.x, 0);
                     }
                     dustCloudEffect.Play();
                     isFirst = true;
@@ -153,10 +143,7 @@ namespace MomodoraCopy
 
         void CalculateVelocity()
         {
-            velocity.x = direction.x * speed * Time.deltaTime;
-            velocity.y = direction.y * speed * Time.deltaTime;
-            Debug.Log("dx : "+direction.x);
-            Debug.Log("dy : "+direction.y);
+            Velocity = new Vector3(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
             //if (direction.x != 0 && direction.y == 0)
             //{
             //    velocity.x = direction.x * speed * Time.deltaTime;
@@ -164,7 +151,7 @@ namespace MomodoraCopy
             //if (direction.x == 0 && direction.y != 0)
             //{
             //    velocity.y = direction.y * speed * Time.deltaTime;
-            //}
+            //}    
         }
 
         void MovePassengers(bool beforeMovePlatform)
@@ -188,13 +175,13 @@ namespace MomodoraCopy
             HashSet<Transform> movedPassengers = new HashSet<Transform>();
             passengerMovement = new List<PassengerMovement>();
 
-            float directionX = Mathf.Sign(velocity.x);
-            float directionY = Mathf.Sign(velocity.y);
+            float directionX = Mathf.Sign(Velocity.x);
+            float directionY = Mathf.Sign(Velocity.y);
 
             // Vertically moving platform
-            if (velocity.y != 0)
+            if (Velocity.y != 0)
             {
-                float rayLength = Mathf.Abs(velocity.y) + skinWidth;
+                float rayLength = Mathf.Abs(Velocity.y) + skinWidth;
 
                 for (int i = 0; i < verticalRayCount; i++)
                 {
@@ -207,8 +194,8 @@ namespace MomodoraCopy
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
-                            float pushX = (directionY == 1) ? velocity.x : 0;
-                            float pushY = velocity.y - (hit.distance - skinWidth) * directionY;
+                            float pushX = (directionY == 1) ? Velocity.x : 0;
+                            float pushY = Velocity.y - (hit.distance - skinWidth) * directionY;
 
                             passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), directionY == 1, true));
                         }
@@ -217,9 +204,9 @@ namespace MomodoraCopy
             }
 
             // Horizontally moving platform
-            if (velocity.x != 0)
+            if (Velocity.x != 0)
             {
-                float rayLength = Mathf.Abs(velocity.x) + skinWidth;
+                float rayLength = Mathf.Abs(Velocity.x) + skinWidth;
 
                 for (int i = 0; i < horizontalRayCount; i++)
                 {
@@ -232,7 +219,7 @@ namespace MomodoraCopy
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
-                            float pushX = velocity.x - (hit.distance - skinWidth) * directionX;
+                            float pushX = Velocity.x - (hit.distance - skinWidth) * directionX;
                             float pushY = -skinWidth;
                             passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), false, true));
                         }
@@ -241,7 +228,7 @@ namespace MomodoraCopy
             }
 
             // Passenger on top of a horizontally or downward moving platform
-            if (directionY == -1 || velocity.y == 0 && velocity.x != 0)
+            if (directionY == -1 || Velocity.y == 0 && Velocity.x != 0)
             {
                 float rayLength = skinWidth * 2;
 
@@ -255,8 +242,8 @@ namespace MomodoraCopy
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
-                            float pushX = velocity.x;
-                            float pushY = velocity.y;
+                            float pushX = Velocity.x;
+                            float pushY = Velocity.y;
                             passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), true, false));
                         }
                     }
@@ -306,7 +293,6 @@ namespace MomodoraCopy
                 HorizontalCollisions(ref newMoveAmount);
             }
 
-
             transform.Translate(newMoveAmount, Space.World);
         }
 
@@ -330,7 +316,7 @@ namespace MomodoraCopy
 
                 rayOrigin += Vector2.up * (horizontalRaySpacing * i);
                 leftOrigin += Vector2.up * (horizontalRaySpacing * i);
-                rightOrigin += Vector2.up * (horizontalRaySpacing * i);
+                rightOrigin += Vector2.up * (horizontalRaySpacing * (i + 1));
 
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
                 RaycastHit2D hitPlayer = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, passengerMask);
@@ -339,7 +325,7 @@ namespace MomodoraCopy
                 RaycastHit2D findPlayerRight = Physics2D.Raycast(rightOrigin, Vector2.right, findPlayerLength, passengerMask);
 
                 //Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.blue);
-                //Debug.DrawRay(rayOrigin, Vector2.right * checkPlatformLength * directionX, Color.green);
+                Debug.DrawRay(rayOrigin, Vector2.right * checkPlatformLength * directionX, Color.green);
                 //Debug.DrawRay(leftOrigin, Vector2.left * findPlayerLength, Color.green);
                 //Debug.DrawRay(rightOrigin, Vector2.right * findPlayerLength, Color.green);
 
@@ -370,8 +356,13 @@ namespace MomodoraCopy
                 }
                 if (hitPlayer && hitPlatform)
                 {
-                    Debug.Log("dead by raycast");
-                    hitPlayer.transform.GetComponent<PlayerStatus>().InstantDeath();
+                    hitPlayer.transform.GetComponent<PlayerStatus>().CrushedDeath();
+                    isPlayerDeath = true;
+                }
+                if (isPlayerDeath && hitPlatform && hitPlatform.distance <= 0.1)
+                {
+                    isPlayerDeath = false;
+                    crushedDeathEffect.Play();
                 }
             }
         }
@@ -382,6 +373,7 @@ namespace MomodoraCopy
             float rayLength = Mathf.Abs(moveAmount.y) + skinWidth;
             float checkPlatformLength = 1.0f;
             float findPlayerLength = 10.0f;
+
             if (Mathf.Abs(moveAmount.y) < skinWidth)
             {
                 rayLength = 2 * skinWidth;
@@ -404,7 +396,7 @@ namespace MomodoraCopy
                 RaycastHit2D findPlayerDown = Physics2D.Raycast(botOrigin, Vector2.down, findPlayerLength, passengerMask);
 
                 //Debug.DrawRay(rayOrigin, Vector2.up * directionY, Color.red);
-                //Debug.DrawRay(rayOrigin, Vector2.up * checkPlatformLength * directionY, Color.green);
+                Debug.DrawRay(rayOrigin, Vector2.up * checkPlatformLength * directionY, Color.green);
                 //Debug.DrawRay(topOrigin, Vector2.up * findPlayerLength, Color.green);
                 //Debug.DrawRay(botOrigin, Vector2.down * findPlayerLength, Color.green);
 
@@ -431,7 +423,13 @@ namespace MomodoraCopy
                 }
                 if(hitPlayer && hitPlatform)
                 {
-                    hitPlayer.transform.GetComponent<PlayerStatus>().InstantDeath();
+                    hitPlayer.transform.GetComponent<PlayerStatus>().CrushedDeath();
+                    isPlayerDeath = true;
+                }
+                if (isPlayerDeath && hitPlatform && hitPlatform.distance <= 0.1)
+                {
+                    isPlayerDeath = false;
+                    crushedDeathEffect.Play();
                 }
             }
 

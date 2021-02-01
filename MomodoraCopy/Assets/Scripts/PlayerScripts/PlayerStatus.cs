@@ -169,7 +169,7 @@ namespace MomodoraCopy
             //    Invoke("SetStateChase", knockBackTime);
             //}
         }
-        public void InstantDeath()
+        public void CrushedDeath()
         {
             Debug.Log("im dead");
             Hp = 0;

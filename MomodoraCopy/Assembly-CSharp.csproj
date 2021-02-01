@@ -73,7 +73,6 @@
      <Compile Include="Assets\Scripts\OtherScripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\MovingTrapController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
-     <Compile Include="Assets\Scripts\OtherScripts\PlatformMovement.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\SceneTransferPoint.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\Singleton.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\TestGUI.cs" />
