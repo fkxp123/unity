@@ -98,10 +98,8 @@ namespace MomodoraCopy
         }
         public void Load()
         {
-            Debug.Log("load!!!!!");
             if (File.Exists(Application.dataPath + "/playerData.json"))
             {
-                Debug.Log("Load by playerData");
                 string path = Path.Combine(Application.dataPath, "playerData.json");
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);

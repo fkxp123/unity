@@ -11,9 +11,6 @@ namespace MomodoraCopy
         public LayerMask passengerMask;
         public float speed;
         public float waitTime;
-        [Range(0, 2)]
-        public float easeAmount;
-        float nextMoveTime;
         List<PassengerMovement> passengerMovement;
         Dictionary<Transform, Controller2D> passengerDictionary = new Dictionary<Transform, Controller2D>();
 
@@ -24,20 +21,20 @@ namespace MomodoraCopy
 
         public Vector3 horizontalAreaSize;
         public Vector3 verticalAreaSize;
-
-        public float insideRadius;
-        public float outsideRadius;
-        bool inOutSide;
-        bool inInside;
+        public Vector3 deathAreaSize;
 
         public float currentTime;
+        bool isFirst;
+
+        public ParticleSystem dustCloudEffect;
 
         public override void Start()
         {
             base.Start();
-            collisions.faceDir = transform.rotation.y == 0 ? 1 : -1;
+            collisions.hoziontalDirection = transform.rotation.y == 0 ? 1 : -1;
+            collisions.verticalDirection = -1;
             direction = new Vector2(0, 0);
-            //InvokeRepeating("FindPlayer", 0, 0.01f);
+            deathAreaSize = new Vector3(1.9f, 1.9f);
         }
 
         void ResetFindPlayer()
@@ -54,9 +51,7 @@ namespace MomodoraCopy
                 {
                     direction.x = collider.transform.position.x < transform.position.x ? -1 : 1;
                     direction.y = 0;
-                    currentTime = 0;
                     findPlayer = true;
-                    break;
                 }
             }
 
@@ -67,9 +62,7 @@ namespace MomodoraCopy
                 {
                     direction.y = collider.transform.position.y < transform.position.y ? -1 : 1;
                     direction.x = 0;
-                    currentTime = 0;
                     findPlayer = true;
-                    break;
                 }
             }
         }
@@ -88,21 +81,66 @@ namespace MomodoraCopy
 
             CheckVerticalCollision();
 
-            FindPlayer();
-            Debug.Log(collisions.left);
-            Debug.Log(collisions.right);
-            Debug.Log(collisions.above); //above랑 below가 벽에 닿아도 계속 true로 바뀌게해야댐
-            Debug.Log(collisions.below);
+            if(velocity != Vector3.zero)
+            {
+                isFirst = false;
+                currentTime = 0;
+            }
+            //CheckPlayerInstantDeath();
+            //FindPlayer();
+            Debug.Log("left : "+collisions.left);
+            Debug.Log("right : "+collisions.right);
+            Debug.Log("above : "+collisions.above);
+            Debug.Log("below : "+collisions.below);
         }
 
         void CheckVerticalCollision()
         {
-            if (collisions.left || collisions.right)
+            //if (collisions.left || collisions.right)
+            //{
+            //    direction.x = 0;
+            //    //velocity.x = 0;
+            //}
+            //if (collisions.above || collisions.below)
+            //{
+            //    direction.y = 0;
+            //    //velocity.y = 0;
+            //}
+            if(collisions.left || collisions.right ||
+               collisions.above || collisions.below)
             {
-                direction.x = 0;
-                velocity.x = 0;
-                if(currentTime <= 0)
+                if (currentTime <= 0 && !isFirst)
                 {
+                    if (collisions.left)
+                    {
+                        dustCloudEffect.transform.position = transform.position + Vector3.left * 1.25f;
+                        dustCloudEffect.transform.rotation = Quaternion.Euler(0, 90, 0);
+                        direction.x = 0;
+                        velocity.x = 0;
+                    }
+                    if (collisions.right)
+                    {
+                        dustCloudEffect.transform.position = transform.position + Vector3.right * 1.25f;
+                        dustCloudEffect.transform.rotation = Quaternion.Euler(0, -90, 0);
+                        direction.x = 0;
+                        velocity.x = 0;
+                    }
+                    if (collisions.above)
+                    {
+                        dustCloudEffect.transform.position = transform.position + Vector3.up * 1.25f;
+                        dustCloudEffect.transform.rotation = Quaternion.Euler(90, 0, 0);
+                        direction.y = 0;
+                        velocity.y = 0;
+                    }
+                    if (collisions.below)
+                    {
+                        dustCloudEffect.transform.position = transform.position + Vector3.down * 1.25f;
+                        dustCloudEffect.transform.rotation = Quaternion.Euler(-90, 0, 0);
+                        direction.y = 0;
+                        velocity.y = 0;
+                    }
+                    dustCloudEffect.Play();
+                    isFirst = true;
                     currentTime = waitTime;
                 }
                 currentTime -= Time.deltaTime;
@@ -111,33 +149,22 @@ namespace MomodoraCopy
                     ResetFindPlayer();
                 }
             }
-            if (collisions.above || collisions.below)
-            {
-                direction.y = 0;
-                velocity.y = 0;
-                if (currentTime <= 0)
-                {
-                    currentTime = waitTime;
-                }
-                currentTime -= Time.deltaTime;
-                if (currentTime <= 0)
-                {
-                    ResetFindPlayer();
-                }
-            }
-        }
-
-
-        float Ease(float x)
-        {
-            float a = easeAmount + 1;
-            return Mathf.Pow(x, a) / (Mathf.Pow(x, a) + Mathf.Pow(1 - x, a));
         }
 
         void CalculateVelocity()
         {
             velocity.x = direction.x * speed * Time.deltaTime;
             velocity.y = direction.y * speed * Time.deltaTime;
+            Debug.Log("dx : "+direction.x);
+            Debug.Log("dy : "+direction.y);
+            //if (direction.x != 0 && direction.y == 0)
+            //{
+            //    velocity.x = direction.x * speed * Time.deltaTime;
+            //}
+            //if (direction.x == 0 && direction.y != 0)
+            //{
+            //    velocity.y = direction.y * speed * Time.deltaTime;
+            //}
         }
 
         void MovePassengers(bool beforeMovePlatform)
@@ -177,10 +204,6 @@ namespace MomodoraCopy
 
                     if (hit && hit.distance != 0)
                     {
-                        if (collisions.above || collisions.below)
-                        {
-                            return;
-                        }
                         if (!movedPassengers.Contains(hit.transform))
                         {
                             movedPassengers.Add(hit.transform);
@@ -267,22 +290,32 @@ namespace MomodoraCopy
 
             if (moveAmount.x != 0)
             {
-                collisions.faceDir = (int)Mathf.Sign(moveAmount.x);
+                collisions.hoziontalDirection = (int)Mathf.Sign(moveAmount.x);
+            }
+            if(moveAmount.y != 0)
+            {
+                collisions.verticalDirection = (int)Mathf.Sign(moveAmount.y);
             }
 
-            HorizontalCollisions(ref newMoveAmount);
-            if (moveAmount.y != 0)
+            if(moveAmount.x == 0)
             {
                 VerticalCollisions(ref newMoveAmount);
             }
+            if(moveAmount.y == 0)
+            {
+                HorizontalCollisions(ref newMoveAmount);
+            }
+
 
             transform.Translate(newMoveAmount, Space.World);
         }
 
         public void HorizontalCollisions(ref Vector2 moveAmount)
         {
-            float directionX = collisions.faceDir;
+            float directionX = collisions.hoziontalDirection;
             float rayLength = Mathf.Abs(moveAmount.x) + skinWidth;
+            float checkPlatformLength = 1.0f;
+            float findPlayerLength = 10.0f;
 
             if (Mathf.Abs(moveAmount.x) < skinWidth)
             {
@@ -292,11 +325,23 @@ namespace MomodoraCopy
             for (int i = 0; i < horizontalRayCount; i++)
             {
                 Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+                Vector2 leftOrigin = raycastOrigins.bottomLeft;
+                Vector2 rightOrigin = raycastOrigins.bottomRight;
 
                 rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+                leftOrigin += Vector2.up * (horizontalRaySpacing * i);
+                rightOrigin += Vector2.up * (horizontalRaySpacing * i);
 
-                Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.red);
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+                RaycastHit2D hitPlayer = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, passengerMask);
+                RaycastHit2D hitPlatform = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, checkPlatformLength, collisionMask);
+                RaycastHit2D findPlayerLeft = Physics2D.Raycast(leftOrigin, Vector2.left, findPlayerLength, passengerMask);
+                RaycastHit2D findPlayerRight = Physics2D.Raycast(rightOrigin, Vector2.right, findPlayerLength, passengerMask);
+
+                //Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.blue);
+                //Debug.DrawRay(rayOrigin, Vector2.right * checkPlatformLength * directionX, Color.green);
+                //Debug.DrawRay(leftOrigin, Vector2.left * findPlayerLength, Color.green);
+                //Debug.DrawRay(rightOrigin, Vector2.right * findPlayerLength, Color.green);
 
                 if (hit)
                 {
@@ -310,22 +355,58 @@ namespace MomodoraCopy
                     collisions.left = directionX == -1;
                     collisions.right = directionX == 1;
                 }
+                if (!findPlayer)
+                {
+                    if (findPlayerLeft)
+                    {
+                        direction.x = -1;
+                        findPlayer = true;
+                    }
+                    else if (findPlayerRight)
+                    {
+                        direction.x = 1;
+                        findPlayer = true;
+                    }
+                }
+                if (hitPlayer && hitPlatform)
+                {
+                    Debug.Log("dead by raycast");
+                    hitPlayer.transform.GetComponent<PlayerStatus>().InstantDeath();
+                }
             }
         }
 
         void VerticalCollisions(ref Vector2 moveAmount)
         {
-            float directionY = Mathf.Sign(moveAmount.y);
+            float directionY = collisions.verticalDirection;
             float rayLength = Mathf.Abs(moveAmount.y) + skinWidth;
+            float checkPlatformLength = 1.0f;
+            float findPlayerLength = 10.0f;
+            if (Mathf.Abs(moveAmount.y) < skinWidth)
+            {
+                rayLength = 2 * skinWidth;
+            }
 
             for (int i = 0; i < verticalRayCount; i++)
             {
-
                 Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-                rayOrigin += Vector2.right * (verticalRaySpacing * i + moveAmount.x);
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+                Vector2 topOrigin = raycastOrigins.topLeft;
+                Vector2 botOrigin = raycastOrigins.bottomLeft;
 
-                Debug.DrawRay(rayOrigin, Vector2.up * directionY, Color.red);
+                rayOrigin += Vector2.right * (verticalRaySpacing * i);
+                topOrigin += Vector2.right * (verticalRaySpacing * i);
+                botOrigin += Vector2.right * (verticalRaySpacing * i);
+
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+                RaycastHit2D hitPlayer = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, passengerMask);
+                RaycastHit2D hitPlatform = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, checkPlatformLength, collisionMask);
+                RaycastHit2D findPlayerUp = Physics2D.Raycast(topOrigin, Vector2.up, findPlayerLength, passengerMask);
+                RaycastHit2D findPlayerDown = Physics2D.Raycast(botOrigin, Vector2.down, findPlayerLength, passengerMask);
+
+                //Debug.DrawRay(rayOrigin, Vector2.up * directionY, Color.red);
+                //Debug.DrawRay(rayOrigin, Vector2.up * checkPlatformLength * directionY, Color.green);
+                //Debug.DrawRay(topOrigin, Vector2.up * findPlayerLength, Color.green);
+                //Debug.DrawRay(botOrigin, Vector2.down * findPlayerLength, Color.green);
 
                 if (hit)
                 {
@@ -334,6 +415,23 @@ namespace MomodoraCopy
 
                     collisions.below = directionY == -1;
                     collisions.above = directionY == 1;
+                }
+                if (!findPlayer)
+                {
+                    if (findPlayerUp)
+                    {
+                        direction.y = 1;
+                        findPlayer = true;
+                    }
+                    else if (findPlayerDown)
+                    {
+                        direction.y = -1;
+                        findPlayer = true;
+                    }
+                }
+                if(hitPlayer && hitPlatform)
+                {
+                    hitPlayer.transform.GetComponent<PlayerStatus>().InstantDeath();
                 }
             }
 
@@ -347,25 +445,14 @@ namespace MomodoraCopy
             public bool left, right;
 
             public Vector2 moveAmountOld;
-            public int faceDir;
+            public int hoziontalDirection;
+            public int verticalDirection;
 
             public void Reset()
             {
                 above = below = false;
                 left = right = false;
             }
-        }
-
-        void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, horizontalAreaSize);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, verticalAreaSize);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, insideRadius);
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, outsideRadius);
         }
     }
 }

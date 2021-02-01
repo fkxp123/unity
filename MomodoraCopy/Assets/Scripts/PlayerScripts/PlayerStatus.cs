@@ -171,7 +171,8 @@ namespace MomodoraCopy
         }
         public void InstantDeath()
         {
-            Hp -= 999;
+            Debug.Log("im dead");
+            Hp = 0;
         }
     }
 
