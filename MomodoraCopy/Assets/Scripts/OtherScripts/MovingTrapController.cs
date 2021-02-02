@@ -23,30 +23,22 @@ namespace MomodoraCopy
                 if (value.x < 0)
                 {
                     dustCloudEffect.transform.position = transform.position + Vector3.left * 1.25f;
-                    dustCloudEffect.transform.rotation = Quaternion.Euler(0, 90, 0);
-                    crushedDeathEffect.transform.position = transform.position + Vector3.left;
-                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, -90);
+                    dustCloudEffect.transform.rotation = Quaternion.Euler(0, 90, 0);   
                 }
                 else if (value.x > 0)
                 {
                     dustCloudEffect.transform.position = transform.position + Vector3.right * 1.25f;
                     dustCloudEffect.transform.rotation = Quaternion.Euler(0, -90, 0);
-                    crushedDeathEffect.transform.position = transform.position + Vector3.right;
-                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 90);
                 }
                 else if (value.y > 0)
                 {
                     dustCloudEffect.transform.position = transform.position + Vector3.up * 1.25f;
                     dustCloudEffect.transform.rotation = Quaternion.Euler(90, 0, 0);
-                    crushedDeathEffect.transform.position = transform.position + Vector3.up;
-                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 180);
                 }
                 else if (value.y < 0)
                 {
                     dustCloudEffect.transform.position = transform.position + Vector3.down * 1.25f;
                     dustCloudEffect.transform.rotation = Quaternion.Euler(-90, 0, 0);
-                    crushedDeathEffect.transform.position = transform.position + Vector3.down;
-                    crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 0);
                 }
                 if (value != Vector3.zero)
                 {
@@ -67,9 +59,7 @@ namespace MomodoraCopy
         public float currentTime;
         bool isFirst;
 
-        public ParticleSystem dustCloudEffect;
-        public ParticleSystem crushedDeathEffect;
-        bool isPlayerDeath;
+        public ParticleSystem dustCloudEffect;      
 
         public override void Start()
         {
@@ -104,12 +94,6 @@ namespace MomodoraCopy
                 isFirst = false;
                 currentTime = 0;
             }
-            //CheckPlayerInstantDeath();
-            //FindPlayer();
-            Debug.Log("left : "+collisions.left);
-            Debug.Log("right : "+collisions.right);
-            Debug.Log("above : "+collisions.above);
-            Debug.Log("below : "+collisions.below);
         }
 
         void CheckVerticalCollision()
@@ -143,15 +127,7 @@ namespace MomodoraCopy
 
         void CalculateVelocity()
         {
-            Velocity = new Vector3(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
-            //if (direction.x != 0 && direction.y == 0)
-            //{
-            //    velocity.x = direction.x * speed * Time.deltaTime;
-            //}
-            //if (direction.x == 0 && direction.y != 0)
-            //{
-            //    velocity.y = direction.y * speed * Time.deltaTime;
-            //}    
+            Velocity = new Vector3(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);  
         }
 
         void MovePassengers(bool beforeMovePlatform)
@@ -177,8 +153,7 @@ namespace MomodoraCopy
 
             float directionX = Mathf.Sign(Velocity.x);
             float directionY = Mathf.Sign(Velocity.y);
-
-            // Vertically moving platform
+            
             if (Velocity.y != 0)
             {
                 float rayLength = Mathf.Abs(Velocity.y) + skinWidth;
@@ -202,8 +177,7 @@ namespace MomodoraCopy
                     }
                 }
             }
-
-            // Horizontally moving platform
+            
             if (Velocity.x != 0)
             {
                 float rayLength = Mathf.Abs(Velocity.x) + skinWidth;
@@ -226,8 +200,7 @@ namespace MomodoraCopy
                     }
                 }
             }
-
-            // Passenger on top of a horizontally or downward moving platform
+            
             if (directionY == -1 || Velocity.y == 0 && Velocity.x != 0)
             {
                 float rayLength = skinWidth * 2;
@@ -300,7 +273,7 @@ namespace MomodoraCopy
         {
             float directionX = collisions.hoziontalDirection;
             float rayLength = Mathf.Abs(moveAmount.x) + skinWidth;
-            float checkPlatformLength = 1.0f;
+            
             float findPlayerLength = 10.0f;
 
             if (Mathf.Abs(moveAmount.x) < skinWidth)
@@ -318,16 +291,9 @@ namespace MomodoraCopy
                 leftOrigin += Vector2.up * (horizontalRaySpacing * i);
                 rightOrigin += Vector2.up * (horizontalRaySpacing * (i + 1));
 
-                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-                RaycastHit2D hitPlayer = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, passengerMask);
-                RaycastHit2D hitPlatform = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, checkPlatformLength, collisionMask);
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask); 
                 RaycastHit2D findPlayerLeft = Physics2D.Raycast(leftOrigin, Vector2.left, findPlayerLength, passengerMask);
                 RaycastHit2D findPlayerRight = Physics2D.Raycast(rightOrigin, Vector2.right, findPlayerLength, passengerMask);
-
-                //Debug.DrawRay(rayOrigin, Vector2.right * directionX, Color.blue);
-                Debug.DrawRay(rayOrigin, Vector2.right * checkPlatformLength * directionX, Color.green);
-                //Debug.DrawRay(leftOrigin, Vector2.left * findPlayerLength, Color.green);
-                //Debug.DrawRay(rightOrigin, Vector2.right * findPlayerLength, Color.green);
 
                 if (hit)
                 {
@@ -354,16 +320,6 @@ namespace MomodoraCopy
                         findPlayer = true;
                     }
                 }
-                if (hitPlayer && hitPlatform)
-                {
-                    hitPlayer.transform.GetComponent<PlayerStatus>().CrushedDeath();
-                    isPlayerDeath = true;
-                }
-                if (isPlayerDeath && hitPlatform && hitPlatform.distance <= 0.1)
-                {
-                    isPlayerDeath = false;
-                    crushedDeathEffect.Play();
-                }
             }
         }
 
@@ -371,7 +327,7 @@ namespace MomodoraCopy
         {
             float directionY = collisions.verticalDirection;
             float rayLength = Mathf.Abs(moveAmount.y) + skinWidth;
-            float checkPlatformLength = 1.0f;
+            
             float findPlayerLength = 10.0f;
 
             if (Mathf.Abs(moveAmount.y) < skinWidth)
@@ -390,15 +346,8 @@ namespace MomodoraCopy
                 botOrigin += Vector2.right * (verticalRaySpacing * i);
 
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
-                RaycastHit2D hitPlayer = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, passengerMask);
-                RaycastHit2D hitPlatform = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, checkPlatformLength, collisionMask);
                 RaycastHit2D findPlayerUp = Physics2D.Raycast(topOrigin, Vector2.up, findPlayerLength, passengerMask);
                 RaycastHit2D findPlayerDown = Physics2D.Raycast(botOrigin, Vector2.down, findPlayerLength, passengerMask);
-
-                //Debug.DrawRay(rayOrigin, Vector2.up * directionY, Color.red);
-                Debug.DrawRay(rayOrigin, Vector2.up * checkPlatformLength * directionY, Color.green);
-                //Debug.DrawRay(topOrigin, Vector2.up * findPlayerLength, Color.green);
-                //Debug.DrawRay(botOrigin, Vector2.down * findPlayerLength, Color.green);
 
                 if (hit)
                 {
@@ -421,21 +370,8 @@ namespace MomodoraCopy
                         findPlayer = true;
                     }
                 }
-                if(hitPlayer && hitPlatform)
-                {
-                    hitPlayer.transform.GetComponent<PlayerStatus>().CrushedDeath();
-                    isPlayerDeath = true;
-                }
-                if (isPlayerDeath && hitPlatform && hitPlatform.distance <= 0.1)
-                {
-                    isPlayerDeath = false;
-                    crushedDeathEffect.Play();
-                }
             }
-
         }
-
-
 
         public struct CollisionInfo
         {

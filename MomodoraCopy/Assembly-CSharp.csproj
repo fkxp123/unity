@@ -76,6 +76,7 @@
      <Compile Include="Assets\Scripts\OtherScripts\SceneTransferPoint.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\Singleton.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\TestGUI.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\VelocityCalculator.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\CheckAirBowPos.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\Controller2D.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\KeyboardManager.cs" />

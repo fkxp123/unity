@@ -189,6 +189,13 @@ namespace MomodoraCopy
         int wallDirX;
         #endregion
 
+        Vector2 checkCrushedArea;
+        public ParticleSystem crushedDeathEffect;
+
+        Vector3 currentVelocity;
+        Vector3 previousVelocity;
+
+
         #endregion
         void Start()
         {
@@ -210,13 +217,59 @@ namespace MomodoraCopy
             MoveTypeDictionary.Add(MoveType.ThirdAttack, ThirdAttackSpeed);
             MoveTypeDictionary.Add(MoveType.Roll, rollSpeed);
             MoveTypeDictionary.Add(MoveType.StopMove, 0);
+
+            Bounds bounds = boxCollider.bounds;
+
+            bounds.Expand(new Vector2(-0.5f, -1.5f));
+            checkCrushedArea = bounds.size;
         }
+        void CheckCrushed()
+        {
+            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position + Vector3.up * 0.22f , checkCrushedArea, 0);
+            foreach (Collider2D collider in collider2Ds)
+            {
+                if (collider.transform.CompareTag("Platform"))
+                {
+                    if(currentVelocity.x < 0)
+                    {
+                        crushedDeathEffect.transform.position = transform.position + Vector3.left * 0.5f;
+                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, -90);
+                    }
+                    else if(currentVelocity.x > 0)
+                    {
+                        crushedDeathEffect.transform.position = transform.position + Vector3.right * 0.5f;
+                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 90);
+                    }
+                    else if (currentVelocity.y > 0)
+                    {
+                        crushedDeathEffect.transform.position = transform.position + Vector3.up;
+                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 180);
+                    }
+                    else
+                    {
+                        crushedDeathEffect.transform.position = transform.position + Vector3.down;
+                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 0);
+                    }
+                    crushedDeathEffect.Play();
+                    playerStatus.CrushedDeath();
+                }
+            }
+        }
+
+        void CalculateCurrentVelocity()
+        {
+            currentVelocity = (transform.position - previousVelocity) / Time.deltaTime;
+            previousVelocity = transform.position;
+        }
+
         void Update()
         {
+            CheckCrushed();
             SetDirectionalInput(playerInput.directionalInput);
             SetPlayerMovement();
             CheckVerticalCollision();
             CheckisGround();
+            CalculateCurrentVelocity();
         }
         void SetDirectionalInput(Vector2 directionalInput)
         {
@@ -610,17 +663,30 @@ namespace MomodoraCopy
             }
         }
 
-        //void OnDrawGizmos()
-        //{
-        //    Gizmos.color = Color.red;
-        //    Gizmos.DrawWireCube(firstAttackPos.position, firstAttackArea);
-        //    Gizmos.color = Color.green;
-        //    Gizmos.DrawWireCube(secondAttackPos.position, secondAttackArea);
-        //    Gizmos.color = Color.blue;
-        //    Gizmos.DrawWireCube(thirdAttackPos.position, thirdAttackArea);
-        //    Gizmos.color = Color.yellow;
-        //    Gizmos.DrawWireCube(airAttackPos.position, airAttackArea);
-        //}
+        public void SetNormalBoxCollider2D()
+        {
+            boxCollider.offset = new Vector2(0.0f, 0.22f);
+            boxCollider.size = new Vector2(1.13f, 2.32f);
+        }
+        public void SetCrouchBoxCollider2D()
+        {
+            boxCollider.offset = new Vector2(0.0f, -0.19f);
+            boxCollider.size = new Vector2(1.13f, 1.5f);
+        }
+
+        void OnDrawGizmos()
+        {
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawWireCube(firstAttackPos.position, firstAttackArea);
+            //Gizmos.color = Color.green;
+            //Gizmos.DrawWireCube(secondAttackPos.position, secondAttackArea);
+            //Gizmos.color = Color.blue;
+            //Gizmos.DrawWireCube(thirdAttackPos.position, thirdAttackArea);
+            //Gizmos.color = Color.yellow;
+            //Gizmos.DrawWireCube(airAttackPos.position, airAttackArea);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(transform.position + Vector3.up * 0.22f, checkCrushedArea);
+        }
     }
 
 }

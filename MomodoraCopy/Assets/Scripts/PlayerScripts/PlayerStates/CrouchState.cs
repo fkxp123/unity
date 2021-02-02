@@ -11,7 +11,7 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            player.SetCrouchBoxCollider2D();
+            playerMovement.SetCrouchBoxCollider2D();
             playerMovement.moveType = PlayerMovement.MoveType.StopMove;
             if (player.stateMachine.PreviousState == player.crouchBowAttack)
             {
@@ -46,7 +46,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
-            player.SetNormalBoxCollider2D();
+            playerMovement.SetNormalBoxCollider2D();
             playerMovement.isAnimationFinished = false;
             playerMovement.animator.Play("breakCrouch");
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
