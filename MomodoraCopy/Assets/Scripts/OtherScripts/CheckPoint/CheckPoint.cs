@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 namespace MomodoraCopy
 {
@@ -28,21 +29,38 @@ namespace MomodoraCopy
         float currentTime;
 
         Scene scene;
+        GameObject playerObject;
 
         void Start()
         {
             scene = SceneManager.GetActiveScene();
             sceneName = scene.name;
-            CheckPointsData.AddCheckPoint(scene.name, gameObject);
-            //Debug.Log(CheckPointsData.checkPointsDict[scene.name.GetHashCode()].Count);
-            //SetPlayerPosition();
+            CheckPointManager.instance.AddCheckPoint(scene.name.GetHashCode(), gameObject);
+
+            if (playerObject == null || playerObject.tag != "Player")
+            {
+                playerObject = GameObject.FindGameObjectWithTag("Player");
+            }
+            SetPlayerPosition();
+            if (GameManager.instance.playerData.playerPosition == transform.position)
+            {
+                playerObject.transform.position = transform.position;
+            }
         }
 
         void SetPlayerPosition()
         {
-            if(GameManager.instance.playerData.playerPosition == null)
+            //foreach(GameObject obj in CheckPointsData.instance.checkPointsDict[scene.name.GetHashCode()])
+            //{
+            //    if(obj.transform.position != GameManager.instance.playerData.playerPosition)
+            //    {
+
+            //    }
+            //}
+            if (!File.Exists(Application.dataPath + "/playerData.json") || 
+                CheckPointManager.instance.checkPointsDict.ContainsKey(scene.name.GetHashCode()))
             {
-                GameManager.instance.playerObject.transform.position = CheckPointsData.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
+                playerObject.transform.position = CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
             }
         }
 

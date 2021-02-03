@@ -20,7 +20,7 @@ namespace MomodoraCopy
     public class GameManager : Singleton<GameManager>
     {
         public PlayerData playerData;
-        public GameObject playerObject;
+        GameObject playerObject;
         public GameObject mainCameraObject;
         GameObject[] checkPoints;
         Scene scene;
@@ -35,19 +35,27 @@ namespace MomodoraCopy
         {
             base.Awake();
             scene = SceneManager.GetActiveScene();
+            if (playerObject == null || playerObject.tag != "Player")
+            {
+                playerObject = GameObject.FindGameObjectWithTag("Player");
+            }
+            if (checkPoints == null)
+            {
+                checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
+            }
         }
 
         public void Start()
         {
 
-            if (playerObject == null || playerObject.tag != "Player")
-            {
-                playerObject = GameObject.FindGameObjectWithTag("Player");
-            }
-            if(checkPoints == null)
-            {
-                checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
-            }
+            //if (playerObject == null || playerObject.tag != "Player")
+            //{
+            //    playerObject = GameObject.FindGameObjectWithTag("Player");
+            //}
+            //if(checkPoints == null)
+            //{
+            //    checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
+            //}
             playerComponents = playerObject.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }
@@ -108,8 +116,8 @@ namespace MomodoraCopy
             }
             else
             {
-                SceneManager.LoadScene("test");
-                playerObject.transform.position = CheckPointsData.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
+                //Load player at the top of the hierarchy checkpoint position
+                playerObject.transform.position = CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
             }
         }
     }

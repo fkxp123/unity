@@ -63,7 +63,7 @@ namespace MomodoraCopy
         public void OperateSpawn(PoolingObjectInfo info, float objectActivateTime)
         {
             GameObject poolingObject = ObjectPooler.instance.GetPoolingObject(info);
-            ActivatePoolingObject(objectActivateTime, info.prefab, poolingObject);
+            ActivatePoolingObject(objectActivateTime, info, poolingObject);
         }
 
         protected GameObject GetPoolingObject(PoolingObjectInfo info)
@@ -75,19 +75,19 @@ namespace MomodoraCopy
         {
             ObjectPooler.instance.CreatePoolingObjectQueue(info, size);
         }
-        protected void RecyclePoolingObject(GameObject prefab, GameObject poolingObject)
+        protected void RecyclePoolingObject(PoolingObjectInfo info, GameObject poolingObject)
         {
-            ObjectPooler.instance.RecyclePoolingObject(prefab, poolingObject);
+            ObjectPooler.instance.RecyclePoolingObject(info, poolingObject);
         }
 
-        protected void ActivatePoolingObject(float objectActivateTime, GameObject prefab, GameObject poolingObject)
+        protected void ActivatePoolingObject(float objectActivateTime, PoolingObjectInfo info, GameObject poolingObject)
         {
-            StartCoroutine(CheckActivateTimeCoroutine(objectActivateTime, prefab, poolingObject));
+            StartCoroutine(CheckActivateTimeCoroutine(objectActivateTime, info, poolingObject));
         }
-        IEnumerator CheckActivateTimeCoroutine(float objectActivateTime, GameObject prefab, GameObject poolingObject)
+        IEnumerator CheckActivateTimeCoroutine(float objectActivateTime, PoolingObjectInfo info, GameObject poolingObject)
         {
             yield return new WaitForSeconds(objectActivateTime);
-            RecyclePoolingObject(prefab, poolingObject);
+            RecyclePoolingObject(info, poolingObject);
         }
 
         protected void SetAutoSpawn(PoolingObjectInfo info, float objectActivateTime)
@@ -98,7 +98,7 @@ namespace MomodoraCopy
         {
             GameObject poolingObject = ObjectPooler.instance.GetPoolingObject(info);
             yield return new WaitForSeconds(objectActivateTime);
-            RecyclePoolingObject(info.prefab, poolingObject);
+            RecyclePoolingObject(info, poolingObject);
             SetAutoSpawn(info, objectActivateTime);
         }
     }

@@ -9,7 +9,7 @@ namespace MomodoraCopy
     {
         #region Variables
         public bool isGround;
-        public bool isFall; //velocity.y < 0 -> isFall
+        public bool isFall;
         float gravity;
 
         public bool stopCheckFlip;

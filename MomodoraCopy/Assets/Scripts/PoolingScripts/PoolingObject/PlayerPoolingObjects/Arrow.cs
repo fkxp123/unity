@@ -14,6 +14,12 @@ namespace MomodoraCopy
         bool isStuckInWall;
         bool isHit;
 
+        ArrowSpawner arrowSpawner;
+
+        void Start()
+        {
+            arrowSpawner = transform.parent.GetComponent<ArrowSpawner>();
+        }
         //void Start()
         //{
         //    InvokeRepeating("HitCheck", 0, 0.01f);
@@ -70,13 +76,18 @@ namespace MomodoraCopy
                 if (collider.tag == "Platform" && collider.tag != "Through")
                 {
                     //gameObject.SetActive(false);
+                    if(collider.gameObject.layer == LayerMask.NameToLayer("Trap"))
+                    {
+                        transform.SetParent(collider.transform);
+                    }
                     isStuckInWall = true;
                     transform.tag = "Through";
                     gameObject.layer = LayerMask.NameToLayer("Platform");
                 }
                 else if (collider.tag == "Enemy")
                 {
-                    gameObject.SetActive(false);
+                    //gameObject.SetActive(false);
+                    ObjectPooler.instance.RecyclePoolingObject(arrowSpawner.info, gameObject);
                     collider.transform.GetComponent<EnemyStatus>().TakeDamage(arrowDamage, DamageType.Range, transform.rotation);
                 }
             }

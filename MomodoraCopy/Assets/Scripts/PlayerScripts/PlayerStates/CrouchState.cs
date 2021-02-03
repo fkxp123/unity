@@ -37,6 +37,11 @@ namespace MomodoraCopy
                 player.stateMachine.SetState(player.attack);
                 return;
             }
+            if(playerMovement.velocity.y < 0)
+            {
+                player.stateMachine.SetState(player.fall);
+                return;
+            }
             if (playerInput.directionalInput.y != -1)
             {
                 player.stateMachine.SetState(player.idle);

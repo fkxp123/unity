@@ -159,21 +159,30 @@ namespace MomodoraCopy
             obj.transform.rotation = info.objectRotation;
             return obj;
         }
-        public void RecyclePoolingObject(GameObject prefab, GameObject clone)
+        void CleanPoolDictionary()
+        {
+            for(int i = 0; i < poolDictionary.Count; i++)
+            {
+
+            }
+        }
+
+        public void RecyclePoolingObject(PoolingObjectInfo info, GameObject clone)
         {
             if(clone == null)
             {
                 return;
             }
+            clone.transform.SetParent(info.spawner.transform);
             clone.SetActive(false);
-            if (!poolDictionary.ContainsKey(prefab))
+            if (!poolDictionary.ContainsKey(info.prefab))
             {
                 Queue<GameObject> poolingObjectQueue = new Queue<GameObject>();
                 poolingObjectQueue.Enqueue(clone);
-                poolDictionary.Add(prefab, poolingObjectQueue);
+                poolDictionary.Add(info.prefab, poolingObjectQueue);
                 return;
             }
-            poolDictionary[prefab].Enqueue(clone);
+            poolDictionary[info.prefab].Enqueue(clone);
         }
     }
 }
