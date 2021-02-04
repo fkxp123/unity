@@ -54,10 +54,7 @@ namespace MomodoraCopy
         MoveType _moveType;
         public MoveType moveType
         {
-            get
-            {
-                return _moveType;
-            }
+            get{ return _moveType; }
             set
             {
                 _moveType = value;
@@ -138,10 +135,7 @@ namespace MomodoraCopy
         int attackCount;
         public int AttackCount
         {
-            get
-            {
-                return attackCount;
-            }
+            get{ return attackCount; }
             set
             {
                 Mathf.Clamp(value, 0, maxAttackCount);
@@ -190,9 +184,8 @@ namespace MomodoraCopy
         #endregion
 
         Vector2 checkCrushedArea;
-        public ParticleSystem crushedDeathEffect;
 
-        Vector3 currentVelocity;
+        public Vector3 currentVelocity;
         Vector3 previousVelocity;
 
 
@@ -221,36 +214,16 @@ namespace MomodoraCopy
             Bounds bounds = boxCollider.bounds;
 
             bounds.Expand(new Vector2(-0.5f, -1.5f));
+            //bounds.Expand(0.015f * -3);
             checkCrushedArea = bounds.size;
         }
-        void CheckCrushed()
+        void CheckCrushed()//CheckCrushedByArea & CheckCrushedByTime
         {
             Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position + Vector3.up * 0.22f , checkCrushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
                 if (collider.transform.CompareTag("Platform"))
                 {
-                    if(currentVelocity.x < 0)
-                    {
-                        crushedDeathEffect.transform.position = transform.position + Vector3.left * 0.5f;
-                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, -90);
-                    }
-                    else if(currentVelocity.x > 0)
-                    {
-                        crushedDeathEffect.transform.position = transform.position + Vector3.right * 0.5f;
-                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 90);
-                    }
-                    else if (currentVelocity.y > 0)
-                    {
-                        crushedDeathEffect.transform.position = transform.position + Vector3.up;
-                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 180);
-                    }
-                    else
-                    {
-                        crushedDeathEffect.transform.position = transform.position + Vector3.down;
-                        crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 0);
-                    }
-                    crushedDeathEffect.Play();
                     playerStatus.CrushedDeath();
                 }
             }

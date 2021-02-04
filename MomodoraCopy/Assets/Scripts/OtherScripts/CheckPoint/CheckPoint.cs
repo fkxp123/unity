@@ -41,24 +41,7 @@ namespace MomodoraCopy
             {
                 playerObject = GameObject.FindGameObjectWithTag("Player");
             }
-            SetPlayerPosition();
-            if (GameManager.instance.playerData.playerPosition == transform.position)
-            {
-                playerObject.transform.position = transform.position;
-            }
-        }
-
-        void SetPlayerPosition()
-        {
-            //foreach(GameObject obj in CheckPointsData.instance.checkPointsDict[scene.name.GetHashCode()])
-            //{
-            //    if(obj.transform.position != GameManager.instance.playerData.playerPosition)
-            //    {
-
-            //    }
-            //}
-            if (!File.Exists(Application.dataPath + "/playerData.json") || 
-                CheckPointManager.instance.checkPointsDict.ContainsKey(scene.name.GetHashCode()))
+            if (!File.Exists(Application.dataPath + "/playerData.json"))
             {
                 playerObject.transform.position = CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
             }

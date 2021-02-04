@@ -18,6 +18,8 @@ namespace MomodoraCopy
         [SerializeField]
         ParticleSystem hitEffect;
         ParticleSystemRenderer hitEffectRenderer;
+        [SerializeField]
+        ParticleSystem crushedDeathEffect;
 
         [SerializeField]
         float maxHp = 100.0f;
@@ -79,6 +81,33 @@ namespace MomodoraCopy
         void ResetMove()
         {
             enemyMovement.direction.x = 0;
+        }
+
+        public void CrushedDeath()
+        {
+            Hp -= maxHp;
+
+            if (enemyMovement.currentVelocity.x < 0)
+            {
+                crushedDeathEffect.transform.position = transform.position + Vector3.left * 0.5f;
+                crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, -90);
+            }
+            else if (enemyMovement.currentVelocity.x > 0)
+            {
+                crushedDeathEffect.transform.position = transform.position + Vector3.right * 0.5f;
+                crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 90);
+            }
+            else if (enemyMovement.currentVelocity.y > 0)
+            {
+                crushedDeathEffect.transform.position = transform.position + Vector3.up;
+                crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 180);
+            }
+            else
+            {
+                crushedDeathEffect.transform.position = transform.position + Vector3.down;
+                crushedDeathEffect.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            crushedDeathEffect.Play();
         }
     }
 }

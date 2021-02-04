@@ -1,47 +1,53 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MomodoraCopy
 {
     public class HealthBar : MonoBehaviour
     {
-        public static HealthBar instance;
         public Image fill;
         public Image effectImg;
         public Image blinkImg;
 
-        public float currentHp;
-        public float Hp;
+        public static float currentHp;
+        public static float maxHp;
+
         public float hurtSpeed = 0.005f;
-        public float setPositionX;
-        PlayerStatus ps;
+        public static float setPositionX;
+
+        public GameObject playerObject;
+        PlayerStatus playerStatus;
+
         // Start is called before the first frame update
         void Start()
         {
-            ps = PlayerStatus.instance;
-            Hp = ps.Hp;
-            currentHp = Hp;
+            playerStatus = playerObject.GetComponent<PlayerStatus>();
+            maxHp = playerStatus.Hp;
+            currentHp = maxHp;
             setPositionX = blinkImg.rectTransform.anchoredPosition.x;
         }
-        #region Singleton
-        private void Awake()
+
+        IEnumerator LoseFillAmount()
         {
-            if (instance == null)
+            fill.fillAmount = currentHp / maxHp;
+            while(effectImg.fillAmount != fill.fillAmount)
             {
-                DontDestroyOnLoad(this.gameObject);
-                instance = this;
-            }
-            else
-            {
-                Destroy(this.gameObject);
+                if (effectImg.fillAmount > fill.fillAmount)
+                {
+                    effectImg.fillAmount -= hurtSpeed;
+                }
+                else
+                {
+                    effectImg.fillAmount = fill.fillAmount;
+                }
+                SetBlinkImg();
+                yield return new WaitForSeconds(0.01f);
             }
         }
-        #endregion Sigleton
-
-        // Update is called once per frame
-        void Update()
+        void LosedHp()
         {
-            fill.fillAmount = currentHp / Hp;
+            fill.fillAmount = currentHp / maxHp;
             if (effectImg.fillAmount > fill.fillAmount)
             {
                 effectImg.fillAmount -= hurtSpeed;
@@ -50,10 +56,17 @@ namespace MomodoraCopy
             {
                 effectImg.fillAmount = fill.fillAmount;
             }
+            SetBlinkImg();
         }
+        public void LoseHp(float hp)
+        {
+            currentHp -= hp;
+            StartCoroutine("LoseFillAmount");
+        }
+
         public void SetBlinkImg()
         {
-            float moveDistance = (1 - currentHp / Hp) * 100;//fill.x pixel size * scale(2)
+            float moveDistance = (1 - effectImg.fillAmount) * 100;
             if (currentHp >= 0)
             {
                 blinkImg.rectTransform.anchoredPosition =

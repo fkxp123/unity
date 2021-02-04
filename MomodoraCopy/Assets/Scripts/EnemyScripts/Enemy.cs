@@ -24,7 +24,7 @@ namespace MomodoraCopy
         Controller2D controller;
         GameObject playerPos;
         Player player;
-        PlayerStatus ps;
+        //PlayerStatus ps;
         Rigidbody2D rigid;
         BoxCollider2D boxCollider;
 
@@ -53,7 +53,7 @@ namespace MomodoraCopy
 
         void Start()
         {
-            ps = PlayerStatus.instance;
+            //ps = PlayerStatus.instance;
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
             controller = GetComponent<Controller2D>();
             animator = GetComponent<Animator>();
@@ -257,7 +257,7 @@ namespace MomodoraCopy
                 }
                 if (flag)
                 {
-                    ps.Hit(atk);
+                    //ps.Hit(atk);
                 }
             }
         }
