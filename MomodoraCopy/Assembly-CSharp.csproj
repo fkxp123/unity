@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Aseprite2Unity\Examples\MegaDad\MegaDadScript.cs" />
-     <Compile Include="Assets\Scripts\EnemyScripts\BasicEnemyController.cs" />
      <Compile Include="Assets\Scripts\EnemyScripts\BasicEnemyFsm.cs" />
      <Compile Include="Assets\Scripts\EnemyScripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\EnemyScripts\EnemyMovement.cs" />

@@ -36,15 +36,12 @@ namespace MomodoraCopy
         Vector3 daggerSpawnPosition;
         int throwDirection = 1;
 
-        [SerializeField]
-        GameObject daggerSpawnerObject;
+        public GameObject daggerSpawnerObject;
         DaggerSpawner daggerSpawner;
         PoolingObjectInfo info;
 
-        [SerializeField]
-        ParticleSystem bloodEffect;
-        [SerializeField]
-        ParticleSystem hitEffect;
+        public ParticleSystem bloodEffect;
+        public ParticleSystem hitEffect;
 
         protected override void Start()
         {

@@ -183,11 +183,10 @@ namespace MomodoraCopy
         int wallDirX;
         #endregion
 
-        Vector2 checkCrushedArea;
+        Vector2 crushedArea;
 
         public Vector3 currentVelocity;
         Vector3 previousVelocity;
-
 
         #endregion
         void Start()
@@ -211,15 +210,20 @@ namespace MomodoraCopy
             MoveTypeDictionary.Add(MoveType.Roll, rollSpeed);
             MoveTypeDictionary.Add(MoveType.StopMove, 0);
 
-            Bounds bounds = boxCollider.bounds;
-
-            bounds.Expand(new Vector2(-0.5f, -1.5f));
-            //bounds.Expand(0.015f * -3);
-            checkCrushedArea = bounds.size;
+            SetNormalBoxCollider2D();
+            SetCrushedArea();
         }
-        void CheckCrushed()//CheckCrushedByArea & CheckCrushedByTime
+        void SetCrushedArea()
         {
-            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position + Vector3.up * 0.22f , checkCrushedArea, 0);
+            Bounds bounds = boxCollider.bounds;
+            //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
+            bounds.Expand(0.015f * -3);
+            crushedArea = bounds.size;
+        }
+        void CheckCrushed()
+        {
+            Collider2D[] collider2Ds = 
+                Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y , crushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
                 if (collider.transform.CompareTag("Platform"))
@@ -600,7 +604,7 @@ namespace MomodoraCopy
             }
         }
         #endregion
-        //playerinput에서 directionalinput값을 가져옴
+
         void HandleWallSliding()
         {
             wallDirX = (controller.collisions.left) ? -1 : 1;
@@ -640,25 +644,13 @@ namespace MomodoraCopy
         {
             boxCollider.offset = new Vector2(0.0f, 0.22f);
             boxCollider.size = new Vector2(1.13f, 2.32f);
+            SetCrushedArea();
         }
         public void SetCrouchBoxCollider2D()
         {
             boxCollider.offset = new Vector2(0.0f, -0.19f);
             boxCollider.size = new Vector2(1.13f, 1.5f);
-        }
-
-        void OnDrawGizmos()
-        {
-            //Gizmos.color = Color.red;
-            //Gizmos.DrawWireCube(firstAttackPos.position, firstAttackArea);
-            //Gizmos.color = Color.green;
-            //Gizmos.DrawWireCube(secondAttackPos.position, secondAttackArea);
-            //Gizmos.color = Color.blue;
-            //Gizmos.DrawWireCube(thirdAttackPos.position, thirdAttackArea);
-            //Gizmos.color = Color.yellow;
-            //Gizmos.DrawWireCube(airAttackPos.position, airAttackArea);
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position + Vector3.up * 0.22f, checkCrushedArea);
+            SetCrushedArea();
         }
     }
 

@@ -33,27 +33,17 @@ namespace MomodoraCopy
 
         BoxCollider2D boxCollider;
 
-        float currentAIDelay;
-        float AIDelay = 2.0f;
-        float currentMoveTime;
-        float moveTime = 2.0f;
-        float currentAttackTime;
-        float attackTime = 2.0f;
-        float currentAttackDelay;
-
         public Transform FindPlayerBoxPos;
         public Vector2 FindPlayerBoxSize;
         public Transform AtkPlayerBoxPos;
         public Vector2 AtkPlayerBoxSize;
         public GameObject ExclamationMark;
 
-        bool FindPlayer;
-
         public bool isAttack;
         public bool isHit;
 
 
-        Vector2 checkCrushedArea;
+        Vector2 crushedArea;
         EnemyStatus enemyStatus;
 
         public Vector3 currentVelocity;
@@ -74,15 +64,15 @@ namespace MomodoraCopy
             enemyStatus = GetComponent<EnemyStatus>();
 
             Bounds bounds = boxCollider.bounds;
-
-            bounds.Expand(new Vector2(-0.5f, -1.5f));
-            //bounds.Expand(0.015f * -3);
-            checkCrushedArea = bounds.size;
+            //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
+            bounds.Expand(0.015f * -3);
+            crushedArea = bounds.size;
         }
 
         void CheckCrushed()//CheckCrushedByArea & CheckCrushedByTime
         {
-            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position + Vector3.up * 0.22f, checkCrushedArea, 0);
+            Collider2D[] collider2Ds = 
+                Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y, crushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
                 if (collider.transform.CompareTag("Platform"))
@@ -138,13 +128,5 @@ namespace MomodoraCopy
                 velocity.y = minJumpVelocity;
             }
         }
-
-        //void OnDrawGizmos()
-        //{
-        //    Gizmos.color = Color.red;
-        //    Gizmos.DrawWireCube(FindPlayerBoxPos.position, FindPlayerBoxSize);
-        //    Gizmos.color = Color.blue;
-        //    Gizmos.DrawWireCube(AtkPlayerBoxPos.position, AtkPlayerBoxSize);
-        //}
     }
 }

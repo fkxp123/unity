@@ -117,9 +117,11 @@ namespace MomodoraCopy
             // Vertically moving platform
             if (velocity.y != 0)
             {
+                Vector2 velocityAmount = velocity;
+
                 Collider2D[] collider2Ds = (directionY == 1) ?
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask) :
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight, uRaycastOrigins.bottomLeft, passengerMask);
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight + velocityAmount, uRaycastOrigins.bottomLeft + velocityAmount, passengerMask);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))
@@ -136,9 +138,11 @@ namespace MomodoraCopy
             // Horizontally moving platform
             if (velocity.x != 0)
             {
+                Vector2 velocityAmount = velocity;
+
                 Collider2D[] collider2Ds = (directionX == 1) ?
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight, uRaycastOrigins.topRight, passengerMask) :
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomLeft, uRaycastOrigins.topLeft, passengerMask);
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight + velocityAmount, uRaycastOrigins.topRight + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomLeft + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))
@@ -155,7 +159,10 @@ namespace MomodoraCopy
             // Passenger on top of a horizontally or downward moving platform
             if (directionY == -1 || velocity.y == 0 && velocity.x != 0)
             {
-                Collider2D[] collider2Ds = Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask);
+                Vector2 velocityAmount = velocity;
+
+                Collider2D[] collider2Ds =
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))

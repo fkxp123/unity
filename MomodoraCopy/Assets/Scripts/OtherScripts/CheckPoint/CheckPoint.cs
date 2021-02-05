@@ -8,8 +8,7 @@ namespace MomodoraCopy
 {
     public class CheckPoint : MonoBehaviour
     {
-        [SerializeField]
-        GameObject bell;
+        public GameObject bell;
 
         public string sceneName;
         public float maxAngleDeflection;

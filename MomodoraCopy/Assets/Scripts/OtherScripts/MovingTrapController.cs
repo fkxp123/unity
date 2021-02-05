@@ -43,7 +43,6 @@ namespace MomodoraCopy
                 if (value != Vector3.zero)
                 {
                     isFirst = false;
-                    currentTime = 0;
                 }
                 velocity = value;
             }
@@ -55,8 +54,7 @@ namespace MomodoraCopy
         public Vector3 horizontalAreaSize;
         public Vector3 verticalAreaSize;
 
-        public float currentTime;
-        bool isFirst;
+        public bool isFirst;
 
         public ParticleSystem dustCloudEffect;      
 
@@ -86,20 +84,13 @@ namespace MomodoraCopy
             MovePassengers(false);
 
             CheckVerticalCollision();
-
-            if(Velocity != Vector3.zero)
-            {
-                isFirst = false;
-                currentTime = 0;
-            }
         }
 
         void CheckVerticalCollision()
         {
-            if(collisions.left || collisions.right ||
-               collisions.above || collisions.below)
+            if(collisions.left || collisions.right || collisions.above || collisions.below)
             {
-                if (currentTime <= 0 && !isFirst)
+                if (!isFirst)
                 {
                     if (collisions.left || collisions.right)
                     {
@@ -113,12 +104,7 @@ namespace MomodoraCopy
                     }
                     dustCloudEffect.Play();
                     isFirst = true;
-                    currentTime = waitTime;
-                }
-                currentTime -= Time.deltaTime;
-                if (currentTime <= 0)
-                {
-                    ResetFindPlayer();
+                    Invoke("ResetFindPlayer", waitTime);
                 }
             }
         }
@@ -154,9 +140,11 @@ namespace MomodoraCopy
             
             if (Velocity.y != 0)
             {
+                Vector2 velocityAmount = Velocity;
+
                 Collider2D[] collider2Ds = (directionY == 1) ?
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask) :
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight, uRaycastOrigins.bottomLeft, passengerMask);
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight + velocityAmount, uRaycastOrigins.bottomLeft + velocityAmount, passengerMask);
                 foreach(Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))
@@ -193,9 +181,11 @@ namespace MomodoraCopy
             
             if (Velocity.x != 0)
             {
+                Vector2 velocityAmount = Velocity;
+
                 Collider2D[] collider2Ds = (directionX == 1) ?
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight, uRaycastOrigins.topRight, passengerMask) :
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomLeft, uRaycastOrigins.topLeft, passengerMask);
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight + velocityAmount, uRaycastOrigins.topRight + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomLeft + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))
@@ -232,7 +222,10 @@ namespace MomodoraCopy
             
             if (directionY == -1 || Velocity.y == 0 && Velocity.x != 0)
             {
-                Collider2D[] collider2Ds = Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask);
+                Vector2 velocityAmount = Velocity;
+
+                Collider2D[] collider2Ds = 
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))
@@ -282,7 +275,6 @@ namespace MomodoraCopy
                 moveBeforePlatform = _moveBeforePlatform;
             }
         }
-
         public void Move(Vector2 moveAmount)
         {
             UpdateRaycastOrigins();
@@ -430,12 +422,6 @@ namespace MomodoraCopy
                 above = below = false;
                 left = right = false;
             }
-        }
-
-        void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(uRaycastOrigins.topLeft, uRaycastOrigins.topRight);
         }
     }
 }

@@ -30,7 +30,6 @@ namespace MomodoraCopy
 
         Player player;
         Animator animator;
-        Enemy enemy;
         SpriteRenderer spriteRenderer;
         [SerializeField]
 
@@ -40,8 +39,7 @@ namespace MomodoraCopy
         PlayerMovement playerMovement;
         public ParticleSystem crushedDeathEffect;
 
-        [SerializeField]
-        GameObject uiCanvas;
+        public GameObject uiCanvas;
         HealthBar healthBar;
 
         void Start()
@@ -81,14 +79,14 @@ namespace MomodoraCopy
             //{
             //    Debug.Log("game over");
             //}
-            if (enemy.transform.position.x <= transform.position.x)
-            {
-                //rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
-            }
-            else
-            {
-                //rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
-            }
+            //if (enemy.transform.position.x <= transform.position.x)
+            //{
+            //    //rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
+            //}
+            //else
+            //{
+            //    //rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
+            //}
             yield return new WaitForSeconds(0.6f);
             //rigid.velocity = new Vector2(0, rigid.velocity.y);
             //player.stopMoving_X = false;

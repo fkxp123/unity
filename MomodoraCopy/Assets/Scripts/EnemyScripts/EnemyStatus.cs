@@ -15,11 +15,9 @@ namespace MomodoraCopy
         Animator animator;
         BasicEnemyFsm fsm;
 
-        [SerializeField]
-        ParticleSystem hitEffect;
+        public ParticleSystem hitEffect;
         ParticleSystemRenderer hitEffectRenderer;
-        [SerializeField]
-        ParticleSystem crushedDeathEffect;
+        public ParticleSystem crushedDeathEffect;
 
         [SerializeField]
         float maxHp = 100.0f;

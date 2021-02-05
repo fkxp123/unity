@@ -22,6 +22,11 @@
             }
             if (playerMovement.isAnimationFinished)
             {
+                if(playerMovement.velocity.y == 0)
+                {
+                    player.stateMachine.SetState(player.idle);
+                    return;
+                }
                 player.stateMachine.SetState(player.fall);
                 return;
             }

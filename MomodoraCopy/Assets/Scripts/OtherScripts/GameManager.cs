@@ -31,6 +31,8 @@ namespace MomodoraCopy
         public Dictionary<int, List<GameObject>> checkPointsDict = new Dictionary<int, List<GameObject>>();
         public List<GameObject> checkPointsList = new List<GameObject>();
 
+        Vector3 relaxedLoadAmount;
+
         public override void Awake()
         {
             base.Awake();
@@ -56,6 +58,7 @@ namespace MomodoraCopy
             //{
             //    checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
             //}
+            relaxedLoadAmount = (Vector3)(Vector2.up * 0.015f);
             playerComponents = playerObject.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }
@@ -112,12 +115,12 @@ namespace MomodoraCopy
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
                 SceneManager.LoadScene(playerData.sceneName);
-                playerObject.transform.position = playerData.playerPosition;
+                playerObject.transform.position = playerData.playerPosition + relaxedLoadAmount;
             }
             else
             {
-                //Load player at the top of the hierarchy checkpoint position
-                playerObject.transform.position = CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
+                playerObject.transform.position =
+                    CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
             }
         }
     }
