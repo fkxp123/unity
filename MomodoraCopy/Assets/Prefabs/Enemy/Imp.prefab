@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionMask:
     serializedVersion: 2
-    m_Bits: 5120
+    m_Bits: 21504
   horizontalRayCount: 0
   verticalRayCount: 0
   horizontalRaySpacing: 0

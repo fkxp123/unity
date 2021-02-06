@@ -59,24 +59,16 @@ namespace MomodoraCopy
             boxCollider = GetComponent<BoxCollider2D>();
             enemyStatus = transform.GetChild(0).GetComponent<EnemyStatus>();
 
-            SetNormalCrushedArea();
+            SetCrushedArea();
         }
-        public void SetNormalCrushedArea()
+        public void SetCrushedArea()
         {
             Bounds bounds = boxCollider.bounds;
-            transform.localScale = Vector3.one;
             //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
             bounds.Expand(0.015f * -3);
             crushedArea = bounds.size;
         }
-        public void SetHurtCrushedArea()
-        {
-            Bounds bounds = boxCollider.bounds;
-            transform.localScale = transform.localScale * 0.8f;
-            bounds.Expand(new Vector2(0, bounds.size.y * -0.2f));
-            bounds.Expand(0.015f * -3);
-            crushedArea = bounds.size;
-        }
+
         void CheckCrushed()//CheckCrushedByArea & CheckCrushedByTime
         {
             Collider2D[] collider2Ds =

@@ -44,6 +44,7 @@ namespace MomodoraCopy
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + bowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
             arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);
+            Debug.Log(ObjectPooler.instance.poolDictionary[info.prefab].Count);
         }
 
         void CheckSomething()

@@ -115,8 +115,6 @@ namespace MomodoraCopy
         #endregion
 
         #region BowAttackState Variables
-        public Transform arrowPos;
-        public GameObject arrow;
         public bool isLandHard;
         #endregion
 
@@ -575,35 +573,35 @@ namespace MomodoraCopy
         {
             StartCoroutine("BowAttackCoroutine");
         }
-        IEnumerator BowAttackCoroutine()
-        {
-            velocity.x = 0;
-            //stopMoving_X = true;
-            if (animator.GetBool("isCrouching"))
-            {
-                arrowPos.transform.Translate(0, -0.7f, 0);
-                animator.Play("crouchBowAttack");
-                Instantiate(arrow, arrowPos.position, transform.rotation);
-                yield return new WaitForSeconds(0.3f);
-                //stopMoving_X = false;
-                arrowPos.transform.Translate(0, +0.7f, 0);
-            }
-            else
-            {
-                if (animator.GetBool("isGround"))
-                {
-                    directionalInput = new Vector2(0, 0);
-                    animator.Play("bowAttack");
-                }
-                else if (animator.GetBool("isFalling") || animator.GetBool("doubleJump"))
-                {
-                    animator.Play("airBowAttack");
-                }
-                Instantiate(arrow, arrowPos.position, transform.rotation);
-                yield return new WaitForSeconds(0.3f);
-                //stopMoving_X = false;
-            }
-        }
+        //IEnumerator BowAttackCoroutine()
+        //{
+        //    velocity.x = 0;
+        //    //stopMoving_X = true;
+        //    if (animator.GetBool("isCrouching"))
+        //    {
+        //        arrowPos.transform.Translate(0, -0.7f, 0);
+        //        animator.Play("crouchBowAttack");
+        //        Instantiate(arrow, arrowPos.position, transform.rotation);
+        //        yield return new WaitForSeconds(0.3f);
+        //        //stopMoving_X = false;
+        //        arrowPos.transform.Translate(0, +0.7f, 0);
+        //    }
+        //    else
+        //    {
+        //        if (animator.GetBool("isGround"))
+        //        {
+        //            directionalInput = new Vector2(0, 0);
+        //            animator.Play("bowAttack");
+        //        }
+        //        else if (animator.GetBool("isFalling") || animator.GetBool("doubleJump"))
+        //        {
+        //            animator.Play("airBowAttack");
+        //        }
+        //        Instantiate(arrow, arrowPos.position, transform.rotation);
+        //        yield return new WaitForSeconds(0.3f);
+        //        //stopMoving_X = false;
+        //    }
+        //}
         #endregion
 
         void HandleWallSliding()

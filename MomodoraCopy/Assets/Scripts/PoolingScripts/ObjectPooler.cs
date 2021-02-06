@@ -159,13 +159,6 @@ namespace MomodoraCopy
             obj.transform.rotation = info.objectRotation;
             return obj;
         }
-        void CleanPoolDictionary()
-        {
-            for(int i = 0; i < poolDictionary.Count; i++)
-            {
-
-            }
-        }
 
         public void RecyclePoolingObject(PoolingObjectInfo info, GameObject clone)
         {

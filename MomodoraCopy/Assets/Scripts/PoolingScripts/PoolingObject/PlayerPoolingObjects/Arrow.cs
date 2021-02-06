@@ -71,12 +71,8 @@ namespace MomodoraCopy
             Collider2D[] colliders = Physics2D.OverlapCircleAll(arrowHitArea.transform.position, areaRadius);
             foreach (Collider2D collider in colliders)
             {
-                if (collider.tag == "Platform" && collider.tag != "Through")
+                if (collider.tag == "Platform" || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
                 {
-                    if(collider.gameObject.layer == LayerMask.NameToLayer("Trap"))
-                    {
-                        transform.SetParent(collider.transform);
-                    }
                     transform.SetParent(collider.transform);
                     isStuckInWall = true;
                     transform.tag = "Through";
