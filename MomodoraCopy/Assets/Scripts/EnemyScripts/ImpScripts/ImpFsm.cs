@@ -43,13 +43,15 @@ namespace MomodoraCopy
         public ParticleSystem bloodEffect;
         public ParticleSystem hitEffect;
 
+        public GameObject impPhysics;
+
         protected override void Start()
         {
             base.Start();
             animator = GetComponent<Animator>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            enemyMovement = GetComponent<EnemyMovement>();
-            controller = GetComponent<Controller2D>();
+            spriteRenderer = impPhysics.GetComponent<SpriteRenderer>();
+            enemyMovement = impPhysics.GetComponent<EnemyMovement>();
+            controller = impPhysics.GetComponent<Controller2D>();
             enemyStatus = GetComponent<EnemyStatus>();
 
             daggerSpawner = daggerSpawnerObject.GetComponent<DaggerSpawner>();
@@ -85,74 +87,6 @@ namespace MomodoraCopy
             }
         }
 
-        //void Check()
-        //{
-        //    if (executeState != State.None)
-        //    {
-        //        ExecuteState(executeState);
-        //        return;
-        //    }
-        //    if (currentState != State.Chase && currentState != State.Attack)
-        //    {
-        //        bool flag = false;
-        //        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxSize, 0);
-        //        foreach (Collider2D collider in collider2Ds)
-        //        {
-        //            if (collider.tag == "player")
-        //            {
-        //                flag = true;
-        //                playerPosition = collider.transform.position;
-        //                if (playerPosition.x < transform.position.x)
-        //                {
-        //                    transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-        //                }
-        //                else
-        //                {
-        //                    transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        //                }
-        //                throwDirection = transform.rotation.y == 0.0f ? 1 : -1;
-        //            }
-        //        }
-        //        if (flag)
-        //        {
-        //            //findPlayer = true;
-        //            currentState = State.Chase;
-        //            currentTime = 0;
-        //            return;
-        //        }
-        //    }
-        //    switch (currentState)
-        //    {
-        //        case State.Idle:
-        //            DoIdle();
-        //            break;
-        //        case State.Patrol:
-        //            DoPatrol();
-        //            break;
-        //        case State.Chase:
-        //            DoChase();
-        //            break;
-        //        case State.Attack:
-        //            DoAttack();
-        //            break;
-        //        case State.Hurt:
-        //            DoHurt();
-        //            break;
-        //        case State.Die:
-        //            DoDie();
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
-
-        //IEnumerator CheckSomething()
-        //{
-        //    Check();
-        //    yield return new WaitForSeconds(0.1f);
-        //    StartCoroutine("CheckSomething");
-        //}
-
         protected override void Update()
         {
             if (executeState != State.None)
@@ -167,23 +101,13 @@ namespace MomodoraCopy
             }
             if (currentState == State.Hurt)
             {
-                //DoHurt();
-                //if (!hitEffect.isPlaying)
-                //{
-                //    hitEffect.Play();
-                //}
-                //var main = hitEffect.main;
-                //main.startRotationY = transform.rotation.y == 0 ? 135 : 0;
                 bloodEffect.Play();
                 currentTime = 0;
                 animator.Play("hurt");
                 return;
             }
-            else
-            {
-                //bloodEffect.Stop();
-                hitEffect.Stop();
-            }
+
+
             if (currentState != State.Chase && currentState != State.Attack && currentState != State.Hurt)
             {
                 bool flag = false;

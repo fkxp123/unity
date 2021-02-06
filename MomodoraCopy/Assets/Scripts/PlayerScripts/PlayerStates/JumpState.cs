@@ -53,6 +53,11 @@ namespace MomodoraCopy
                     return;
                 }
             }
+            else if (playerMovement.isGround)
+            {
+                player.stateMachine.SetState(player.idle);
+                return;
+            }
             else if (playerMovement.velocity.y < 0)
             {
                 player.stateMachine.SetState(player.fall);

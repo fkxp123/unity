@@ -226,7 +226,8 @@ namespace MomodoraCopy
                 Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y , crushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
-                if (collider.transform.CompareTag("Platform"))
+                if (collider.transform.CompareTag("Platform") || 
+                    collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
                 {
                     playerStatus.CrushedDeath();
                 }
@@ -466,7 +467,7 @@ namespace MomodoraCopy
                         {
                             if (collider.tag == "Enemy")
                             {
-                                collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -481,7 +482,7 @@ namespace MomodoraCopy
                         {
                             if (collider.tag == "Enemy")
                             {
-                                collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -496,7 +497,7 @@ namespace MomodoraCopy
                         {
                             if (collider.tag == "Enemy")
                             {
-                                collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -519,7 +520,7 @@ namespace MomodoraCopy
                 {
                     if (collider.tag == "Enemy")
                     {
-                        collider.GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                        collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                     }
                     else if(collider.tag == "CheckPoint")
                     {

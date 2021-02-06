@@ -32,7 +32,7 @@ namespace MomodoraCopy
                 if (hp <= 0)
                 {
                     //animator.play(hurt), vibration, particle, invoke-setactive(false);
-                    gameObject.SetActive(false);
+                    transform.parent.gameObject.SetActive(false);
                 }
             }
         }
@@ -40,11 +40,13 @@ namespace MomodoraCopy
 
         float knockBackTime = 0.5f;
 
+        public GameObject impPhysics;
+
         void Start()
         {
-            enemyMovement = GetComponent<EnemyMovement>();
-            animator = GetComponent<Animator>();
             fsm = GetComponent<BasicEnemyFsm>();
+            animator = GetComponent<Animator>();
+            enemyMovement = transform.parent.GetComponent<EnemyMovement>();
             hitEffectRenderer = hitEffect.GetComponent<ParticleSystemRenderer>();
 
             //maxHp += 20;
@@ -54,7 +56,7 @@ namespace MomodoraCopy
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
         {
             Hp -= damage;
-            fsm.currentState = BasicEnemyFsm.State.Hurt;
+            fsm.currentState = fsm.hurt;
             transform.rotation = Quaternion.Euler(transform.rotation.x, damagedRotation.y == 0 ? 180 : 0, transform.rotation.z);
             enemyMovement.direction.x = damagedRotation.y == 0 ? 1 : -1;
             hitEffectRenderer.flip = transform.rotation.y == 0 ? new Vector3(1,0,0) : new Vector3(0,0,0);
@@ -74,7 +76,7 @@ namespace MomodoraCopy
         }
         void SetStateChase()
         {
-            fsm.currentState = BasicEnemyFsm.State.Chase;
+            fsm.currentState = fsm.chase;
         }
         void ResetMove()
         {

@@ -25,11 +25,8 @@ namespace MomodoraCopy
 
         public Vector3 velocity;
         public Vector2 direction;
-        Animator animator;
         Controller2D controller;
         GameObject playerPos;
-
-        Player player;
 
         BoxCollider2D boxCollider;
 
@@ -42,12 +39,12 @@ namespace MomodoraCopy
         public bool isAttack;
         public bool isHit;
 
-
         Vector2 crushedArea;
         EnemyStatus enemyStatus;
 
         public Vector3 currentVelocity;
         Vector3 previousVelocity;
+        
 
         void Start()
         {
@@ -56,26 +53,38 @@ namespace MomodoraCopy
             minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
 
             controller = GetComponent<Controller2D>();
-            animator = GetComponent<Animator>();
             direction = new Vector2(0, 0);
             CurrentHp = Hp;
             playerPos = GameObject.FindGameObjectWithTag("Player");
             boxCollider = GetComponent<BoxCollider2D>();
-            enemyStatus = GetComponent<EnemyStatus>();
+            enemyStatus = transform.GetChild(0).GetComponent<EnemyStatus>();
 
+            SetNormalCrushedArea();
+        }
+        public void SetNormalCrushedArea()
+        {
             Bounds bounds = boxCollider.bounds;
+            transform.localScale = Vector3.one;
             //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
             bounds.Expand(0.015f * -3);
             crushedArea = bounds.size;
         }
-
+        public void SetHurtCrushedArea()
+        {
+            Bounds bounds = boxCollider.bounds;
+            transform.localScale = transform.localScale * 0.8f;
+            bounds.Expand(new Vector2(0, bounds.size.y * -0.2f));
+            bounds.Expand(0.015f * -3);
+            crushedArea = bounds.size;
+        }
         void CheckCrushed()//CheckCrushedByArea & CheckCrushedByTime
         {
-            Collider2D[] collider2Ds = 
-                Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y, crushedArea, 0);
+            Collider2D[] collider2Ds =
+                Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y * transform.localScale.y, crushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
-                if (collider.transform.CompareTag("Platform"))
+                if (collider.transform.CompareTag("Platform") ||
+                    collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
                 {
                     enemyStatus.CrushedDeath();
                 }
@@ -127,6 +136,11 @@ namespace MomodoraCopy
             {
                 velocity.y = minJumpVelocity;
             }
+        }
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(transform.position + Vector3.up * -0.34f * transform.localScale.y, crushedArea);
         }
     }
 }

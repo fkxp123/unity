@@ -17,6 +17,15 @@ namespace MomodoraCopy
         [SerializeField]
         protected State executeState;
 
+        public State none;
+        public State idle;
+        public State patrol;
+        public State chase;
+        public State attack;
+        public State interact;
+        public State hurt;
+        public State die;
+
         protected virtual void Awake()
         {
 
@@ -27,6 +36,15 @@ namespace MomodoraCopy
             currentState = State.Idle;
             transitionState = State.Idle;
             executeState = State.None;
+
+            none = State.None;
+            idle = State.Idle;
+            patrol = State.Patrol;
+            chase = State.Chase;
+            attack = State.Attack;
+            interact = State.Interact;
+            hurt = State.Hurt;
+            die = State.Die;
         }
 
         protected virtual void Update()

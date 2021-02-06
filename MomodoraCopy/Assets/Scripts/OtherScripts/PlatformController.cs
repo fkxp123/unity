@@ -5,6 +5,8 @@ namespace MomodoraCopy
 {
     public class PlatformController : RaycastController
     {
+        public CollisionInfo collisions;
+
         public LayerMask passengerMask;
 
         public Vector3[] localWaypoints;
@@ -36,7 +38,6 @@ namespace MomodoraCopy
 
         void Update()
         {
-
             UpdateRaycastOrigins();
 
             Vector3 velocity = CalculatePlatformMovement();
@@ -44,7 +45,7 @@ namespace MomodoraCopy
             CalculatePassengerMovement(velocity);
 
             MovePassengers(true);
-            transform.Translate(velocity);
+            Move(velocity);
             MovePassengers(false);
         }
 
@@ -56,7 +57,6 @@ namespace MomodoraCopy
 
         Vector3 CalculatePlatformMovement()
         {
-
             if (Time.time < nextMoveTime)
             {
                 return Vector3.zero;
@@ -101,8 +101,123 @@ namespace MomodoraCopy
 
                 if (passenger.moveBeforePlatform == beforeMovePlatform)
                 {
+                    if(passengerDictionary[passenger.transform] == null)
+                    {
+                        return;
+                    }
                     passengerDictionary[passenger.transform].Move(passenger.velocity, passenger.standingOnPlatform);
                 }
+            }
+        }
+
+        public void HorizontalCollisions(ref Vector2 moveAmount)
+        {
+            float directionX = collisions.hoziontalDirection;
+            float rayLength = Mathf.Abs(moveAmount.x) + skinWidth;
+
+            if (Mathf.Abs(moveAmount.x) < skinWidth)
+            {
+                rayLength = 2 * skinWidth;
+            }
+
+            for (int i = 0; i < horizontalRayCount; i++)
+            {
+                Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+                Vector2 leftOrigin = raycastOrigins.bottomLeft;
+                Vector2 rightOrigin = raycastOrigins.bottomRight;
+
+                rayOrigin += Vector2.up * (horizontalRaySpacing * i);
+
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+
+                if (hit)
+                {
+                    if (hit.distance == 0)
+                    {
+                        continue;
+                    }
+
+                    moveAmount.x = (hit.distance - skinWidth) * directionX;
+                    rayLength = hit.distance;
+                    collisions.left = directionX == -1;
+                    collisions.right = directionX == 1;
+                }
+            }
+        }
+
+        void VerticalCollisions(ref Vector2 moveAmount)
+        {
+            float directionY = collisions.verticalDirection;
+            float rayLength = Mathf.Abs(moveAmount.y) + skinWidth;
+
+            if (Mathf.Abs(moveAmount.y) < skinWidth)
+            {
+                rayLength = 2 * skinWidth;
+            }
+
+            for (int i = 0; i < verticalRayCount; i++)
+            {
+                Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
+                Vector2 topOrigin = raycastOrigins.topLeft;
+                Vector2 botOrigin = raycastOrigins.bottomLeft;
+
+                rayOrigin += Vector2.right * (verticalRaySpacing * i);
+
+                RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+
+                if (hit)
+                {
+                    moveAmount.y = (hit.distance - skinWidth) * directionY;
+                    rayLength = hit.distance;
+
+                    collisions.below = directionY == -1;
+                    collisions.above = directionY == 1;
+                }
+            }
+        }
+
+        public void Move(Vector2 moveAmount)
+        {
+            UpdateRaycastOrigins();
+
+            Vector2 newMoveAmount = moveAmount;
+            collisions.Reset();
+            collisions.moveAmountOld = moveAmount;
+
+            if (moveAmount.x != 0)
+            {
+                collisions.hoziontalDirection = (int)Mathf.Sign(moveAmount.x);
+            }
+            if (moveAmount.y != 0)
+            {
+                collisions.verticalDirection = (int)Mathf.Sign(moveAmount.y);
+            }
+
+            if (moveAmount.x == 0)
+            {
+                VerticalCollisions(ref newMoveAmount);
+            }
+            if (moveAmount.y == 0)
+            {
+                HorizontalCollisions(ref newMoveAmount);
+            }
+
+            transform.Translate(newMoveAmount, Space.World);
+        }
+
+        public struct CollisionInfo
+        {
+            public bool above, below;
+            public bool left, right;
+
+            public Vector2 moveAmountOld;
+            public int hoziontalDirection;
+            public int verticalDirection;
+
+            public void Reset()
+            {
+                above = below = false;
+                left = right = false;
             }
         }
 
@@ -159,10 +274,8 @@ namespace MomodoraCopy
             // Passenger on top of a horizontally or downward moving platform
             if (directionY == -1 || velocity.y == 0 && velocity.x != 0)
             {
-                Vector2 velocityAmount = velocity;
-
                 Collider2D[] collider2Ds =
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))

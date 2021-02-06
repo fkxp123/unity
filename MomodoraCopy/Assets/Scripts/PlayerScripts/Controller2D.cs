@@ -143,7 +143,10 @@ namespace MomodoraCopy
                         isThroughPlatform = true;
                         if (directionY == 1 || hit.distance == 0)
                         {
-                            continue;
+                            if(hit.collider.gameObject.layer == LayerMask.NameToLayer("ArrowPlatform"))
+                            {
+                                continue;
+                            }
                         }
                         if (collisions.fallingThroughPlatform)
                         {

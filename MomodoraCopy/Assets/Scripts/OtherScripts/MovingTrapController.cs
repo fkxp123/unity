@@ -9,6 +9,8 @@ namespace MomodoraCopy
         public CollisionInfo collisions;
 
         public LayerMask passengerMask;
+        public LayerMask findMask;
+
         public float speed;
         public float waitTime;
         List<PassengerMovement> passengerMovement;
@@ -135,128 +137,75 @@ namespace MomodoraCopy
             HashSet<Transform> movedPassengers = new HashSet<Transform>();
             passengerMovement = new List<PassengerMovement>();
 
-            float directionX = Mathf.Sign(Velocity.x);
-            float directionY = Mathf.Sign(Velocity.y);
+            float directionX = Mathf.Sign(velocity.x);
+            float directionY = Mathf.Sign(velocity.y);
             
-            if (Velocity.y != 0)
+            if (velocity.y != 0)
             {
-                Vector2 velocityAmount = Velocity;
+                Vector2 velocityAmount = velocity;
 
                 Collider2D[] collider2Ds = (directionY == 1) ?
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask) :
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight + velocityAmount, uRaycastOrigins.bottomLeft + velocityAmount, passengerMask);
+                    Physics2D.OverlapAreaAll(raycastOrigins.topRight, uRaycastOrigins.topLeft + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(raycastOrigins.bottomRight, uRaycastOrigins.bottomLeft + velocityAmount, passengerMask);
+
                 foreach(Collider2D collider in collider2Ds)
                 {
+                    float hitDistance = (directionY == 1) ?
+                        Mathf.Abs(collider.bounds.min.y - raycastOrigins.topRight.y):
+                        Mathf.Abs(collider.bounds.max.y - raycastOrigins.bottomRight.y);
+
                     if (!movedPassengers.Contains(collider.transform))
                     {
                         movedPassengers.Add(collider.transform);
-                        float pushX = (directionY == 1) ? Velocity.x : 0;
-                        float pushY = Velocity.y;
+                        float pushX = (directionY == 1) ? velocity.x : 0;
+                        float pushY = velocity.y - (hitDistance - skinWidth) * directionY;
 
                         passengerMovement.Add(new PassengerMovement(collider.transform, new Vector3(pushX, pushY), directionY == 1, true));
                     }
                 }
-
-                //float rayLength = Mathf.Abs(Velocity.y) + skinWidth;
-
-                //for (int i = 0; i < verticalRayCount; i++)
-                //{
-                //    Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
-                //    rayOrigin += Vector2.right * (verticalRaySpacing * i);
-                //    RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, passengerMask);
-
-                //    if (hit && hit.distance != 0)
-                //    {
-                //        if (!movedPassengers.Contains(hit.transform))
-                //        {
-                //            movedPassengers.Add(hit.transform);
-                //            float pushX = (directionY == 1) ? Velocity.x : 0;
-                //            float pushY = Velocity.y - (hit.distance - skinWidth) * directionY;
-
-                //            passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), directionY == 1, true));
-                //        }
-                //    }
-                //}
             }
             
-            if (Velocity.x != 0)
+            if (velocity.x != 0)
             {
-                Vector2 velocityAmount = Velocity;
+                Vector2 velocityAmount = velocity;
 
                 Collider2D[] collider2Ds = (directionX == 1) ?
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomRight + velocityAmount, uRaycastOrigins.topRight + velocityAmount, passengerMask) :
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.bottomLeft + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
+                    Physics2D.OverlapAreaAll(raycastOrigins.bottomRight, uRaycastOrigins.topRight + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(raycastOrigins.bottomLeft, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
+
                 foreach (Collider2D collider in collider2Ds)
                 {
+                    float hitDistance = (directionX == 1) ?
+                        Mathf.Abs(collider.bounds.min.x - raycastOrigins.bottomRight.x) :
+                        Mathf.Abs(collider.bounds.max.x - raycastOrigins.bottomLeft.x);
+
                     if (!movedPassengers.Contains(collider.transform))
                     {
                         movedPassengers.Add(collider.transform);
-                        float pushX = Velocity.x;
+                        float pushX = velocity.x - (hitDistance - skinWidth) * directionX;
                         float pushY = -skinWidth;
 
                         passengerMovement.Add(new PassengerMovement(collider.transform, new Vector3(pushX, pushY), false, true));
                     }
                 }
-
-                //float rayLength = Mathf.Abs(Velocity.x) + skinWidth;
-
-                //for (int i = 0; i < horizontalRayCount; i++)
-                //{
-                //    Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
-                //    rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-                //    RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, passengerMask);
-
-                //    if (hit && hit.distance != 0)
-                //    {
-                //        if (!movedPassengers.Contains(hit.transform))
-                //        {
-                //            movedPassengers.Add(hit.transform);
-                //            float pushX = Velocity.x - (hit.distance - skinWidth) * directionX;
-                //            float pushY = -skinWidth;
-
-                //            passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), false, true));
-                //        }
-                //    }
-                //}
             }
-            
-            if (directionY == -1 || Velocity.y == 0 && Velocity.x != 0)
-            {
-                Vector2 velocityAmount = Velocity;
 
+            if (directionY == -1 || velocity.y == 0 && velocity.x != 0)
+            {
                 Collider2D[] collider2Ds = 
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight + velocityAmount, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
+                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask);
+
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (!movedPassengers.Contains(collider.transform))
                     {
                         movedPassengers.Add(collider.transform);
-                        float pushX = Velocity.x;
-                        float pushY = Velocity.y;
+                        float pushX = velocity.x;
+                        float pushY = velocity.y;
 
                         passengerMovement.Add(new PassengerMovement(collider.transform, new Vector3(pushX, pushY), true, false));
                     }
                 }
-
-                //float rayLength = skinWidth * 2;
-
-                //for (int i = 0; i < verticalRayCount; i++)
-                //{
-                //    Vector2 rayOrigin = raycastOrigins.topLeft + Vector2.right * (verticalRaySpacing * i);
-                //    RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, passengerMask);
-
-                //    if (hit && hit.distance != 0)
-                //    {
-                //        if (!movedPassengers.Contains(hit.transform))
-                //        {
-                //            movedPassengers.Add(hit.transform);
-                //            float pushX = Velocity.x;
-                //            float pushY = Velocity.y;
-
-                //            passengerMovement.Add(new PassengerMovement(hit.transform, new Vector3(pushX, pushY), true, false));
-                //        }
-                //    }
-                //}
             }
         }
 
@@ -327,8 +276,8 @@ namespace MomodoraCopy
                 rightOrigin += Vector2.up * (horizontalRaySpacing * (i + 1));
 
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask); 
-                RaycastHit2D findPlayerLeft = Physics2D.Raycast(leftOrigin, Vector2.left, findPlayerLength, passengerMask);
-                RaycastHit2D findPlayerRight = Physics2D.Raycast(rightOrigin, Vector2.right, findPlayerLength, passengerMask);
+                RaycastHit2D findPlayerLeft = Physics2D.Raycast(leftOrigin, Vector2.left, findPlayerLength, findMask);
+                RaycastHit2D findPlayerRight = Physics2D.Raycast(rightOrigin, Vector2.right, findPlayerLength, findMask);
 
                 if (hit)
                 {
@@ -381,8 +330,8 @@ namespace MomodoraCopy
                 botOrigin += Vector2.right * (verticalRaySpacing * i);
 
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
-                RaycastHit2D findPlayerUp = Physics2D.Raycast(topOrigin, Vector2.up, findPlayerLength, passengerMask);
-                RaycastHit2D findPlayerDown = Physics2D.Raycast(botOrigin, Vector2.down, findPlayerLength, passengerMask);
+                RaycastHit2D findPlayerUp = Physics2D.Raycast(topOrigin, Vector2.up, findPlayerLength, findMask);
+                RaycastHit2D findPlayerDown = Physics2D.Raycast(botOrigin, Vector2.down, findPlayerLength, findMask);
 
                 if (hit)
                 {
