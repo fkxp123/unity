@@ -25,6 +25,8 @@ namespace MomodoraCopy
         List<PassengerMovement> passengerMovement;
         Dictionary<Transform, Controller2D> passengerDictionary = new Dictionary<Transform, Controller2D>();
 
+        Vector3 velocity;
+
         public override void Start()
         {
             base.Start();
@@ -40,10 +42,10 @@ namespace MomodoraCopy
         {
             UpdateRaycastOrigins();
 
-            Vector3 velocity = CalculatePlatformMovement();
+            velocity = CalculatePlatformMovement();
 
             CalculatePassengerMovement(velocity);
-
+            Debug.Log(velocity);
             MovePassengers(true);
             Move(velocity);
             MovePassengers(false);

@@ -24,7 +24,6 @@ namespace MomodoraCopy
             }
             info = SetPoolingObjectInfo(prefab, gameObject, gameObject.transform.position, transform.rotation);
             CreatePoolingObjectQueue(info, 10);
-            Debug.Log("ppap:" + ObjectPooler.instance.poolDictionary[info.prefab].Count);
         }
         void OnDisable()
         {

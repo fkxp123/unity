@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
 
-
 namespace MomodoraCopy
 {
     [System.Serializable]
@@ -20,7 +19,7 @@ namespace MomodoraCopy
     public class GameManager : Singleton<GameManager>
     {
         public PlayerData playerData;
-        GameObject playerObject;
+        public GameObject playerObject;
         public GameObject mainCameraObject;
         GameObject[] checkPoints;
         Scene scene;
@@ -33,34 +32,41 @@ namespace MomodoraCopy
 
         Vector3 relaxedLoadAmount;
 
+        void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
         public override void Awake()
         {
             base.Awake();
             scene = SceneManager.GetActiveScene();
-            if (playerObject == null || playerObject.tag != "Player")
+        }
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (playerObject == null || !playerObject.CompareTag("Player"))
             {
                 playerObject = GameObject.FindGameObjectWithTag("Player");
+            }
+            if (mainCameraObject == null || !mainCameraObject.CompareTag("MainCamera"))
+            {
+                mainCameraObject = GameObject.FindGameObjectWithTag("MainCamera");
             }
             if (checkPoints == null)
             {
                 checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
             }
         }
-
         public void Start()
         {
-
-            //if (playerObject == null || playerObject.tag != "Player")
-            //{
-            //    playerObject = GameObject.FindGameObjectWithTag("Player");
-            //}
-            //if(checkPoints == null)
-            //{
-            //    checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
-            //}
             relaxedLoadAmount = (Vector3)(Vector2.up * 0.015f);
             playerComponents = playerObject.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
+        }
+
+        void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         //public void AddCheckPoint(string sceneName, GameObject checkPoint)

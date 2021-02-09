@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace MomodoraCopy
 {
@@ -43,11 +43,12 @@ namespace MomodoraCopy
         public ParticleSystem bloodEffect;
         public ParticleSystem hitEffect;
 
-        public GameObject impPhysics;
-
+        Transform impPhysics;
+        
         protected override void Start()
         {
             base.Start();
+            impPhysics = transform.parent;
             animator = GetComponent<Animator>();
             spriteRenderer = impPhysics.GetComponent<SpriteRenderer>();
             enemyMovement = impPhysics.GetComponent<EnemyMovement>();
@@ -103,7 +104,7 @@ namespace MomodoraCopy
             {
                 bloodEffect.Play();
                 currentTime = 0;
-                animator.Play("hurt");
+                animator.Play("hurt", -1, 0);
                 return;
             }
 
@@ -120,11 +121,11 @@ namespace MomodoraCopy
                         playerPosition = collider.transform.position;
                         if (playerPosition.x < transform.position.x)
                         {
-                            transform.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                            impPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                         }
                         else
                         {
-                            transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                            impPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                         }
                     }
                 }
@@ -217,12 +218,12 @@ namespace MomodoraCopy
                 switch (directionDesicion)
                 {
                     case 0:
-                        transform.rotation = Quaternion.Euler(0.0f, transform.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                        enemyMovement.direction.x = transform.rotation.y == 0.0f ? 1 : -1;
+                        impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                        enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
                         break;
                     case 1:
-                        transform.rotation = Quaternion.Euler(0.0f, transform.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                        enemyMovement.direction.x = transform.rotation.y == 0.0f ? 1 : -1;
+                        impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                        enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
                         break;
                     default:
                         break;
@@ -232,14 +233,14 @@ namespace MomodoraCopy
             isCliff = Physics2D.OverlapCircle(cliffCheck.position, cliffCheckRadius, platform);
             if (isNearToWall)
             {
-                transform.rotation = Quaternion.Euler(0.0f, transform.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                enemyMovement.direction.x = transform.rotation.y == 0.0f ? 1 : -1;
+                impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
                 currentTime = Random.Range(1.0f, 2.0f);
             }
             if (!isCliff)
             {
-                transform.rotation = Quaternion.Euler(0.0f, transform.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                enemyMovement.direction.x = transform.rotation.y == 0.0f ? 1 : -1;
+                impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
                 currentTime = Random.Range(1.0f, 2.0f);
             }
             currentTime -= Time.deltaTime;
@@ -282,20 +283,33 @@ namespace MomodoraCopy
                     animator.Play("idle");
                 }
             }
+            float lookAtPlayerRotationY;
+            
+            if(GameManager.instance.playerObject.transform.position.x < impPhysics.position.x)
+            {
+                lookAtPlayerRotationY = 180;
+            }
+            else
+            {
+                lookAtPlayerRotationY = 0;
+            }
+            impPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
             if (enemyMovement.velocity.y == 0)
             {
-                enemyMovement.direction.x = transform.rotation.y == 0 ? -1 : 1;
+                enemyMovement.direction.x = impPhysics.rotation.y == 0 ? -1 : 1;
                 enemyMovement.velocity.y = Random.Range(12.0f, 15.0f);
                 if (canAttack)
                 {
                     canAttack = false;
-                    float waitTime = Random.Range(0.5f, 1.5f);
-                    Invoke("SetStateAttack", waitTime);
+                    float randomTime = Random.Range(0.5f, 1.5f);
+                    WaitForSeconds waitTime = new WaitForSeconds(randomTime);
+                    StartCoroutine(SetStateAttack(waitTime));
                 }
             }
         }
-        void SetStateAttack()
+        IEnumerator SetStateAttack(WaitForSeconds waitTime)
         {
+            yield return waitTime;
             canAttack = true;
             enemyMovement.direction.x = 0;
             currentTime = 0;
@@ -317,10 +331,10 @@ namespace MomodoraCopy
         void SpawnDagger()
         {
             info = daggerSpawner.info;
-            throwDirection = transform.rotation.y == 0.0f ? 1 : -1;
+            throwDirection = impPhysics.rotation.y == 0.0f ? 1 : -1;
             daggerSpawnPosition.x = throwDirection * Mathf.Abs(daggerSpawnPosition.x);
             info.position = transform.position + daggerSpawnPosition;
-            info.objectRotation = transform.rotation;
+            info.objectRotation = impPhysics.rotation;
             daggerSpawner.OperateSpawn(info, DaggerSpawner.ACTIVATE_TIME);
         }
 

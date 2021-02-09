@@ -163,7 +163,6 @@ MonoBehaviour:
   crushedDeathEffect: {fileID: 6271535800283062862}
   maxHp: 100
   hp: 100
-  impPhysics: {fileID: 3924353815307326270}
 --- !u!95 &6925628414246395896
 Animator:
   serializedVersion: 3
