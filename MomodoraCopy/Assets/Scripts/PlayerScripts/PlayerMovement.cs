@@ -215,7 +215,7 @@ namespace MomodoraCopy
         {
             Bounds bounds = boxCollider.bounds;
             //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
-            bounds.Expand(0.015f * -3);
+            bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
         }
         void CheckCrushed()
@@ -568,41 +568,6 @@ namespace MomodoraCopy
 
         #endregion
 
-        #region BowAttackStateFunctions
-        public void BowAttack()
-        {
-            StartCoroutine("BowAttackCoroutine");
-        }
-        //IEnumerator BowAttackCoroutine()
-        //{
-        //    velocity.x = 0;
-        //    //stopMoving_X = true;
-        //    if (animator.GetBool("isCrouching"))
-        //    {
-        //        arrowPos.transform.Translate(0, -0.7f, 0);
-        //        animator.Play("crouchBowAttack");
-        //        Instantiate(arrow, arrowPos.position, transform.rotation);
-        //        yield return new WaitForSeconds(0.3f);
-        //        //stopMoving_X = false;
-        //        arrowPos.transform.Translate(0, +0.7f, 0);
-        //    }
-        //    else
-        //    {
-        //        if (animator.GetBool("isGround"))
-        //        {
-        //            directionalInput = new Vector2(0, 0);
-        //            animator.Play("bowAttack");
-        //        }
-        //        else if (animator.GetBool("isFalling") || animator.GetBool("doubleJump"))
-        //        {
-        //            animator.Play("airBowAttack");
-        //        }
-        //        Instantiate(arrow, arrowPos.position, transform.rotation);
-        //        yield return new WaitForSeconds(0.3f);
-        //        //stopMoving_X = false;
-        //    }
-        //}
-        #endregion
 
         void HandleWallSliding()
         {

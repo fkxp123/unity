@@ -36,12 +36,6 @@ namespace MomodoraCopy
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
-
-        public override void Awake()
-        {
-            base.Awake();
-            scene = SceneManager.GetActiveScene();
-        }
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (playerObject == null || !playerObject.CompareTag("Player"))
@@ -57,6 +51,16 @@ namespace MomodoraCopy
                 checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
             }
         }
+        void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        public override void Awake()
+        {
+            base.Awake();
+            scene = SceneManager.GetActiveScene();
+        }
         public void Start()
         {
             relaxedLoadAmount = (Vector3)(Vector2.up * 0.015f);
@@ -64,10 +68,6 @@ namespace MomodoraCopy
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }
 
-        void OnDisable()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
 
         //public void AddCheckPoint(string sceneName, GameObject checkPoint)
         //{

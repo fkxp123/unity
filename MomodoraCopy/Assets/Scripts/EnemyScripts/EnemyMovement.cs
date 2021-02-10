@@ -65,7 +65,7 @@ namespace MomodoraCopy
         {
             Bounds bounds = boxCollider.bounds;
             //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
-            bounds.Expand(0.015f * -3);
+            bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
         }
 

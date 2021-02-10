@@ -8,22 +8,33 @@ namespace MomodoraCopy
     {
         public float arrowSpeed = 40;
 
-        void Update()
+        public GameObject daggerHitArea;
+        public float areaRadius;
+        public float daggerDamage = 10;
+
+        DaggerSpawner daggerSpawner;
+
+        void Start()
         {
-            transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);
+            daggerSpawner = transform.parent.GetComponent<DaggerSpawner>();
         }
 
-        void OnCollisionEnter2D(Collision2D other)
+        void Update()
         {
-            if (other.transform.tag == "enemy")
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(daggerHitArea.transform.position, areaRadius);
+            foreach (Collider2D collider in colliders)
             {
-                return;
+                if (collider.tag == "Platform" || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+                {
+                    ObjectPooler.instance.RecyclePoolingObject(daggerSpawner.info, gameObject);
+                }
+                else if (collider.tag == "Player")
+                {
+                    ObjectPooler.instance.RecyclePoolingObject(daggerSpawner.info, gameObject);
+                    collider.transform.GetComponent<PlayerStatus>().TakeDamage(daggerDamage, DamageType.Range, transform.rotation);
+                }
             }
-            gameObject.SetActive(false);
-            if (other.transform.tag == "player")
-            {
-                //player hit event
-            }
+            transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);
         }
     }
 }

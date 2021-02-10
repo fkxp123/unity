@@ -7,20 +7,12 @@ namespace MomodoraCopy
     {
         public CollisionInfo collisions;
 
-        public bool cyclic;
-        int fromWaypointIndex;
-        float percentBetweenWaypoints;
-        float nextMoveTime;
-        public Vector3[] localWaypoints;
-        Vector3[] globalWaypoints;
-
         public LayerMask passengerMask;
 
         public float speed;
         public float waitTime;
-        [Range(0, 2)]
-        public float easeAmount;
 
+        float nextMoveTime;
         Vector3 startPosition;
         Vector3 endPosition;
 
@@ -28,14 +20,8 @@ namespace MomodoraCopy
         Dictionary<Transform, Controller2D> passengerDictionary = new Dictionary<Transform, Controller2D>();
 
         Vector3 velocity;
-        float currentTime;
+
         float direction;
-        bool isDirectionUp;
-        bool isDirectionDown;
-        float moveTime;
-        bool isWait;
-        Vector3 tempPosition = Vector3.zero;
-        public bool isStuck = false;
         float moveAmount;
 
         public override void Start()
@@ -44,14 +30,6 @@ namespace MomodoraCopy
 
             startPosition = transform.position;
             direction = -1;
-
-
-
-            globalWaypoints = new Vector3[localWaypoints.Length];
-            for (int i = 0; i < localWaypoints.Length; i++)
-            {
-                globalWaypoints[i] = localWaypoints[i] + transform.position;
-            }
         }
 
         void Update()
@@ -61,16 +39,10 @@ namespace MomodoraCopy
             velocity = CalculatePlatformMovement();
 
             CalculatePassengerMovement(velocity);
-            //Debug.Log(velocity);
+
             MovePassengers(true);
             Move(velocity);
             MovePassengers(false);
-        }
-
-        float Ease(float x)
-        {
-            float a = easeAmount + 1;
-            return Mathf.Pow(x, a) / (Mathf.Pow(x, a) + Mathf.Pow(1 - x, a));
         }
 
         Vector3 CalculatePlatformMovement()
@@ -91,7 +63,6 @@ namespace MomodoraCopy
                     nextMoveTime = Time.time + waitTime;
                     moveAmount = 0;
                 }
-                Debug.Log("up v : " + velocity);
             }
             else
             {
@@ -103,7 +74,6 @@ namespace MomodoraCopy
                     nextMoveTime = Time.time + waitTime;
                     moveAmount = 0;
                 }
-                Debug.Log("down v : " + velocity);
             }
             return velocity;
         }
@@ -321,22 +291,6 @@ namespace MomodoraCopy
                 velocity = _velocity;
                 standingOnPlatform = _standingOnPlatform;
                 moveBeforePlatform = _moveBeforePlatform;
-            }
-        }
-
-        void OnDrawGizmos()
-        {
-            if (localWaypoints != null)
-            {
-                Gizmos.color = Color.red;
-                float size = .3f;
-
-                for (int i = 0; i < localWaypoints.Length; i++)
-                {
-                    Vector3 globalWaypointPos = (Application.isPlaying) ? globalWaypoints[i] : localWaypoints[i] + transform.position;
-                    Gizmos.DrawLine(globalWaypointPos - Vector3.up * size, globalWaypointPos + Vector3.up * size);
-                    Gizmos.DrawLine(globalWaypointPos - Vector3.left * size, globalWaypointPos + Vector3.left * size);
-                }
             }
         }
     }

@@ -44,6 +44,9 @@ namespace MomodoraCopy
         Vector3 crouchCameraPos;
         Player player;
 
+        BoxCollider2D targetCollider;
+        Transform cameraTargetBounds;
+
         void Awake()
         {
             if (instance == null)
@@ -59,7 +62,9 @@ namespace MomodoraCopy
 
         void Start()
         {
-            focusArea = new FocusArea(target.collider.bounds, focusAreaSize);
+            cameraTargetBounds = target.transform.GetChild(0);
+            targetCollider = cameraTargetBounds.GetComponent<BoxCollider2D>();
+            focusArea = new FocusArea(targetCollider.bounds, focusAreaSize);
             player = target.GetComponent<Player>();
             DontDestroyOnLoad(gameObject);
         }
@@ -70,57 +75,57 @@ namespace MomodoraCopy
         //    CheckPlayerCrouch();
         //    CheckCrouchHangTime();
         //}
-        void CheckPlayerCrouch()
-        {
-            if (player.stateMachine.CurrentState == player.crouch)
-            {
-                if (currentHangTime > 0)
-                {
-                    startPosY = transform.position.y;
-                }
-                stopCameraFollow = true;
-                currentHangTime -= Time.deltaTime;
-                isCrouchToNormal = true;
-                currentSmoothTime = cameraSmoothTime;
-            }
-            else
-            {
-                currentHangTime = crouchHangTime;
-                stopCameraFollow = false;
-            }
-        }
-        void OperateCameraCrouch()
-        {
-            if (currentHangTime < 0)
-            {
-                crouchCameraPos.y = Mathf.SmoothDamp(transform.position.y, startPosY - crouchCameraDistance,
-                    ref cameraMoveAmount, cameraSmoothTime);
-                transform.position = new Vector3(transform.position.x, crouchCameraPos.y, transform.position.z);
-            }
+        //void CheckPlayerCrouch()
+        //{
+        //    if (player.stateMachine.CurrentState == player.crouch)
+        //    {
+        //        if (currentHangTime > 0)
+        //        {
+        //            startPosY = transform.position.y;
+        //        }
+        //        stopCameraFollow = true;
+        //        currentHangTime -= Time.deltaTime;
+        //        isCrouchToNormal = true;
+        //        currentSmoothTime = cameraSmoothTime;
+        //    }
+        //    else
+        //    {
+        //        currentHangTime = crouchHangTime;
+        //        stopCameraFollow = false;
+        //    }
+        //}
+        //void OperateCameraCrouch()
+        //{
+        //    if (currentHangTime < 0)
+        //    {
+        //        crouchCameraPos.y = Mathf.SmoothDamp(transform.position.y, startPosY - crouchCameraDistance,
+        //            ref cameraMoveAmount, cameraSmoothTime);
+        //        transform.position = new Vector3(transform.position.x, crouchCameraPos.y, transform.position.z);
+        //    }
 
-        }
-        void CheckCrouchHangTime()
-        {
-            if (isCrouchToNormal)
-            {
-                currentSmoothTime = Mathf.SmoothDamp(currentSmoothTime, 0, ref cameraSmoothVelocity, 0.5f);
-                verticalSmoothTime = currentSmoothTime;
-                if (verticalSmoothTime < 0.0001)
-                {
-                    isCrouchToNormal = false;
-                }
-            }
-        }
+        //}
+        //void CheckCrouchHangTime()
+        //{
+        //    if (isCrouchToNormal)
+        //    {
+        //        currentSmoothTime = Mathf.SmoothDamp(currentSmoothTime, 0, ref cameraSmoothVelocity, 0.5f);
+        //        verticalSmoothTime = currentSmoothTime;
+        //        if (verticalSmoothTime < 0.0001)
+        //        {
+        //            isCrouchToNormal = false;
+        //        }
+        //    }
+        //}
 
         void LateUpdate()
         {
-            if (stopCameraFollow)
-            {
-                OperateCameraCrouch();
-                return;
-            }
+            //if (stopCameraFollow)
+            //{
+            //    //OperateCameraCrouch();
+            //    return;
+            //}
 
-            focusArea.Update(target.collider.bounds);
+            focusArea.Update(targetCollider.bounds);
 
             focusPosition = focusArea.center + Vector2.up * verticalOffset;
 
@@ -141,7 +146,6 @@ namespace MomodoraCopy
                     }
                 }
             }
-
 
             currentLookAheadX = Mathf.SmoothDamp(currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
 

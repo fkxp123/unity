@@ -21,6 +21,7 @@ namespace MomodoraCopy
                 {
                     //animator.play(hurt), vibration, particle, invoke-setactive(false);
                     gameObject.SetActive(false);
+                    //Debug.Log("CrushedDeath");
                 }
             }
         }
@@ -28,7 +29,6 @@ namespace MomodoraCopy
         public float meleeAtk = 10.0f;
         public int alpha = 0;
 
-        Player player;
         Animator animator;
         SpriteRenderer spriteRenderer;
         [SerializeField]
@@ -42,10 +42,11 @@ namespace MomodoraCopy
         public GameObject uiCanvas;
         HealthBar healthBar;
 
+        Player playerFsm;
+
         void Start()
         {
-            if(uiCanvas == null) { Debug.Log("hi"); }
-            player = GetComponent<Player>();
+            playerFsm = GetComponent<Player>();
             animator = GetComponent<Animator>();;
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerMovement = GetComponent<PlayerMovement>();
@@ -114,27 +115,43 @@ namespace MomodoraCopy
         //        StartCoroutine("HitGracePeriod");
         //    }
         //}
+
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
         {
-            //Hp -= damage;
-            //fsm.currentState = BasicEnemyFsm.State.Hurt;
-            //transform.rotation = Quaternion.Euler(transform.rotation.x, damagedRotation.y == 0 ? 180 : 0, transform.rotation.z);
-            //enemyMovement.direction.x = damagedRotation.y == 0 ? 1 : -1;
-            //hitEffectRenderer.flip = transform.rotation.y == 0 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 0);
-            //hitEffect.Play();
-            //if (damageType == DamageType.Range)
-            //{
-            //    CancelInvoke();
-            //    Invoke("ResetMove", 0.25f);
-            //    Invoke("SetStateChase", knockBackTime);
+            Hp -= damage;
+            //    playerFsm.currentState = playerFsm.hurt;
+
+            //    enemyPhysics.rotation =
+            //        Quaternion.Euler(enemyPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, enemyPhysics.rotation.z);
+
+            //    if (damageType == DamageType.Range)
+            //    {
+            //        this.RestartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation), ref coroutine);
+            //    }
+            //    else
+            //    {
+            //        this.RestartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation), ref coroutine);
+            //    }
+            //    this.RestartCoroutine(SetStateChase(), ref coroutine);
             //}
-            //else
+            //IEnumerator SetStateChase()
             //{
-            //    CancelInvoke();
-            //    Invoke("ResetMove", knockBackTime);
-            //    Invoke("SetStateChase", knockBackTime);
+            //    yield return stateRecoveryTime;
+            //    if (playerFsm.currentState != playerFsm.die)
+            //    {
+            //        playerFsm.currentState = playerFsm.chase;
+            //    }
             //}
+            //IEnumerator KnockBack(WaitForSeconds waitTime, Quaternion damagedRotation)
+            //{
+            //    enemyMovement.velocity.x = damagedRotation.y == 0 ? 5 : -5;
+            //    enemyMovement.velocity.y = 5;
+            //    hitEffectRenderer.flip = enemyPhysics.rotation.y == 0 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 0);
+            //    hitEffect.Play();
+            //    yield return waitTime;
+            //    enemyMovement.direction.x = 0;
         }
+
         public void CrushedDeath()
         {
             Hp -= maxHp;

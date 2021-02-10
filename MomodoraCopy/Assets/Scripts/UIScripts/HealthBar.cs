@@ -67,11 +67,8 @@ namespace MomodoraCopy
         public void SetBlinkImg()
         {
             float moveDistance = (1 - effectImg.fillAmount) * 100;
-            if (currentHp >= 0)
-            {
-                blinkImg.rectTransform.anchoredPosition =
+            blinkImg.rectTransform.anchoredPosition =
                 new Vector2(setPositionX - moveDistance, blinkImg.rectTransform.anchoredPosition.y);
-            }
         }
     }
 

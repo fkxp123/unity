@@ -6,7 +6,7 @@ namespace MomodoraCopy
     {
         public float arrowSpeed = 40;
         [SerializeField]
-        float arrowDamage = 10.0f;
+        public float arrowDamage = 10.0f;
         public GameObject arrowHitArea;
         public float areaRadius;
         bool isStuckInWall;
