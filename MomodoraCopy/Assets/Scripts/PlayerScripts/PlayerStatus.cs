@@ -5,8 +5,7 @@ namespace MomodoraCopy
 {
     public class PlayerStatus : MonoBehaviour
     {
-        [SerializeField]
-        float maxHp = 100.0f;
+        public float maxHp = 100.0f;
         [SerializeField]
         float hp;
         public float Hp
@@ -14,7 +13,10 @@ namespace MomodoraCopy
             get { return hp; }
             set
             {
-                healthBar.LoseHp(hp - value);
+                if(healthBar != null)
+                {
+                    healthBar.LoseHp(hp - value);
+                }
                 hp = Mathf.Clamp(value, 0, maxHp);
 
                 if (hp <= 0)
@@ -43,7 +45,10 @@ namespace MomodoraCopy
         HealthBar healthBar;
 
         Player playerFsm;
-
+        void Awake()
+        {
+            Hp = maxHp;
+        }
         void Start()
         {
             playerFsm = GetComponent<Player>();
@@ -51,7 +56,6 @@ namespace MomodoraCopy
             spriteRenderer = GetComponent<SpriteRenderer>();
             playerMovement = GetComponent<PlayerMovement>();
             healthBar = uiCanvas.GetComponent<HealthBar>();
-            Hp = maxHp;
         }
 
         public void Hit(int enemyAtk)

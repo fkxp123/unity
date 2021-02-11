@@ -86,18 +86,7 @@ namespace MomodoraCopy
             }
             transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);
         }
-        //void OnCollisionEnter2D(Collision2D other)
-        //{
-        //    if (other.transform.tag == "platform")
-        //    {
-        //        gameObject.SetActive(false);
-        //    }
-        //    if (other.transform.tag == "enemy")
-        //    {
-        //        gameObject.SetActive(false);
-        //        other.transform.GetComponent<EnemyStatus>().TakeDamage(arrowDamage, DamageType.Range, transform.rotation);
-        //    }
-        //}
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

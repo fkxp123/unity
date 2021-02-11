@@ -23,9 +23,9 @@ namespace MomodoraCopy
         void Start()
         {
             playerStatus = playerObject.GetComponent<PlayerStatus>();
-            maxHp = playerStatus.Hp;
-            currentHp = maxHp;
             setPositionX = blinkImg.rectTransform.anchoredPosition.x;
+            maxHp = playerStatus.maxHp;
+            currentHp = maxHp;
         }
 
         IEnumerator LoseFillAmount()
@@ -45,19 +45,7 @@ namespace MomodoraCopy
                 yield return new WaitForSeconds(0.01f);
             }
         }
-        void LosedHp()
-        {
-            fill.fillAmount = currentHp / maxHp;
-            if (effectImg.fillAmount > fill.fillAmount)
-            {
-                effectImg.fillAmount -= hurtSpeed;
-            }
-            else
-            {
-                effectImg.fillAmount = fill.fillAmount;
-            }
-            SetBlinkImg();
-        }
+
         public void LoseHp(float hp)
         {
             currentHp -= hp;

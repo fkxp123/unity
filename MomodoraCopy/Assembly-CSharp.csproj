@@ -70,6 +70,7 @@
      <Compile Include="Assets\Scripts\OtherScripts\ChildGUI.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\CoroutineExtensions.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\ElevatorController.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\Explosion.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\MovingTrapController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
