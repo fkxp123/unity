@@ -17,17 +17,17 @@ namespace MomodoraCopy
                 playerMovement.SaveJumpPosY();
             }
             playerMovement.jumpCount += 1;
-            playerMovement.isAnimationFinished = false;
+            player.isAnimationFinished = false;
             if (playerMovement.jumpCount == 1)
             {
-                playerMovement.animator.Play("jump");
+                player.animator.Play("jump");
                 playerMovement.OperateJumpKeyDown();
             }
             else if (playerMovement.jumpCount > 1)
             {
                 player.doubleJumpEffect.transform.position = playerMovement.transform.position;
                 player.doubleJumpEffect.Play();
-                playerMovement.animator.Play("jump");
+                player.animator.Play("jump");
                 playerMovement.OperateJumpKeyDown();
             }
         }

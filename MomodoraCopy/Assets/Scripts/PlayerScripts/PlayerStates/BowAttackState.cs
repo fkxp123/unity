@@ -14,8 +14,8 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("bowAttack", -1, 0f);
+            player.isAnimationFinished = false;
+            player.animator.Play("bowAttack", -1, 0f);
 
             playerMovement.moveType = PlayerMovement.MoveType.StopMove;
             playerMovement.stopCheckFlip = true;
@@ -26,7 +26,7 @@ namespace MomodoraCopy
             base.OperateUpdate();
             playerMovement.CheckCanFlip();
             playerInput.directionalInput.x = 0;
-            if (!playerMovement.isAnimationFinished)
+            if (!player.isAnimationFinished)
             {
                 return;
             }
@@ -35,7 +35,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
-            playerMovement.isAnimationFinished = true;
+            player.isAnimationFinished = true;
             playerMovement.stopCheckFlip = false;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
@@ -48,7 +48,7 @@ namespace MomodoraCopy
 
         void CheckSomething()
         {
-            if (playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("bowAttack"))
+            if (player.animator.GetCurrentAnimatorStateInfo(0).IsName("bowAttack"))
             {
                 player.stateMachine.SetState(player.idle);
                 return;

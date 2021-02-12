@@ -31,7 +31,7 @@ namespace MomodoraCopy
                 else if (collider.tag == "Player")
                 {
                     ObjectPooler.instance.RecyclePoolingObject(daggerSpawner.info, gameObject);
-                    collider.transform.GetComponent<PlayerStatus>().TakeDamage(daggerDamage, DamageType.Range, transform.rotation);
+                    collider.transform.GetChild(1).GetComponent<PlayerStatus>().TakeDamage(daggerDamage, DamageType.Range, transform.rotation);
                 }
             }
             transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);

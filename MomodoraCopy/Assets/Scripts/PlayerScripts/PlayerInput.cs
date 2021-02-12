@@ -2,7 +2,6 @@
 
 namespace MomodoraCopy
 {
-    [RequireComponent(typeof(Player))]
     public class PlayerInput : MonoBehaviour
     {
         public bool isKeyDown;
@@ -14,10 +13,12 @@ namespace MomodoraCopy
         public bool isKeyDownBowAttack;
 
         PlayerMovement playerMovement;
+
         void Start()
         {
             playerMovement = GetComponent<PlayerMovement>();
         }
+
         void Update()
         {
             directionalInput = CheckArrowKeyDown();

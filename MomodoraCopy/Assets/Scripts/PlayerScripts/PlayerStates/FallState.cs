@@ -16,16 +16,16 @@ namespace MomodoraCopy
             {
                 playerMovement.SaveFallPosY();
             }
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("preFall", -1, 0f);
+            player.isAnimationFinished = false;
+            player.animator.Play("preFall", -1, 0f);
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
             playerMovement.SaveHighPosY();
-            if (playerMovement.isAnimationFinished)
+            if (player.isAnimationFinished)
             {
-                playerMovement.animator.Play("fall");
+                player.animator.Play("fall");
             }
             if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
             {
@@ -55,7 +55,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
-            playerMovement.isAnimationFinished = true;
+            player.isAnimationFinished = true;
         }
     }
 

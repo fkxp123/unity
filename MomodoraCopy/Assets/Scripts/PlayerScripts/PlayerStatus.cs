@@ -22,7 +22,7 @@ namespace MomodoraCopy
                 if (hp <= 0)
                 {
                     //animator.play(hurt), vibration, particle, invoke-setactive(false);
-                    gameObject.SetActive(false);
+                    transform.parent.gameObject.SetActive(false);
                     //Debug.Log("CrushedDeath");
                 }
             }
@@ -45,6 +45,9 @@ namespace MomodoraCopy
         HealthBar healthBar;
 
         Player playerFsm;
+
+        Transform playerPhysics;
+
         void Awake()
         {
             Hp = maxHp;
@@ -54,8 +57,10 @@ namespace MomodoraCopy
             playerFsm = GetComponent<Player>();
             animator = GetComponent<Animator>();;
             spriteRenderer = GetComponent<SpriteRenderer>();
-            playerMovement = GetComponent<PlayerMovement>();
             healthBar = uiCanvas.GetComponent<HealthBar>();
+
+            playerPhysics = transform.parent;
+            playerMovement = playerPhysics.GetComponent<PlayerMovement>();
         }
 
         public void Hit(int enemyAtk)

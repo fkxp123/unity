@@ -17,15 +17,15 @@ namespace MomodoraCopy
             {
                 return;
             }
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("preCrouch");
+            player.isAnimationFinished = false;
+            player.animator.Play("preCrouch");
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            if (playerMovement.isAnimationFinished)
+            if (player.isAnimationFinished)
             {
-                playerMovement.animator.Play("crouch");
+                player.animator.Play("crouch");
             }
             if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
             {
@@ -52,8 +52,8 @@ namespace MomodoraCopy
         {
             base.OperateExit();
             playerMovement.SetNormalBoxCollider2D();
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("breakCrouch");
+            player.isAnimationFinished = false;
+            player.animator.Play("breakCrouch");
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }

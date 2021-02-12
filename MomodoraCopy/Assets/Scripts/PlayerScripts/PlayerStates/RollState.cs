@@ -11,15 +11,15 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("roll");
+            player.isAnimationFinished = false;
+            player.animator.Play("roll");
             playerMovement.OperateRoll();
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
             playerMovement.CheckCanFlip();
-            if (!playerMovement.isAnimationFinished && playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("roll"))
+            if (!player.isAnimationFinished && player.animator.GetCurrentAnimatorStateInfo(0).IsName("roll"))
             {
                 return;
             }
@@ -34,7 +34,7 @@ namespace MomodoraCopy
         {
             base.OperateExit();
             playerMovement.stopCheckFlip = false;
-            playerMovement.isAnimationFinished = true;
+            player.isAnimationFinished = true;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }

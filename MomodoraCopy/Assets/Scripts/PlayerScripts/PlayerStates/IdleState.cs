@@ -14,9 +14,9 @@ namespace MomodoraCopy
         }
         public override void OperateUpdate()
         {
-            if (playerMovement.isAnimationFinished)
+            if (player.isAnimationFinished)
             {
-                playerMovement.animator.Play("idle");
+                player.animator.Play("idle");
             }
             base.OperateUpdate();
             if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))

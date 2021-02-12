@@ -19,18 +19,18 @@ namespace MomodoraCopy
             if (playerMovement.isLandHard)
             {
                 playerMovement.moveType = PlayerMovement.MoveType.StopMove;
-                playerMovement.isAnimationFinished = false;
-                playerMovement.animator.Play("landingHard");
+                player.isAnimationFinished = false;
+                player.animator.Play("landingHard");
                 return;
             }
             playerMovement.ResetPlayerVelocity();
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("landingSoft");
+            player.isAnimationFinished = false;
+            player.animator.Play("landingSoft");
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            if (playerMovement.isAnimationFinished)
+            if (player.isAnimationFinished)
             {
                 player.stateMachine.SetState(player.idle);
                 return;
@@ -58,7 +58,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
-            playerMovement.isAnimationFinished = true;
+            player.isAnimationFinished = true;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
     }

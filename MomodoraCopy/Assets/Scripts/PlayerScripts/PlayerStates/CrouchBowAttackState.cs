@@ -17,15 +17,15 @@ namespace MomodoraCopy
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + crouchBowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
             arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("crouchBowAttack");
+            player.isAnimationFinished = false;
+            player.animator.Play("crouchBowAttack");
             playerMovement.moveType = PlayerMovement.MoveType.StopMove;
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
             playerMovement.CheckCanFlip();
-            if (!playerMovement.isAnimationFinished)
+            if (!player.isAnimationFinished)
             {
                 return;
             }

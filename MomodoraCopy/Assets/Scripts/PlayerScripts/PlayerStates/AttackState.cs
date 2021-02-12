@@ -18,8 +18,8 @@ namespace MomodoraCopy
             playerMovement.AttackCount += 1;
             if (playerMovement.AttackCount == 1)
             {
-                playerMovement.isAnimationFinished = false;
-                playerMovement.animator.Play("firstAttack");
+                player.isAnimationFinished = false;
+                player.animator.Play("firstAttack");
                 playerMovement.OperateFirstAttack();
             }
         }
@@ -30,15 +30,15 @@ namespace MomodoraCopy
             CheckCanComboAttack();
             playerMovement.CheckCanFlip();
             OperateComboAttack();
-            if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("firstAttack") &&
-                !playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("secondAttack") &&
-                !playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("thirdAttack"))
+            if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("firstAttack") &&
+                !player.animator.GetCurrentAnimatorStateInfo(0).IsName("secondAttack") &&
+                !player.animator.GetCurrentAnimatorStateInfo(0).IsName("thirdAttack"))
             {
-                playerMovement.isAnimationFinished = true;
+                player.isAnimationFinished = true;
                 player.stateMachine.SetState(player.idle);
                 return;
             }
-            if (playerMovement.isAnimationFinished && !comboFlag)
+            if (player.isAnimationFinished && !comboFlag)
             {
                 playerMovement.stopCheckFlip = false;
                 player.stateMachine.SetState(player.idle);
@@ -52,7 +52,7 @@ namespace MomodoraCopy
         }
         void CheckCanComboAttack()
         {
-            if (!playerMovement.isAnimationFinished && Input.GetKeyDown(KeyboardManager.instance.AttackKey) &&
+            if (!player.isAnimationFinished && Input.GetKeyDown(KeyboardManager.instance.AttackKey) &&
                 !comboFlag && playerMovement.AttackCount < playerMovement.maxAttackCount)
             {
                 playerMovement.AttackCount += 1;
@@ -61,18 +61,18 @@ namespace MomodoraCopy
         }
         void OperateComboAttack()
         {
-            if (playerMovement.isAnimationFinished && comboFlag && playerMovement.AttackCount == 2)
+            if (player.isAnimationFinished && comboFlag && playerMovement.AttackCount == 2)
             {
                 comboFlag = false;
-                playerMovement.isAnimationFinished = false;
-                playerMovement.animator.Play("secondAttack");
+                player.isAnimationFinished = false;
+                player.animator.Play("secondAttack");
                 playerMovement.OperateSecondAttack();
             }
-            if (playerMovement.isAnimationFinished && comboFlag && playerMovement.AttackCount == 3)
+            if (player.isAnimationFinished && comboFlag && playerMovement.AttackCount == 3)
             {
                 comboFlag = false;
-                playerMovement.isAnimationFinished = false;
-                playerMovement.animator.Play("thirdAttack");
+                player.isAnimationFinished = false;
+                player.animator.Play("thirdAttack");
                 playerMovement.OperateThirdAttack();
             }
         }

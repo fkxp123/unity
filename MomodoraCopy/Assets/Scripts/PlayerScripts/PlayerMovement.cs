@@ -7,13 +7,14 @@ namespace MomodoraCopy
     [RequireComponent(typeof(Controller2D))]
     public class PlayerMovement : MonoBehaviour
     {
+        static PlayerMovement instance;
+
         #region Variables
         public bool isGround;
         public bool isFall;
         float gravity;
 
         public bool stopCheckFlip;
-        public bool isAnimationFinished = true;
 
         public GameObject attackBox;
 
@@ -23,7 +24,6 @@ namespace MomodoraCopy
         Controller2D controller;
         PlayerInput playerInput;
 
-        public Animator animator;
         public SpriteRenderer spriteRenderer;
         PlayerStatus playerStatus;
         Enemy enemy;
@@ -143,7 +143,7 @@ namespace MomodoraCopy
         public int maxAttackCount = 3;
         public float comboAttackDelay = 0.5f;
         public float currentAttackDelay;
-        bool AttackFlag = false; //Animation Event
+
         #endregion
 
         #region JumpState Variables
@@ -165,6 +165,7 @@ namespace MomodoraCopy
             }
         }
         public int maxJumpCount = 2;
+
         #endregion
 
         #region HandleWallState Variables
@@ -186,15 +187,39 @@ namespace MomodoraCopy
         public Vector3 currentVelocity;
         Vector3 previousVelocity;
 
+        public bool isExplosion;
+        public bool isStun;
+
+        Transform playerSprite;
+        Player player;
+
+        void Awake()
+        {
+            if (instance == null)
+            {
+                DontDestroyOnLoad(transform.parent.gameObject);
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Destroy(transform.parent.gameObject);
+            }
+        }
+
         #endregion
         void Start()
         {
+            GameManager.instance.Load();
+            DontDestroyOnLoad(transform.parent.gameObject);
+
             playerInput = GetComponent<PlayerInput>();
             controller = GetComponent<Controller2D>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            animator = GetComponent<Animator>();
             boxCollider = GetComponent<BoxCollider2D>();
-            playerStatus = GetComponent<PlayerStatus>();
+
+            playerSprite = transform.GetChild(1);
+            player = playerSprite.GetComponent<Player>();
+            playerStatus = playerSprite.GetComponent<PlayerStatus>();
+            spriteRenderer = playerSprite.GetComponent<SpriteRenderer>();
 
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
             maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
@@ -246,6 +271,7 @@ namespace MomodoraCopy
             CheckVerticalCollision();
             CheckisGround();
             CalculateCurrentVelocity();
+            Debug.Log("cv : " + currentVelocity);
         }
         void SetDirectionalInput(Vector2 directionalInput)
         {
@@ -277,6 +303,11 @@ namespace MomodoraCopy
             float targetVelocityX;
 
             velocity.y += gravity * Time.deltaTime;
+            if (isExplosion)
+            {
+                velocity.x += -1.0f * Mathf.Sign(currentVelocity.x) * Time.deltaTime;
+                return;
+            }
 
             if (moveType == MoveType.Normal)
             {
@@ -290,8 +321,24 @@ namespace MomodoraCopy
                 velocity.x = Mathf.SmoothDamp(targetVelocityX, 0, ref velocityXSmoothing, accelerationTimeRoll);
                 return;
             }
+
             velocity.x = SetDirection() * MoveTypeDictionary[moveType];
         }
+        public void TakeExplosion(Vector3 explosionPower)
+        {
+            velocity = explosionPower;
+            isExplosion = true;
+            isStun = true;
+            StartCoroutine(RestoreStun());
+        }
+        IEnumerator RestoreStun()
+        {
+            yield return new WaitForSeconds(1.5f);
+            isStun = false;
+            isExplosion = false;
+            Debug.Log("restore!");
+        }
+
         void CheckisGround()
         {
             if (controller.collisions.below)
@@ -306,7 +353,7 @@ namespace MomodoraCopy
 
         public void CheckCanFlip()
         {
-            if (!isAnimationFinished)
+            if (!player.isAnimationFinished)
             {
                 stopCheckFlip = true;
                 return;
@@ -330,26 +377,6 @@ namespace MomodoraCopy
                 spriteRenderer.flipX = true;
             }
         }
-
-        public void SetPreAnimationFinished()
-        {
-            isAnimationFinished = true;
-        }
-
-        #region LandState Functions
-        public void OperateLand()
-        {
-            velocity.x = 0;
-            if (highPosY - transform.position.y > 8)
-            {
-                animator.Play("landingHard");
-            }
-            else
-            {
-                animator.Play("landingSoft");
-            }
-        }
-        #endregion
 
         #region FallState Functions
         public void SaveFallPosY()
@@ -409,7 +436,6 @@ namespace MomodoraCopy
             //{
             //    velocity.y = maxJumpVelocity;
             //    jumpCount += 1;
-            //    animator.Play("doubleJump");
             //}
         }
         public void OperateJumpKeyUp()
@@ -455,7 +481,7 @@ namespace MomodoraCopy
         public void CheckAttackArea()
         {
             Collider2D[] collider2Ds;
-            if (AttackFlag)
+            if (player.AttackFlag)
             {
                 switch (AttackCount)
                 {
@@ -471,7 +497,7 @@ namespace MomodoraCopy
                             {
                                 collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                             }
-                            AttackFlag = false;
+                            player.AttackFlag = false;
                         }
                         break;
                     case 2:
@@ -486,7 +512,7 @@ namespace MomodoraCopy
                             {
                                 collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                             }
-                            AttackFlag = false;
+                            player.AttackFlag = false;
                         }
                         break;
                     case 3:
@@ -501,7 +527,7 @@ namespace MomodoraCopy
                             {
                                 collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                             }
-                            AttackFlag = false;
+                            player.AttackFlag = false;
                         }
                         break;
                     default:
@@ -511,7 +537,7 @@ namespace MomodoraCopy
         }
         public void CheckAirAttackArea()
         {
-            if (AttackFlag)
+            if (player.AttackFlag)
             {
                 Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(airAttackPos.position, airAttackArea, 0);
                 foreach (Collider2D collider in collider2Ds)
@@ -524,7 +550,7 @@ namespace MomodoraCopy
                     {
                         collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                     }
-                    AttackFlag = false;
+                    player.AttackFlag = false;
                 }
             }
         }
@@ -556,14 +582,6 @@ namespace MomodoraCopy
             {
                 currentAttackDelay -= Time.deltaTime;
             }
-        }
-        public void AbleAttack()
-        {
-            AttackFlag = true;
-        }
-        public void DisableAttack()
-        {
-            AttackFlag = false;
         }
 
         #endregion

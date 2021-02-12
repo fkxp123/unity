@@ -28,8 +28,7 @@ namespace MomodoraCopy
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, target);
             foreach (Collider2D collider in colliders)
             {
-                collider.GetComponent<PlayerMovement>().velocity.x = directionX * power;
-                collider.GetComponent<PlayerMovement>().velocity.y = directionY * power;
+                collider.GetComponent<PlayerMovement>().TakeExplosion(new Vector3(-20, 20));
                 Debug.Log("bomb!");
             }
         }

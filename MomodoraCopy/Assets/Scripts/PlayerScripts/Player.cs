@@ -5,8 +5,6 @@ namespace MomodoraCopy
 {
     public class Player : MonoBehaviour
     {
-        static Player instance;
-
         #region Variables
         public PlayerMovement playerMovement;
         public PlayerInput playerInput;
@@ -19,6 +17,12 @@ namespace MomodoraCopy
         public ParticleSystem doubleJumpEffect;
         public ParticleSystem stepDustEffect;
         public ParticleSystem breakStepDustEffect;
+
+        public Animator animator;
+        Transform playerPhysics;
+
+        public bool isAnimationFinished = true;
+        public bool AttackFlag = false; //Animation Event
 
         #region IState
         public IState idle;
@@ -36,25 +40,14 @@ namespace MomodoraCopy
         #endregion
 
         #endregion
-        void Awake()
-        {
-            if (instance == null)
-            {
-                DontDestroyOnLoad(transform.parent.gameObject);
-                instance = this;
-            }
-            else if (instance != this)
-            {
-                Destroy(transform.parent.gameObject);
-            }
-        }
 
         void Start()
         {
-            //SceneManager.sceneLoaded += OnSceneLoaded;
+            animator = GetComponent<Animator>();
 
-            playerMovement = GetComponent<PlayerMovement>();
-            playerInput = GetComponent<PlayerInput>();
+            playerPhysics = transform.parent;
+            playerMovement = playerPhysics.GetComponent<PlayerMovement>();
+            playerInput = playerPhysics.GetComponent<PlayerInput>();
 
             arrowSpawner = arrowSpawnerObject.GetComponent<ArrowSpawner>();
 
@@ -73,8 +66,6 @@ namespace MomodoraCopy
             airBowAttack = new AirBowAttackState(this);
             #endregion
 
-            GameManager.instance.Load();
-            DontDestroyOnLoad(transform.parent.gameObject);
             stateMachine = new PlayerStateMachine(idle);
         }
 
@@ -118,7 +109,7 @@ namespace MomodoraCopy
                 }
                 else if (playerInput.isKeyDownBowAttack)
                 {
-                    if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("bowAttack"))
+                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("bowAttack"))
                     {
                         playerInput.isKeyDownBowAttack = false;
                         stateMachine.SetState(bowAttack);
@@ -163,7 +154,7 @@ namespace MomodoraCopy
                 }
                 else if (playerInput.isKeyDownBowAttack)
                 {
-                    if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("airBowAttack"))
+                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("airBowAttack"))
                     {
                         playerInput.isKeyDownBowAttack = false;
                         stateMachine.SetState(airBowAttack);
@@ -177,5 +168,19 @@ namespace MomodoraCopy
                 }
             }
         }
+
+        public void SetPreAnimationFinished()
+        {
+            isAnimationFinished = true;
+        }
+        public void AbleAttack()
+        {
+            AttackFlag = true;
+        }
+        public void DisableAttack()
+        {
+            AttackFlag = false;
+        }
+
     }
 }

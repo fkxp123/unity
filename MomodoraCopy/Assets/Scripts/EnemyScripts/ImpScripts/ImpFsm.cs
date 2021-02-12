@@ -285,7 +285,7 @@ namespace MomodoraCopy
             }
             float lookAtPlayerRotationY;
             
-            if(GameManager.instance.playerObject.transform.position.x < impPhysics.position.x)
+            if(GameManager.instance.playerPhysics.transform.position.x < impPhysics.position.x)
             {
                 lookAtPlayerRotationY = 180;
             }

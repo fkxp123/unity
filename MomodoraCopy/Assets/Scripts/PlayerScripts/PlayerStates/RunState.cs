@@ -11,16 +11,16 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("preRun", -1, 0);
+            player.isAnimationFinished = false;
+            player.animator.Play("preRun", -1, 0);
             player.stepDustEffect.Play();
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
-            if (playerMovement.isAnimationFinished)
+            if (player.isAnimationFinished)
             {
-                playerMovement.animator.Play("run");
+                player.animator.Play("run");
             }
             if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
@@ -61,12 +61,12 @@ namespace MomodoraCopy
             base.OperateExit();
             if (playerInput.isKeyDown)
             {
-                playerMovement.isAnimationFinished = true;
+                player.isAnimationFinished = true;
                 return;
             }
-            playerMovement.isAnimationFinished = false;
+            player.isAnimationFinished = false;
             player.breakStepDustEffect.Play();
-            playerMovement.animator.Play("breakRun");
+            player.animator.Play("breakRun");
             player.stepDustEffect.Stop();
         }
     }

@@ -9,8 +9,8 @@
         public override void OperateEnter()
         {
             base.OperateEnter();
-            playerMovement.isAnimationFinished = false;
-            playerMovement.animator.Play("airAttack");
+            player.isAnimationFinished = false;
+            player.animator.Play("airAttack");
             playerMovement.OperateAirAttack();
         }
         public override void OperateUpdate()
@@ -20,7 +20,7 @@
             {
                 playerMovement.ResetPlayerVelocity();
             }
-            if (playerMovement.isAnimationFinished)
+            if (player.isAnimationFinished)
             {
                 if(playerMovement.velocity.y == 0)
                 {

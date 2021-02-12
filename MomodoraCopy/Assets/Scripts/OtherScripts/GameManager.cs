@@ -19,13 +19,15 @@ namespace MomodoraCopy
     public class GameManager : Singleton<GameManager>
     {
         public PlayerData playerData;
-        public GameObject playerObject;
+        public GameObject playerPhysics;
+        public GameObject playerSprite;
         public GameObject mainCameraObject;
         GameObject[] checkPoints;
         Scene scene;
 
         MonoBehaviour[] cameraComponents;
-        MonoBehaviour[] playerComponents;
+        MonoBehaviour[] playerPhysicsComponents;
+        MonoBehaviour[] playerSpriteComponents;
 
         public Dictionary<int, List<GameObject>> checkPointsDict = new Dictionary<int, List<GameObject>>();
         public List<GameObject> checkPointsList = new List<GameObject>();
@@ -38,9 +40,10 @@ namespace MomodoraCopy
         }
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (playerObject == null || !playerObject.CompareTag("Player"))
+            if (playerPhysics == null || !playerPhysics.CompareTag("Player"))
             {
-                playerObject = GameObject.FindGameObjectWithTag("Player");
+                playerPhysics = GameObject.FindGameObjectWithTag("Player");
+                playerSprite = playerPhysics.transform.GetChild(1).gameObject;
             }
             if (mainCameraObject == null || !mainCameraObject.CompareTag("MainCamera"))
             {
@@ -60,11 +63,25 @@ namespace MomodoraCopy
         {
             base.Awake();
             scene = SceneManager.GetActiveScene();
+            if (playerPhysics == null || !playerPhysics.CompareTag("Player"))
+            {
+                playerPhysics = GameObject.FindGameObjectWithTag("Player");
+                playerSprite = playerPhysics.transform.GetChild(1).gameObject;
+            }
+            if (mainCameraObject == null || !mainCameraObject.CompareTag("MainCamera"))
+            {
+                mainCameraObject = GameObject.FindGameObjectWithTag("MainCamera");
+            }
+            if (checkPoints == null)
+            {
+                checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
+            }
         }
         public void Start()
         {
             relaxedLoadAmount = (Vector3)(Vector2.up * 0.015f);
-            playerComponents = playerObject.GetComponents<MonoBehaviour>();
+            playerPhysicsComponents = playerPhysics.GetComponents<MonoBehaviour>();
+            playerSpriteComponents = playerSprite.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }
 
@@ -84,7 +101,11 @@ namespace MomodoraCopy
         public void Resume()
         {
             Time.timeScale = 1f;
-            foreach (MonoBehaviour component in playerComponents)
+            foreach (MonoBehaviour component in playerPhysicsComponents)
+            {
+                component.enabled = true;
+            }
+            foreach (MonoBehaviour component in playerSpriteComponents)
             {
                 component.enabled = true;
             }
@@ -96,7 +117,11 @@ namespace MomodoraCopy
         public void Pause()
         {
             Time.timeScale = 0f;
-            foreach (MonoBehaviour component in playerComponents)
+            foreach (MonoBehaviour component in playerPhysicsComponents)
+            {
+                component.enabled = false;
+            }
+            foreach (MonoBehaviour component in playerSpriteComponents)
             {
                 component.enabled = false;
             }
@@ -121,11 +146,11 @@ namespace MomodoraCopy
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
                 SceneManager.LoadScene(playerData.sceneName);
-                playerObject.transform.position = playerData.playerPosition + relaxedLoadAmount;
+                playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
             }
             else
             {
-                playerObject.transform.position =
+                playerPhysics.transform.position =
                     CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
             }
         }

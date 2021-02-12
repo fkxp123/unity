@@ -13,10 +13,10 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
-            if (!playerMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("airBowAttack"))
+            if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("airBowAttack"))
             {
-                playerMovement.isAnimationFinished = false;
-                playerMovement.animator.Play("airBowAttack", -1, 0f);
+                player.isAnimationFinished = false;
+                player.animator.Play("airBowAttack", -1, 0f);
             }
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + airBowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
@@ -44,7 +44,7 @@ namespace MomodoraCopy
                 }
             }
 
-            if (!playerMovement.isAnimationFinished)
+            if (!player.isAnimationFinished)
             {
                 return;
             }
@@ -53,7 +53,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
-            playerMovement.isAnimationFinished = true;
+            player.isAnimationFinished = true;
             playerMovement.stopCheckFlip = false;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
