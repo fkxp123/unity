@@ -145,8 +145,8 @@ namespace MomodoraCopy
                 Vector2 velocityAmount = velocity;
 
                 Collider2D[] collider2Ds = (directionY == 1) ?
-                    Physics2D.OverlapAreaAll(raycastOrigins.topRight, uRaycastOrigins.topLeft + velocityAmount, passengerMask) :
-                    Physics2D.OverlapAreaAll(raycastOrigins.bottomRight, uRaycastOrigins.bottomLeft + velocityAmount, passengerMask);
+                    Physics2D.OverlapAreaAll(eRaycastOrigins.topRight, eRaycastOrigins.topLeft + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(eRaycastOrigins.bottomRight, eRaycastOrigins.bottomLeft + velocityAmount, passengerMask);
 
                 foreach(Collider2D collider in collider2Ds)
                 {
@@ -170,8 +170,8 @@ namespace MomodoraCopy
                 Vector2 velocityAmount = velocity;
 
                 Collider2D[] collider2Ds = (directionX == 1) ?
-                    Physics2D.OverlapAreaAll(raycastOrigins.bottomRight, uRaycastOrigins.topRight + velocityAmount, passengerMask) :
-                    Physics2D.OverlapAreaAll(raycastOrigins.bottomLeft, uRaycastOrigins.topLeft + velocityAmount, passengerMask);
+                    Physics2D.OverlapAreaAll(eRaycastOrigins.bottomRight, eRaycastOrigins.topRight + velocityAmount, passengerMask) :
+                    Physics2D.OverlapAreaAll(eRaycastOrigins.bottomLeft, eRaycastOrigins.topLeft + velocityAmount, passengerMask);
 
                 foreach (Collider2D collider in collider2Ds)
                 {
@@ -192,8 +192,10 @@ namespace MomodoraCopy
 
             if (directionY == -1 || velocity.y == 0 && velocity.x != 0)
             {
+                Vector2 velocityAmount = Vector2.up * skinWidth * 2;
+
                 Collider2D[] collider2Ds = 
-                    Physics2D.OverlapAreaAll(uRaycastOrigins.topRight, uRaycastOrigins.topLeft, passengerMask);
+                    Physics2D.OverlapAreaAll(eRaycastOrigins.topRight, eRaycastOrigins.topLeft + velocityAmount, passengerMask);
 
                 foreach (Collider2D collider in collider2Ds)
                 {

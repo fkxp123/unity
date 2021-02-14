@@ -8,9 +8,10 @@ namespace MomodoraCopy
     {
         public float damage;
         public float radius;
-        public float power;
-        public float directionX;
-        public float directionY;
+        public float horizontalPower;
+        public float verticalPower;
+        //public float directionX;
+        //public float directionY;
         public float waitTime;
         public LayerMask target;
         WaitForSeconds waitSeconds;
@@ -28,7 +29,8 @@ namespace MomodoraCopy
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, target);
             foreach (Collider2D collider in colliders)
             {
-                collider.GetComponent<PlayerMovement>().TakeExplosion(new Vector3(-20, 20));
+                float directionX = collider.transform.position.x < transform.position.x ? -1 : 1;
+                collider.GetComponent<PlayerMovement>().TakeExplosion(new Vector3(horizontalPower * directionX, verticalPower));
                 Debug.Log("bomb!");
             }
         }

@@ -187,11 +187,24 @@ namespace MomodoraCopy
         public Vector3 currentVelocity;
         Vector3 previousVelocity;
 
-        public bool isExplosion;
+        public float maxForcedAngle = 180f;
+        float forcedAngle;
+        float ForcedAngle
+        {
+            get { return forcedAngle; }
+            set
+            {
+                forcedAngle = Mathf.Clamp(value, 0.0f, maxForcedAngle);
+            }
+        }
+        float forceDirectionX;
+        public bool isForced;
         public bool isStun;
 
         Transform playerSprite;
         Player player;
+        Vector3 forceAcceleration;
+
 
         void Awake()
         {
@@ -271,10 +284,14 @@ namespace MomodoraCopy
             CheckVerticalCollision();
             CheckisGround();
             CalculateCurrentVelocity();
-            Debug.Log("cv : " + currentVelocity);
         }
         void SetDirectionalInput(Vector2 directionalInput)
         {
+            if (isStun)
+            {
+                this.directionalInput = Vector2.zero;
+                return;
+            }
             this.directionalInput = directionalInput;
         }
         void SetPlayerMovement()
@@ -284,8 +301,20 @@ namespace MomodoraCopy
         }
         void CheckVerticalCollision()
         {
+            if (isForced)
+            {
+                ForcedAngle += maxForcedAngle * Time.deltaTime;
+                playerSprite.transform.rotation = forceDirectionX == -1 ?
+                    Quaternion.Euler(transform.rotation.x, 0, ForcedAngle) :
+                    Quaternion.Euler(transform.rotation.x, 180, ForcedAngle);
+            }
             if (controller.collisions.above || controller.collisions.below)
             {
+                if (isForced)
+                {
+                    playerSprite.transform.rotation =
+                        Quaternion.Euler(0, forceDirectionX == -1 ? 0 : 180, 0);
+                }
                 velocity.y = 0;
             }
         }
@@ -303,9 +332,26 @@ namespace MomodoraCopy
             float targetVelocityX;
 
             velocity.y += gravity * Time.deltaTime;
-            if (isExplosion)
+            if (isForced)
             {
-                velocity.x += -1.0f * Mathf.Sign(currentVelocity.x) * Time.deltaTime;
+                //Debug.Log(currentVelocity.x);
+                if (forceDirectionX == 1)
+                {
+                    if (velocity.x < 0)
+                    {
+                        velocity.x = 0;
+                        return;
+                    }
+                }
+                else
+                {
+                    if(velocity.x > 0)
+                    {
+                        velocity.x = 0;
+                        return;
+                    }
+                }
+                velocity.x += -0.2f * Mathf.Pow(currentVelocity.x, 2) * Mathf.Sign(currentVelocity.x) * Time.deltaTime;
                 return;
             }
 
@@ -327,15 +373,18 @@ namespace MomodoraCopy
         public void TakeExplosion(Vector3 explosionPower)
         {
             velocity = explosionPower;
-            isExplosion = true;
+            forceAcceleration = explosionPower;
+            forceDirectionX = Mathf.Sign(explosionPower.x);
+            isForced = true;
             isStun = true;
             StartCoroutine(RestoreStun());
         }
         IEnumerator RestoreStun()
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(5.5f);
             isStun = false;
-            isExplosion = false;
+            isForced = false;
+            playerSprite.transform.rotation = Quaternion.Euler(0, forceDirectionX == -1 ? 0 : 180, 0);
             Debug.Log("restore!");
         }
 
