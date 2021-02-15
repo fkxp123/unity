@@ -51295,6 +51295,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
   accelerationTimeAttack: 0.5
+  canInput: 0
   isLandHard: 0
   firstAttackPos: {fileID: 1218135638}
   secondAttackPos: {fileID: 1510977192}
@@ -53815,6 +53816,7 @@ MonoBehaviour:
   noHitMode: 0
   crushedDeathEffect: {fileID: 80144490}
   uiCanvas: {fileID: 1874196576}
+  hurtTime: 1.5
 --- !u!114 &1061225384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53834,6 +53836,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   velocity: {x: 0, y: 0, z: 0}
   accelerationTimeAttack: 0.5
+  canInput: 0
   isLandHard: 0
   firstAttackPos: {fileID: 1107712084}
   secondAttackPos: {fileID: 1073992475}
@@ -53890,6 +53893,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovement: {fileID: 0}
   playerInput: {fileID: 0}
+  playerStatus: {fileID: 0}
   arrowSpawnerObject: {fileID: 1371362908}
   arrowSpawner: {fileID: 0}
   landEffect:
@@ -54189,6 +54193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMovement: {fileID: 0}
   playerInput: {fileID: 0}
+  playerStatus: {fileID: 0}
   arrowSpawnerObject: {fileID: 1027404596}
   arrowSpawner: {fileID: 0}
   landEffect:
@@ -54220,6 +54225,7 @@ MonoBehaviour:
   noHitMode: 0
   crushedDeathEffect: {fileID: 696568599}
   uiCanvas: {fileID: 1334966578}
+  hurtTime: 0.5
 --- !u!95 &1070022151
 Animator:
   serializedVersion: 3
@@ -56963,8 +56969,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1808121907}
-  m_Father: {fileID: 1654333946}
-  m_RootOrder: 4
+  m_Father: {fileID: 1669275367}
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -88541,14 +88547,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1654333945}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -84.2, y: 44.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 851866134}
   - {fileID: 1027404598}
   - {fileID: 696568601}
   - {fileID: 536335318}
-  - {fileID: 1334966579}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -88764,6 +88769,7 @@ Transform:
   - {fileID: 1860106692}
   - {fileID: 1463172374}
   - {fileID: 639795843}
+  - {fileID: 1334966579}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

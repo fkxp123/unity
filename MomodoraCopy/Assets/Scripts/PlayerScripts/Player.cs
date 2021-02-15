@@ -8,6 +8,7 @@ namespace MomodoraCopy
         #region Variables
         public PlayerMovement playerMovement;
         public PlayerInput playerInput;
+        public PlayerStatus playerStatus;
         public PlayerStateMachine stateMachine;
 
         public GameObject arrowSpawnerObject;
@@ -37,6 +38,7 @@ namespace MomodoraCopy
         public IState airAttack;
         public IState crouchBowAttack;
         public IState airBowAttack;
+        public IState hurt;
         #endregion
 
         #endregion
@@ -48,6 +50,7 @@ namespace MomodoraCopy
             playerPhysics = transform.parent;
             playerMovement = playerPhysics.GetComponent<PlayerMovement>();
             playerInput = playerPhysics.GetComponent<PlayerInput>();
+            playerStatus = GetComponent<PlayerStatus>();
 
             arrowSpawner = arrowSpawnerObject.GetComponent<ArrowSpawner>();
 
@@ -64,6 +67,7 @@ namespace MomodoraCopy
             airAttack = new AirAttackState(this);
             crouchBowAttack = new CrouchBowAttackState(this);
             airBowAttack = new AirBowAttackState(this);
+            hurt = new HurtState(this);
             #endregion
 
             stateMachine = new PlayerStateMachine(idle);

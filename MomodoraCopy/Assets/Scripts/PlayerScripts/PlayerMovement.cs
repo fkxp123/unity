@@ -69,6 +69,7 @@ namespace MomodoraCopy
 
         #region Input Variables
         Vector2 arrowInput;
+        public bool canInput;
         public Vector2 directionalInput
         {
             get { return arrowInput; }
@@ -246,6 +247,8 @@ namespace MomodoraCopy
             MoveTypeDictionary.Add(MoveType.Roll, rollSpeed);
             MoveTypeDictionary.Add(MoveType.StopMove, 0);
 
+            canInput = true;
+
             SetNormalBoxCollider2D();
             SetCrushedArea();
         }
@@ -288,6 +291,11 @@ namespace MomodoraCopy
         void SetDirectionalInput(Vector2 directionalInput)
         {
             if (isStun)
+            {
+                this.directionalInput = Vector2.zero;
+                return;
+            }
+            if (!canInput)
             {
                 this.directionalInput = Vector2.zero;
                 return;

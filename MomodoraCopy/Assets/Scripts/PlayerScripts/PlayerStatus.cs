@@ -13,7 +13,7 @@ namespace MomodoraCopy
             get { return hp; }
             set
             {
-                if(healthBar != null)
+                if (healthBar != null)
                 {
                     healthBar.LoseHp(hp - value);
                 }
@@ -47,6 +47,10 @@ namespace MomodoraCopy
         Player playerFsm;
 
         Transform playerPhysics;
+        public float hurtTime = 0.5f;
+        Coroutine coroutine;
+        WaitForSeconds meleeKnockBackTime;
+        WaitForSeconds rangeKnockBackTime;
 
         void Awake()
         {
@@ -57,10 +61,14 @@ namespace MomodoraCopy
             playerFsm = GetComponent<Player>();
             animator = GetComponent<Animator>();;
             spriteRenderer = GetComponent<SpriteRenderer>();
+            uiCanvas.transform.SetParent(transform);
             healthBar = uiCanvas.GetComponent<HealthBar>();
 
             playerPhysics = transform.parent;
             playerMovement = playerPhysics.GetComponent<PlayerMovement>();
+
+            meleeKnockBackTime = new WaitForSeconds(hurtTime);
+            rangeKnockBackTime = new WaitForSeconds(hurtTime);
         }
 
         public void Hit(int enemyAtk)
@@ -128,37 +136,33 @@ namespace MomodoraCopy
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
         {
             Hp -= damage;
-            //    playerFsm.currentState = playerFsm.hurt;
+            playerFsm.stateMachine.SetState(playerFsm.hurt);
 
-            //    enemyPhysics.rotation =
-            //        Quaternion.Euler(enemyPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, enemyPhysics.rotation.z);
+            playerPhysics.rotation =
+                Quaternion.Euler(playerPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, playerPhysics.rotation.z);
 
-            //    if (damageType == DamageType.Range)
-            //    {
-            //        this.RestartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation), ref coroutine);
-            //    }
-            //    else
-            //    {
-            //        this.RestartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation), ref coroutine);
-            //    }
-            //    this.RestartCoroutine(SetStateChase(), ref coroutine);
-            //}
-            //IEnumerator SetStateChase()
-            //{
-            //    yield return stateRecoveryTime;
-            //    if (playerFsm.currentState != playerFsm.die)
-            //    {
-            //        playerFsm.currentState = playerFsm.chase;
-            //    }
-            //}
-            //IEnumerator KnockBack(WaitForSeconds waitTime, Quaternion damagedRotation)
-            //{
-            //    enemyMovement.velocity.x = damagedRotation.y == 0 ? 5 : -5;
-            //    enemyMovement.velocity.y = 5;
-            //    hitEffectRenderer.flip = enemyPhysics.rotation.y == 0 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 0);
-            //    hitEffect.Play();
-            //    yield return waitTime;
-            //    enemyMovement.direction.x = 0;
+            if (damageType == DamageType.Range)
+            {
+                this.RestartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation), ref coroutine);
+            }
+            else
+            {
+                this.RestartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation), ref coroutine);
+            }
+        }
+
+        IEnumerator KnockBack(WaitForSeconds waitTime, Quaternion damagedRotation)
+        {
+            playerMovement.velocity.x = damagedRotation.y == 0 ? 5 : -5;
+            playerMovement.velocity.y = 5;
+            playerMovement.stopCheckFlip = true;
+            playerMovement.canInput = false;
+            //hitEffectRenderer.flip = enemyPhysics.rotation.y == 0 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 0);
+            //hitEffect.Play();
+            yield return waitTime;
+            playerMovement.stopCheckFlip = false;
+            playerMovement.canInput = true;
+            playerMovement.velocity.x = 0;
         }
 
         public void CrushedDeath()
