@@ -15,7 +15,7 @@ namespace MomodoraCopy
         }
         public override void OperateEnter()
         {
-            waitTime = player.playerStatus.hurtTime;
+            waitTime = 1.5f;
             currentTime = waitTime;
             base.OperateEnter();
             player.animator.Play("hurt");

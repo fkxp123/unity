@@ -117,6 +117,7 @@ namespace MomodoraCopy
 
         #region BowAttackState Variables
         public bool isLandHard;
+        public bool isLandBlownUp;
         #endregion
 
         #region AttackState Variables
@@ -199,6 +200,7 @@ namespace MomodoraCopy
             }
         }
         float forceDirectionX;
+        float dragCoefficient = 0.4f;
         public bool isForced;
         public bool isStun;
 
@@ -302,6 +304,7 @@ namespace MomodoraCopy
             }
             this.directionalInput = directionalInput;
         }
+
         void SetPlayerMovement()
         {
             CalculateVelocity(moveType);
@@ -359,7 +362,7 @@ namespace MomodoraCopy
                         return;
                     }
                 }
-                velocity.x += -0.2f * Mathf.Pow(currentVelocity.x, 2) * Mathf.Sign(currentVelocity.x) * Time.deltaTime;
+                velocity.x += -0.5f * Mathf.Pow(currentVelocity.x, 2) * Mathf.Sign(currentVelocity.x) * dragCoefficient * Time.deltaTime;
                 return;
             }
 
@@ -381,18 +384,23 @@ namespace MomodoraCopy
         public void TakeExplosion(Vector3 explosionPower)
         {
             velocity = explosionPower;
-            forceAcceleration = explosionPower;
+            //forceAcceleration = explosionPower;
             forceDirectionX = Mathf.Sign(explosionPower.x);
+            player.stateMachine.SetState(player.blownUp);
             isForced = true;
-            isStun = true;
-            StartCoroutine(RestoreStun());
+            //isStun = true;
+            isLandBlownUp = true;
+            //stopCheckFlip = true;
+            //StartCoroutine(RestoreStun());
         }
         IEnumerator RestoreStun()
         {
-            yield return new WaitForSeconds(5.5f);
+            yield return new WaitForSeconds(1.5f);
             isStun = false;
             isForced = false;
+            stopCheckFlip = false;
             playerSprite.transform.rotation = Quaternion.Euler(0, forceDirectionX == -1 ? 0 : 180, 0);
+            //player.stateMachine.SetState(player.idle);
             Debug.Log("restore!");
         }
 

@@ -39,6 +39,7 @@ namespace MomodoraCopy
         public IState crouchBowAttack;
         public IState airBowAttack;
         public IState hurt;
+        public IState blownUp;
         #endregion
 
         #endregion
@@ -68,6 +69,7 @@ namespace MomodoraCopy
             crouchBowAttack = new CrouchBowAttackState(this);
             airBowAttack = new AirBowAttackState(this);
             hurt = new HurtState(this);
+            blownUp = new BlownUpState(this);
             #endregion
 
             stateMachine = new PlayerStateMachine(idle);

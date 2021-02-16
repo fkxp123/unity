@@ -301,7 +301,7 @@ namespace MomodoraCopy
                 if (canAttack)
                 {
                     canAttack = false;
-                    float randomTime = Random.Range(0.5f, 1.5f);
+                    float randomTime = Random.Range(1.0f, 1.5f);
                     WaitForSeconds waitTime = new WaitForSeconds(randomTime);
                     StartCoroutine(SetStateAttack(waitTime));
                 }
@@ -316,18 +316,18 @@ namespace MomodoraCopy
             currentState = State.Attack;
         }
 
-        void CalculateTime(float activeTime, State transitionState)
-        {
-            if(currentTime <= 0.0f)
-            {
-                currentTime = activeTime;
-            }
-            currentTime -= Time.deltaTime;
-            if(currentTime <= 0.0f)
-            {
-                currentState = transitionState;
-            }
-        }
+        //void CalculateTime(float activeTime, State transitionState)
+        //{
+        //    if(currentTime <= 0.0f)
+        //    {
+        //        currentTime = activeTime;
+        //    }
+        //    currentTime -= Time.deltaTime;
+        //    if(currentTime <= 0.0f)
+        //    {
+        //        currentState = transitionState;
+        //    }
+        //}
         void SpawnDagger()
         {
             info = daggerSpawner.info;

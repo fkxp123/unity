@@ -51297,6 +51297,7 @@ MonoBehaviour:
   accelerationTimeAttack: 0.5
   canInput: 0
   isLandHard: 0
+  isLandBlownUp: 0
   firstAttackPos: {fileID: 1218135638}
   secondAttackPos: {fileID: 1510977192}
   thirdAttackPos: {fileID: 1642253215}
@@ -53838,6 +53839,7 @@ MonoBehaviour:
   accelerationTimeAttack: 0.5
   canInput: 0
   isLandHard: 0
+  isLandBlownUp: 0
   firstAttackPos: {fileID: 1107712084}
   secondAttackPos: {fileID: 1073992475}
   thirdAttackPos: {fileID: 752331438}
@@ -55086,7 +55088,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1133448996
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88547,7 +88549,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1654333945}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -84.2, y: 44.2, z: 0}
+  m_LocalPosition: {x: -55.9, y: 64.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 851866134}

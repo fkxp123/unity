@@ -16,9 +16,18 @@ namespace MomodoraCopy
                 p.Play();
             }
             //player.landEffect.Play();
+            if (playerMovement.isLandBlownUp)
+            {
+                playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+                playerMovement.stopCheckFlip = true;
+                player.isAnimationFinished = false;
+                player.animator.Play("landingBlownUp");
+                return;
+            }
             if (playerMovement.isLandHard)
             {
                 playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+                playerMovement.stopCheckFlip = true;
                 player.isAnimationFinished = false;
                 player.animator.Play("landingHard");
                 return;
@@ -32,6 +41,10 @@ namespace MomodoraCopy
             base.OperateUpdate();
             if (player.isAnimationFinished)
             {
+                playerMovement.stopCheckFlip = false;
+                playerMovement.velocity.x = 0;
+                playerMovement.isLandBlownUp = false;
+                playerMovement.isLandHard = false;
                 player.stateMachine.SetState(player.idle);
                 return;
             }

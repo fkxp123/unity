@@ -87,6 +87,7 @@
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\AirAttackState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\AirBowAttackState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\AttackState.cs" />
+     <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\BlownUpState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\BowAttackState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\CrouchBowAttackState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\CrouchState.cs" />
