@@ -135,19 +135,26 @@ namespace MomodoraCopy
 
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
         {
+            if(playerFsm.stateMachine.CurrentState == playerFsm.hurt)
+            {
+                return;
+            }
             Hp -= damage;
+            if(Hp <= 0)
+            {
+                return;
+            }
             playerFsm.stateMachine.SetState(playerFsm.hurt);
 
             playerPhysics.rotation =
                 Quaternion.Euler(playerPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, playerPhysics.rotation.z);
-
             if (damageType == DamageType.Range)
             {
-                this.RestartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation), ref coroutine);
+                StartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation));
             }
             else
             {
-                this.RestartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation), ref coroutine);
+                StartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation));
             }
         }
 

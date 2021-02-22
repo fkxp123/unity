@@ -30,12 +30,6 @@ namespace MomodoraCopy
 
         BoxCollider2D boxCollider;
 
-        public Transform FindPlayerBoxPos;
-        public Vector2 FindPlayerBoxSize;
-        public Transform AtkPlayerBoxPos;
-        public Vector2 AtkPlayerBoxSize;
-        public GameObject ExclamationMark;
-
         public bool isAttack;
         public bool isHit;
 

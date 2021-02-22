@@ -200,7 +200,7 @@ namespace MomodoraCopy
             }
         }
         float forceDirectionX;
-        float dragCoefficient = 0.4f;
+        public float dragCoefficient = 0.4f;
         public bool isForced;
         public bool isStun;
 
@@ -310,6 +310,8 @@ namespace MomodoraCopy
             CalculateVelocity(moveType);
             controller.Move(velocity * Time.deltaTime, directionalInput);
         }
+
+        float coefficient;
         void CheckVerticalCollision()
         {
             if (isForced)
@@ -337,32 +339,36 @@ namespace MomodoraCopy
             }
             return -1;
         }
+
+        float blownUpPercent;
         void CalculateVelocity(MoveType moveType)
         {
             this.moveType = moveType;
             float targetVelocityX;
 
             velocity.y += gravity * Time.deltaTime;
+            velocity.y = Mathf.Clamp(velocity.y, -50, 50);
             if (isForced)
             {
-                //Debug.Log(currentVelocity.x);
+                float drag;
+                drag = -1 * dragCoefficient * forcedVelocity.x * Time.deltaTime;
                 if (forceDirectionX == 1)
                 {
-                    if (velocity.x < 0)
+                    if (velocity.x + drag < 25)
                     {
-                        velocity.x = 0;
+                        velocity.x = 25;
                         return;
                     }
                 }
                 else
                 {
-                    if(velocity.x > 0)
+                    if (velocity.x + drag > -25)
                     {
-                        velocity.x = 0;
+                        velocity.x = -25;
                         return;
                     }
                 }
-                velocity.x += -0.5f * Mathf.Pow(currentVelocity.x, 2) * Mathf.Sign(currentVelocity.x) * dragCoefficient * Time.deltaTime;
+                velocity.x += drag;
                 return;
             }
 
@@ -381,27 +387,17 @@ namespace MomodoraCopy
 
             velocity.x = SetDirection() * MoveTypeDictionary[moveType];
         }
+        Vector3 forcedVelocity;
         public void TakeExplosion(Vector3 explosionPower)
         {
+            Debug.Log(explosionPower);
+            forcedVelocity = explosionPower;
             velocity = explosionPower;
-            //forceAcceleration = explosionPower;
+            coefficient = explosionPower.x;
             forceDirectionX = Mathf.Sign(explosionPower.x);
             player.stateMachine.SetState(player.blownUp);
             isForced = true;
-            //isStun = true;
             isLandBlownUp = true;
-            //stopCheckFlip = true;
-            //StartCoroutine(RestoreStun());
-        }
-        IEnumerator RestoreStun()
-        {
-            yield return new WaitForSeconds(1.5f);
-            isStun = false;
-            isForced = false;
-            stopCheckFlip = false;
-            playerSprite.transform.rotation = Quaternion.Euler(0, forceDirectionX == -1 ? 0 : 180, 0);
-            //player.stateMachine.SetState(player.idle);
-            Debug.Log("restore!");
         }
 
         void CheckisGround()

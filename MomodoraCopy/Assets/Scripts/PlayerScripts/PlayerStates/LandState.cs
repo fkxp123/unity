@@ -18,7 +18,8 @@ namespace MomodoraCopy
             //player.landEffect.Play();
             if (playerMovement.isLandBlownUp)
             {
-                playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+                //playerMovement.moveType = PlayerMovement.MoveType.StopMove;
+                playerMovement.canInput = false;
                 playerMovement.stopCheckFlip = true;
                 player.isAnimationFinished = false;
                 player.animator.Play("landingBlownUp");
@@ -41,6 +42,7 @@ namespace MomodoraCopy
             base.OperateUpdate();
             if (player.isAnimationFinished)
             {
+                playerMovement.canInput = true;
                 playerMovement.stopCheckFlip = false;
                 playerMovement.velocity.x = 0;
                 playerMovement.isLandBlownUp = false;
@@ -49,6 +51,10 @@ namespace MomodoraCopy
                 return;
             }
             if(playerMovement.moveType == PlayerMovement.MoveType.StopMove)
+            {
+                return;
+            }
+            if (playerMovement.isLandBlownUp)
             {
                 return;
             }

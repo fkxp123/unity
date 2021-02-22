@@ -11,13 +11,12 @@ namespace MomodoraCopy
 
         public HurtState(Player player) : base(player)
         {
-
+            waitTime = player.playerStatus.hurtTime;
         }
         public override void OperateEnter()
         {
-            waitTime = 1.5f;
-            currentTime = waitTime;
             base.OperateEnter();
+            currentTime = waitTime;
             player.animator.Play("hurt");
         }
         public override void OperateUpdate()

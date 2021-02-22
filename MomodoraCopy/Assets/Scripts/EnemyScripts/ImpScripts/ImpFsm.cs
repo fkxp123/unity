@@ -59,9 +59,6 @@ namespace MomodoraCopy
             daggerSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
             CachingAnimationTime();
 
-
-            var main = hitEffect.main;
-            main.startRotation3D = true;
             //StartCoroutine("CheckSomething");
             //StartCoroutine("Test");
         }

@@ -61,6 +61,7 @@
      <Compile Include="Assets\Scripts\EnemyScripts\EnemyMovement.cs" />
      <Compile Include="Assets\Scripts\EnemyScripts\EnemyStatus.cs" />
      <Compile Include="Assets\Scripts\EnemyScripts\ImpScripts\ImpFsm.cs" />
+     <Compile Include="Assets\Scripts\EnemyScripts\MonkeyFsm.cs" />
      <Compile Include="Assets\Scripts\EnemyScripts\SimpleTest.cs" />
      <Compile Include="Assets\Scripts\EventManager.cs" />
      <Compile Include="Assets\Scripts\EventTest.cs" />

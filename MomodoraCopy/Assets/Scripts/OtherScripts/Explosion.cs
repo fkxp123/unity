@@ -40,5 +40,37 @@ namespace MomodoraCopy
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position,radius);
         }
+
+        Vector3 DrawBezierCurve(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float value)
+        {
+            Vector3 a = Vector3.Lerp(p1, p2, value);
+            Vector3 b = Vector3.Lerp(p2, p3, value);
+            Vector3 c = Vector3.Lerp(p3, p4, value);
+
+            Vector3 d = Vector3.Lerp(a, b, value);
+            Vector3 e = Vector3.Lerp(b, c, value);
+
+            Vector3 f = Vector3.Lerp(d, e, value);
+
+            return f;
+        }
+        Vector3 DrawBlownUpCurve(Vector3 start, Vector3 end, float value)
+        {
+            Vector3 p1 = new Vector3(start.x, start.y);
+            Vector3 p2 = new Vector3(start.x, start.y + end.y);
+            Vector3 p3 = new Vector3(start.x + end.x, start.y + end.y);
+            Vector3 p4 = new Vector3(start.x + end.x, start.y);
+
+            Vector3 a = Vector3.Lerp(p1, p2, value);
+            Vector3 b = Vector3.Lerp(p2, p3, value);
+            Vector3 c = Vector3.Lerp(p3, p4, value);
+
+            Vector3 d = Vector3.Lerp(a, b, value);
+            Vector3 e = Vector3.Lerp(b, c, value);
+
+            Vector3 f = Vector3.Lerp(d, e, value);
+
+            return f;
+        }
     }
 }
