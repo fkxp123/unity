@@ -28,13 +28,16 @@ namespace MomodoraCopy
         float currentTime;
 
         Scene scene;
-        GameObject playerObject;
+        public GameObject playerObject;
+
+        Vector3 relaxedLoadAmount;
 
         void Start()
         {
             scene = SceneManager.GetActiveScene();
             sceneName = scene.name;
             CheckPointManager.instance.AddCheckPoint(scene.name.GetHashCode(), gameObject);
+            relaxedLoadAmount = Vector2.up * 0.015f;
 
             if (playerObject == null || playerObject.tag != "Player")
             {
@@ -42,7 +45,14 @@ namespace MomodoraCopy
             }
             if (!File.Exists(Application.dataPath + "/playerData.json"))
             {
-                playerObject.transform.position = CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position;
+                playerObject.transform.position = 
+                    CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
+            }
+            else if(GameManager.instance.currentSceneNameHash != scene.name.GetHashCode())
+            {
+                playerObject.transform.position =
+                    CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
+                GameManager.instance.currentSceneNameHash = scene.name.GetHashCode();
             }
         }
 

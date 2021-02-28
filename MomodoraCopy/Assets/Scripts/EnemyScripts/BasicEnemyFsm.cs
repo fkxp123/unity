@@ -6,6 +6,12 @@ namespace MomodoraCopy
 {
     public class BasicEnemyFsm : MonoBehaviour
     {
+        protected Animator animator;
+        protected EnemyStatus enemyStatus;
+        protected SpriteRenderer spriteRenderer;
+        protected EnemyMovement enemyMovement;
+        protected Controller2D controller;
+
         public enum State
         {
             None, Idle, Patrol, Chase, Attack, Interact, Hurt, Die
@@ -15,16 +21,30 @@ namespace MomodoraCopy
         [SerializeField]
         protected State transitionState;
         [SerializeField]
-        protected State executeState;
+        protected State temporaryState;
 
+        [HideInInspector]
         public State none;
+        [HideInInspector]
         public State idle;
+        [HideInInspector]
         public State patrol;
+        [HideInInspector]
         public State chase;
+        [HideInInspector]
         public State attack;
+        [HideInInspector]
         public State interact;
+        [HideInInspector]
         public State hurt;
+        [HideInInspector]
         public State die;
+
+        protected Dictionary<int, float> animTimeDictionary = new Dictionary<int, float>();
+
+        protected float currentTime;
+        protected Vector3 playerPosition;
+        protected Transform enemyPhysics;
 
         protected virtual void Awake()
         {
@@ -33,9 +53,18 @@ namespace MomodoraCopy
 
         protected virtual void Start()
         {
+            enemyPhysics = transform.parent;
+
+            animator = GetComponent<Animator>();
+            enemyStatus = GetComponent<EnemyStatus>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            enemyMovement = enemyPhysics.GetComponent<EnemyMovement>();
+            controller = enemyPhysics.GetComponent<Controller2D>();
+
             currentState = State.Idle;
             transitionState = State.Idle;
-            executeState = State.None;
+            temporaryState = State.None;
 
             none = State.None;
             idle = State.Idle;
@@ -45,6 +74,23 @@ namespace MomodoraCopy
             interact = State.Interact;
             hurt = State.Hurt;
             die = State.Die;
+
+            SetAnimTimeDictionary();
+            CachingAnimation();
+        }
+
+        protected virtual void CachingAnimation()
+        {
+
+        }
+
+        protected void SetAnimTimeDictionary()
+        {
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+            foreach (AnimationClip clip in clips)
+            {
+                animTimeDictionary.Add(Animator.StringToHash(clip.name), clip.length);
+            }
         }
 
         protected virtual void Update()

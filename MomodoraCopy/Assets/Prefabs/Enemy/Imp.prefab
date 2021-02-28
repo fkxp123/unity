@@ -123,7 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   transitionState: 0
-  executeState: 0
+  temporaryState: 0
   none: 0
   idle: 0
   patrol: 0
@@ -142,11 +142,10 @@ MonoBehaviour:
   isNearToWall: 0
   isCliff: 0
   findPlayerBox: {fileID: 3051557599139012709}
-  findPlayerBoxSize: {x: 10, y: 1.8, z: 0}
+  findPlayerBoxArea: {x: 10, y: 1.8, z: 0}
   daggerSpawnerObject: {fileID: 336496887465670176}
   bloodEffect: {fileID: 1262917962455973348}
   hitEffect: {fileID: 115009070050383823}
-  impPhysics: {fileID: 3924353815307326270}
 --- !u!114 &2176490833036211356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,8 +160,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitEffect: {fileID: 115009070050383823}
   crushedDeathEffect: {fileID: 6271535800283062862}
+  totalVibrationTime: 0.5
+  vibrationAmount: 0.1
+  vibrationCycleTime: 0.1
+  blinkCycleTime: 0.1
   maxHp: 100
   hp: 100
+  currentHp: 0
 --- !u!95 &6925628414246395896
 Animator:
   serializedVersion: 3
@@ -368,11 +372,6 @@ MonoBehaviour:
   HitDistance: 3
   velocity: {x: 0, y: 0, z: 0}
   direction: {x: 0, y: 0}
-  FindPlayerBoxPos: {fileID: 0}
-  FindPlayerBoxSize: {x: 0, y: 0}
-  AtkPlayerBoxPos: {fileID: 0}
-  AtkPlayerBoxSize: {x: 0, y: 0}
-  ExclamationMark: {fileID: 0}
   isAttack: 0
   isHit: 0
   currentVelocity: {x: 0, y: 0, z: 0}
@@ -14836,7 +14835,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7415231887351448848}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -44.9, y: 33.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

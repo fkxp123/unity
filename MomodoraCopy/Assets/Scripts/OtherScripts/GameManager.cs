@@ -34,6 +34,8 @@ namespace MomodoraCopy
 
         Vector3 relaxedLoadAmount;
 
+        public int currentSceneNameHash;
+
         void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -79,10 +81,12 @@ namespace MomodoraCopy
         }
         public void Start()
         {
-            relaxedLoadAmount = (Vector3)(Vector2.up * 0.015f);
+            relaxedLoadAmount = Vector2.up * 0.015f;
             playerPhysicsComponents = playerPhysics.GetComponents<MonoBehaviour>();
             playerSpriteComponents = playerSprite.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
+
+            currentSceneNameHash = scene.name.GetHashCode();
         }
 
 
@@ -147,6 +151,7 @@ namespace MomodoraCopy
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
                 SceneManager.LoadScene(playerData.sceneName);
                 playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
+                currentSceneNameHash = playerData.sceneName.GetHashCode();
             }
             else
             {

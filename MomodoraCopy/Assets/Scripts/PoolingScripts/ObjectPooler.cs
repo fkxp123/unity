@@ -1,12 +1,25 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 namespace MomodoraCopy
 {
     public class ObjectPooler : Singleton<ObjectPooler>
     {
         [SerializeField]
         public Dictionary<GameObject, Queue<GameObject>> poolDictionary = new Dictionary<GameObject, Queue<GameObject>>();
+
+        void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            poolDictionary.Clear();
+        }
+        void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
 
         public void SetPoolingObject(PoolingObjectInfo info)
         {
@@ -152,7 +165,6 @@ namespace MomodoraCopy
                 }
                 CreatePoolingObject(info);
             }
-
             obj = poolDictionary[info.prefab].Dequeue();
             obj.transform.position = new Vector3(info.position.x, info.position.y, Random.Range(0.0f, 1.0f));
             obj.gameObject.SetActive(true);

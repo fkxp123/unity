@@ -6,16 +6,15 @@ namespace MomodoraCopy
 {
     public class MonkeyFsm : BasicEnemyFsm
     {
-        Animator animator;
-        SpriteRenderer spriteRenderer;
-        EnemyMovement enemyMovement;
-        Controller2D controller;
-        EnemyStatus enemyStatus;
-
-        float currentTime;
+        int idleAnimHash;
+        int attackAnimHash;
+        int patrolAnimHash;
+        int hurt1AnimHash;
+        int hurt2AnimHash;
         float idleTime;
         float attackTime;
-        float hurtTime;
+
+        int hitCount;
 
         public Transform wallCheck;
         public float wallCheckRadius;
@@ -32,93 +31,63 @@ namespace MomodoraCopy
         float attackDamage = 20f;
         bool canAttack;
 
-        Vector3 playerPosition;
-
         public ParticleSystem bloodEffect;
         public ParticleSystem hitEffect;
-
-        Transform impPhysics;
 
         protected override void Start()
         {
             base.Start();
-            impPhysics = transform.parent;
-            animator = GetComponent<Animator>();
-            spriteRenderer = impPhysics.GetComponent<SpriteRenderer>();
-            enemyMovement = impPhysics.GetComponent<EnemyMovement>();
-            controller = impPhysics.GetComponent<Controller2D>();
-            enemyStatus = GetComponent<EnemyStatus>();
-
-            CachingAnimationTime();
         }
 
-        void CachingAnimationTime()
+        protected override void CachingAnimation()
         {
-            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            foreach (AnimationClip clip in clips)
-            {
-                switch (clip.name)
-                {
-                    case "idle":
-                        idleTime = clip.length;
-                        break;
-                    case "hurt":
-                        hurtTime = clip.length;
-                        break;
-                    case "attack":
-                        attackTime = clip.length;
-                        break;
-                    default:
-                        break;
-                }
-            }
+            idleAnimHash = Animator.StringToHash("idle");
+            idleTime = animTimeDictionary[idleAnimHash];
+
+            attackAnimHash = Animator.StringToHash("attack");
+            attackTime = animTimeDictionary[attackAnimHash];
+
+            patrolAnimHash = Animator.StringToHash("patrol");
+            hurt1AnimHash = Animator.StringToHash("hurt1");
+            hurt2AnimHash = Animator.StringToHash("hurt2");
         }
 
         protected override void Update()
         {
-            if (executeState != State.None)
+            if (temporaryState != State.None)
             {
-                ExecuteState(executeState);
+                ExecuteState(temporaryState);
                 return;
+            }
+            if (enemyStatus.currentHp <= 0)
+            {
+                currentState = State.Die;
             }
             if (currentState == State.Die)
             {
                 animator.Play("hurt");
                 return;
             }
-            if (currentState == State.Hurt)
-            {
-                bloodEffect.Play();
-                currentTime = 0;
-                animator.Play("hurt", -1, 0);
-                return;
-            }
-
 
             if (currentState != State.Chase && currentState != State.Attack && currentState != State.Hurt)
             {
-                bool flag = false;
                 Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (collider.tag == "Player")
                     {
-                        flag = true;
                         playerPosition = collider.transform.position;
                         if (playerPosition.x < transform.position.x)
                         {
-                            impPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                            enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                         }
                         else
                         {
-                            impPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                            enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                         }
+                        currentState = State.Chase;
+                        currentTime = 0;
                     }
-                }
-                if (flag)
-                {
-                    currentState = State.Chase;
-                    currentTime = 0;
                 }
             }
             switch (currentState)
@@ -134,6 +103,9 @@ namespace MomodoraCopy
                     break;
                 case State.Attack:
                     DoAttack();
+                    break;
+                case State.Hurt:
+                    DoHurt();
                     break;
                 case State.Die:
                     DoDie();
@@ -177,36 +149,34 @@ namespace MomodoraCopy
         {
             if (currentTime <= 0.0f)
             {
-                animator.Play("run");
+                animator.Play("patrol");
                 int directionDesicion = Random.Range(0, 2);
                 currentTime = Random.Range(1.0f, 2.0f);
 
                 switch (directionDesicion)
                 {
                     case 0:
-                        impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                        enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
                         break;
                     case 1:
-                        impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                        enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
                         break;
                     default:
                         break;
                 }
+               enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
             }
             isNearToWall = Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, platform);
             isCliff = Physics2D.OverlapCircle(cliffCheck.position, cliffCheckRadius, platform);
             if (isNearToWall)
             {
-                impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
+                enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
                 currentTime = Random.Range(1.0f, 2.0f);
             }
             if (!isCliff)
             {
-                impPhysics.rotation = Quaternion.Euler(0.0f, impPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
-                enemyMovement.direction.x = impPhysics.rotation.y == 0.0f ? 1 : -1;
+                enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
                 currentTime = Random.Range(1.0f, 2.0f);
             }
             currentTime -= Time.deltaTime;
@@ -217,14 +187,21 @@ namespace MomodoraCopy
             }
 
         }
+        protected override void DoHurt()
+        {
+            enemyMovement.direction.x = 0;
+            bloodEffect.Play();
+            currentTime = 0;
+            animator.Play(hurt1AnimHash, -1, 0);
+        }
+
         protected override void DoAttack()
         {
             enemyMovement.direction.x = 0;
             if (currentTime <= 0.0f)
             {
-                animator.Play("attack");
+                animator.Play(attackAnimHash);
                 currentTime = attackTime;
-                Debug.Log(currentTime);
             }
             currentTime -= Time.deltaTime;
             if (canAttack)
@@ -258,11 +235,11 @@ namespace MomodoraCopy
             float lookAtPlayerRotationY;
             if(currentTime <= 0)
             {
-                lookAtPlayerRotationY = GameManager.instance.playerPhysics.transform.position.x < impPhysics.position.x ? 180 : 0;
-                impPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
-                enemyMovement.direction.x = impPhysics.rotation.y == 0 ? 1 : -1;
+                lookAtPlayerRotationY = GameManager.instance.playerPhysics.transform.position.x < enemyPhysics.position.x ? 180 : 0;
+                enemyPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
+                enemyMovement.direction.x = enemyPhysics.rotation.y == 0 ? 1 : -1;
                 currentTime = Random.Range(1.0f, 1.5f);
-                animator.Play("run");
+                animator.Play("patrol");
                 //enemyMovement.velocity.x = impPhysics.rotation.y == 0 ? -5 : 5;
             }
             currentTime -= Time.deltaTime;

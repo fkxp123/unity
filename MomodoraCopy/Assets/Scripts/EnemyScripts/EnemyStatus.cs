@@ -20,8 +20,14 @@ namespace MomodoraCopy
         public ParticleSystem crushedDeathEffect;
         SpriteRenderer spriteRenderer;
 
-        bool isCrushed = false;
+        bool isCrushed;
         float direction = 1;
+        public float totalVibrationTime = 0.5f;
+        public float vibrationAmount = 0.1f;
+        public float vibrationCycleTime = 0.1f;
+        public float blinkCycleTime = 0.1f;
+        WaitForSeconds vibrationWaitTime;
+        WaitForSeconds blinkWaitTime;
 
         [SerializeField]
         float maxHp;
@@ -33,6 +39,7 @@ namespace MomodoraCopy
             set
             {
                 hp = Mathf.Clamp(value, 0, maxHp);
+                currentHp = hp;
                 if (hp <= 0)
                 {
                     fsm.currentState = fsm.die;
@@ -41,43 +48,75 @@ namespace MomodoraCopy
                         transform.parent.gameObject.SetActive(false);
                         return;
                     }
-                    TurnSpriteRed();
                     StartCoroutine(VibrateSprite());
-                    StartCoroutine(KillObject());
+                }
+                else if(hp != maxHp)
+                {
+                    StartCoroutine(BlinkSprite());
                 }
             }
         }
+        public float currentHp;
 
         Transform enemyPhysics;
-
-        void TurnSpriteRed()
+        IEnumerator BlinkSprite()
         {
-
+            float currentTime = 0.5f;
+            float i = 0;
+            Color tmp = spriteRenderer.color;
+            while (currentTime > 0)
+            {
+                i++;
+                if (i % 2 == 0)
+                {
+                    tmp.a = 0.3f;
+                    spriteRenderer.color = tmp;
+                }
+                else
+                {
+                    tmp.a = 1f;
+                    spriteRenderer.color = tmp;
+                }
+                currentTime -= 0.1f;
+                yield return new WaitForSeconds(0.1f);
+            }
+            tmp.a = 1f;
+            spriteRenderer.color = tmp;
         }
         IEnumerator VibrateSprite()
         {
-            float currentTime = 2.5f;
-            while(currentTime <= 0)
+            float currentTime = totalVibrationTime;
+            float i = 0;
+            Color tmp = spriteRenderer.color;
+            while(currentTime > 0)
             {
-                transform.position = transform.position + Vector3.right * 0.015f * direction;
-                transform.position = transform.position + Vector3.up * 0.015f * direction;
+                transform.position = transform.position + 
+                    (i % 2 == 0 ? Vector3.right : Vector3.left) * vibrationAmount * direction;
+                transform.position = transform.position + Vector3.up * vibrationAmount * direction;
                 direction *= -1;
-                currentTime -= Time.deltaTime;
-                yield return null;
+                if(direction == 1)
+                {
+                    i++;
+                }
+                if(direction == -1)
+                {
+                    tmp = Color.red;
+                    tmp.a = 0.5f;
+                    spriteRenderer.color = tmp;
+                }
+                else
+                {
+                    tmp = Color.white;
+                    tmp.a = 1f;
+                    spriteRenderer.color = tmp;
+                }
+                currentTime -= 0.1f;
+                yield return new WaitForSeconds(0.1f);
             }
             transform.position = enemyPhysics.position;
+            enemyPhysics.gameObject.SetActive(false);
         }
-        IEnumerator KillObject()
-        {
-            float currentTime = 5.5f;
-            while(currentTime <= 0)
-            {
-                currentTime -= Time.deltaTime;
-                yield return null;
-            }
-            //enemyPhysics.gameObject.SetActive(false);
-        }
-        
+
         WaitForSeconds meleeKnockBackTime;
         WaitForSeconds rangeKnockBackTime;
         WaitForSeconds stateRecoveryTime;
@@ -89,8 +128,12 @@ namespace MomodoraCopy
             enemyPhysics = transform.parent;
             fsm = GetComponent<BasicEnemyFsm>();
             animator = GetComponent<Animator>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
             enemyMovement = enemyPhysics.GetComponent<EnemyMovement>();
             hitEffectRenderer = hitEffect.GetComponent<ParticleSystemRenderer>();
+
+            blinkWaitTime = new WaitForSeconds(blinkCycleTime);
+            vibrationWaitTime = new WaitForSeconds(vibrationCycleTime);
 
             maxHp = 100;
             Hp = maxHp;
@@ -102,9 +145,17 @@ namespace MomodoraCopy
 
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
         {
+            if(Hp <= 0)
+            {
+                return;
+            }
             Hp -= damage;
+            if(Hp <= 0)
+            {
+                enemyMovement.direction.x = 0;
+                return;
+            }
             fsm.currentState = fsm.hurt;
-
             enemyPhysics.rotation = 
                 Quaternion.Euler(enemyPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, enemyPhysics.rotation.z);
 

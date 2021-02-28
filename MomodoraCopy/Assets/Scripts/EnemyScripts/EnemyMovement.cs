@@ -38,7 +38,9 @@ namespace MomodoraCopy
 
         public Vector3 currentVelocity;
         Vector3 previousVelocity;
-        
+
+        float coroutineCycle;
+        WaitForSeconds waitTime;
 
         void Start()
         {
@@ -54,7 +56,12 @@ namespace MomodoraCopy
             enemyStatus = transform.GetChild(0).GetComponent<EnemyStatus>();
 
             SetCrushedArea();
+
+            coroutineCycle = 0.1f;
+            waitTime = new WaitForSeconds(coroutineCycle);
+            StartCoroutine(CheckCrushed());
         }
+
         public void SetCrushedArea()
         {
             Bounds bounds = boxCollider.bounds;
@@ -62,20 +69,36 @@ namespace MomodoraCopy
             bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
         }
-
-        void CheckCrushed()//CheckCrushedByArea & CheckCrushedByTime
+        IEnumerator CheckCrushed()
         {
-            Collider2D[] collider2Ds =
-                Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y * transform.localScale.y, crushedArea, 0);
-            foreach (Collider2D collider in collider2Ds)
+            while (true)
             {
-                if (collider.transform.CompareTag("Platform") ||
-                    collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+                Collider2D[] collider2Ds =
+                    Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y * transform.localScale.y, crushedArea, 0);
+                foreach (Collider2D collider in collider2Ds)
                 {
-                    enemyStatus.CrushedDeath();
+                    if (collider.transform.CompareTag("Platform") ||
+                        collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+                    {
+                        enemyStatus.CrushedDeath();
+                    }
                 }
+                yield return waitTime; 
             }
         }
+        //void CheckCrushed()
+        //{
+        //    Collider2D[] collider2Ds =
+        //        Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y * transform.localScale.y, crushedArea, 0);
+        //    foreach (Collider2D collider in collider2Ds)
+        //    {
+        //        if (collider.transform.CompareTag("Platform") ||
+        //            collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+        //        {
+        //            enemyStatus.CrushedDeath();
+        //        }
+        //    }
+        //}
 
         void CalculateCurrentVelocity()
         {
@@ -83,10 +106,9 @@ namespace MomodoraCopy
             previousVelocity = transform.position;
         }
 
-
         void Update()
         {
-            CheckCrushed();
+            //CheckCrushed();
             SetEnemyMovement();
             CheckVerticalCollision();
         }
