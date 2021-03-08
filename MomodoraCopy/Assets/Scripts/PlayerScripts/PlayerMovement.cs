@@ -208,7 +208,6 @@ namespace MomodoraCopy
         Player player;
         Vector3 forceAcceleration;
 
-
         void Awake()
         {
             if (instance == null)

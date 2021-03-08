@@ -36,7 +36,6 @@ namespace MomodoraCopy
             {
                 x = 1;
             }
-            else x = 0;
             if (Input.GetKey(KeyboardManager.instance.UpKey))
             {
                 y = 1;
@@ -45,12 +44,7 @@ namespace MomodoraCopy
             {
                 y = -1;
             }
-            else y = 0;
 
-            //if(playerMovement.moveType == PlayerMovement.MoveType.StopMove)
-            //{
-            //    x = 0;
-            //}
             return new Vector2(x, y);
         }
 

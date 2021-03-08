@@ -65,7 +65,7 @@ namespace MomodoraCopy
             }
             if (currentState == State.Die)
             {
-                animator.Play("hurt");
+                animator.Play(hurt1AnimHash);
                 return;
             }
 

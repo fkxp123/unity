@@ -24,6 +24,7 @@ namespace MomodoraCopy
         public GameObject mainCameraObject;
         GameObject[] checkPoints;
         Scene scene;
+        public string currentScene;
 
         MonoBehaviour[] cameraComponents;
         MonoBehaviour[] playerPhysicsComponents;
@@ -31,10 +32,6 @@ namespace MomodoraCopy
 
         public Dictionary<int, List<GameObject>> checkPointsDict = new Dictionary<int, List<GameObject>>();
         public List<GameObject> checkPointsList = new List<GameObject>();
-
-        Vector3 relaxedLoadAmount;
-
-        public int currentSceneNameHash;
 
         void OnEnable()
         {
@@ -65,6 +62,7 @@ namespace MomodoraCopy
         {
             base.Awake();
             scene = SceneManager.GetActiveScene();
+            currentScene = scene.name;
             if (playerPhysics == null || !playerPhysics.CompareTag("Player"))
             {
                 playerPhysics = GameObject.FindGameObjectWithTag("Player");
@@ -81,12 +79,9 @@ namespace MomodoraCopy
         }
         public void Start()
         {
-            relaxedLoadAmount = Vector2.up * 0.015f;
             playerPhysicsComponents = playerPhysics.GetComponents<MonoBehaviour>();
             playerSpriteComponents = playerSprite.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
-
-            currentSceneNameHash = scene.name.GetHashCode();
         }
 
 
@@ -149,15 +144,21 @@ namespace MomodoraCopy
                 string path = Path.Combine(Application.dataPath, "playerData.json");
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
-                SceneManager.LoadScene(playerData.sceneName);
-                playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
-                currentSceneNameHash = playerData.sceneName.GetHashCode();
+                //SceneManager.LoadScene(playerData.sceneName);
+                StartCoroutine(LoadScene(playerData.sceneName));
             }
-            else
+        }
+        IEnumerator LoadScene(string sceneName)
+        {
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            asyncOperation.allowSceneActivation = true;
+            while (!asyncOperation.isDone)
             {
-                playerPhysics.transform.position =
-                    CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
+                yield return null;
             }
+            Vector3 relaxedLoadAmount = Vector2.up * 0.015f;
+            playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
+            currentScene = playerData.sceneName;
         }
     }
 

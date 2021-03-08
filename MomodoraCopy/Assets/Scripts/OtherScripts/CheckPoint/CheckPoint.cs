@@ -39,21 +39,21 @@ namespace MomodoraCopy
             CheckPointManager.instance.AddCheckPoint(scene.name.GetHashCode(), gameObject);
             relaxedLoadAmount = Vector2.up * 0.015f;
 
-            if (playerObject == null || playerObject.tag != "Player")
-            {
-                playerObject = GameObject.FindGameObjectWithTag("Player");
-            }
-            if (!File.Exists(Application.dataPath + "/playerData.json"))
-            {
-                playerObject.transform.position = 
-                    CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
-            }
-            else if(GameManager.instance.currentSceneNameHash != scene.name.GetHashCode())
-            {
-                playerObject.transform.position =
-                    CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
-                GameManager.instance.currentSceneNameHash = scene.name.GetHashCode();
-            }
+            //if (playerObject == null || playerObject.tag != "Player")
+            //{
+            //    playerObject = GameObject.FindGameObjectWithTag("Player");
+            //}
+            //if (!File.Exists(Application.dataPath + "/playerData.json"))
+            //{
+            //    playerObject.transform.position = 
+            //        CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
+            //}
+            //else if(GameManager.instance.currentSceneNameHash != scene.name.GetHashCode())
+            //{
+            //    playerObject.transform.position =
+            //        CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
+            //    GameManager.instance.currentSceneNameHash = scene.name.GetHashCode();
+            //}
         }
 
         //void Update()

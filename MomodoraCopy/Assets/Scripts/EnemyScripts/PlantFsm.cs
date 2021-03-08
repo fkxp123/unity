@@ -44,7 +44,7 @@ namespace MomodoraCopy
         {
             base.Start();
             waitTime = new WaitForSeconds(coroutineCycle);
-            StartCoroutine(FindPlayer());
+            //StartCoroutine(FindPlayer());
             StartCoroutine(Fsm());
         }
         protected override void CachingAnimation()
@@ -59,34 +59,55 @@ namespace MomodoraCopy
             patrolTime = new WaitForSeconds(animTimeDictionary[patrolAnimHash]);
             hurtTime = new WaitForSeconds(animTimeDictionary[hurtAnimHash]);
         }
-        IEnumerator FindPlayer()
+        //IEnumerator FindPlayer()
+        //{
+        //    while (true)
+        //    {
+        //        if (currentState != State.Chase && currentState != State.Attack && 
+        //            currentState != State.Hurt && currentState != State.Die)
+        //        {
+        //            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
+        //            foreach (Collider2D collider in colliders)
+        //            {
+        //                if (collider.tag == "Player")
+        //                {
+        //                    playerPosition = collider.transform.position;
+        //                    if (playerPosition.x < transform.position.x)
+        //                    {
+        //                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+        //                    }
+        //                    else
+        //                    {
+        //                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        //                    }
+        //                    currentState = State.Chase;
+        //                }
+        //            }
+        //        }
+        //        yield return waitTime; 
+        //    }
+        //}
+        void FindPlayer()
         {
-            while (true)
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
+            foreach (Collider2D collider in colliders)
             {
-                if (currentState != State.Chase && currentState != State.Attack && 
-                    currentState != State.Hurt && currentState != State.Die)
+                if (collider.tag == "Player")
                 {
-                    Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
-                    foreach (Collider2D collider in collider2Ds)
+                    playerPosition = collider.transform.position;
+                    if (playerPosition.x < transform.position.x)
                     {
-                        if (collider.tag == "Player")
-                        {
-                            playerPosition = collider.transform.position;
-                            if (playerPosition.x < transform.position.x)
-                            {
-                                enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-                            }
-                            else
-                            {
-                                enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                            }
-                            currentState = State.Chase;
-                        }
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
                     }
+                    else
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    }
+                    currentState = State.Chase;
                 }
-                yield return waitTime; 
             }
         }
+
         IEnumerator Fsm()
         {
             yield return null;
@@ -118,6 +139,7 @@ namespace MomodoraCopy
                 {
                     randomTime = 0;
                 }
+                FindPlayer();
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
@@ -168,6 +190,7 @@ namespace MomodoraCopy
                     enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
                     randomTime = random.Next(2, 4) + (float)random.NextDouble();
                 }
+                FindPlayer();
                 if (currentState != State.Patrol)
                 {
                     randomTime = 0;
@@ -190,8 +213,8 @@ namespace MomodoraCopy
             animator.Play("patrol");
             while (randomTime > 0)
             {
-                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(attackBox.transform.position, attackBoxArea, 0);
-                foreach (Collider2D collider in collider2Ds)
+                Collider2D[] colliders = Physics2D.OverlapBoxAll(attackBox.transform.position, attackBoxArea, 0);
+                foreach (Collider2D collider in colliders)
                 {
                     if (collider.tag == "Player")
                     {
@@ -223,8 +246,8 @@ namespace MomodoraCopy
             {
                 if (canAttack)
                 {
-                    Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(attackBox.transform.position, attackBoxArea, 0);
-                    foreach (Collider2D collider in collider2Ds)
+                    Collider2D[] colliders = Physics2D.OverlapBoxAll(attackBox.transform.position, attackBoxArea, 0);
+                    foreach (Collider2D collider in colliders)
                     {
                         if (collider.tag == "Player")
                         {
@@ -243,7 +266,7 @@ namespace MomodoraCopy
             }
             if(currentState == State.Attack)
             {
-                currentState = State.Idle;
+                currentState = State.Chase;
             }
         }
         void SetAbleAttackBox()
