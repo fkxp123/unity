@@ -84,6 +84,14 @@ namespace MomodoraCopy
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
         }
 
+        //void SetSceneHashList()
+        //{
+        //    int sceneCount = SceneManager.sceneCountInBuildSettings;
+        //    for (int i = 0; i < sceneCount; i++)
+        //    {
+        //        sceneHashList.Add(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i)).GetHashCode());
+        //    }
+        //}
 
         //public void AddCheckPoint(string sceneName, GameObject checkPoint)
         //{
@@ -160,6 +168,12 @@ namespace MomodoraCopy
             playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
             currentScene = playerData.sceneName;
         }
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
     }
-
 }

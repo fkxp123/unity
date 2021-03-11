@@ -7,12 +7,17 @@ namespace MomodoraCopy
 {
     public class TileMapTest : MonoBehaviour
     {
-        public Tilemap tileMap;
-        public RuleTile ruleTile;
+        public Tilemap platformTileMap;
+        public Tilemap ladderTileMap;
+        public RuleTile platform;
         public Tile spikeTile;
         public Tile pushTile;
         public Tile stairsTile;
-        public Tile ladderTile;
+        public RuleTile ladderTile;
+
+        public GameObject movingTrap;
+        public GameObject entrance;
+        public GameObject exit;
 
         private Vector3Int previous;
         int rows;
@@ -31,7 +36,7 @@ namespace MomodoraCopy
         };
         enum TileType
         {
-            Void, Platform, Ladder, LadderPlatform, ObstacleGround, ObstacleAir, Spike, PushBlock, Stairs 
+            Void, Entrance, Exit, Platform, Ladder, LadderPlatform, ObstacleGround, ObstacleAir, Spike, PushBlock, Stairs 
         };
         List<Vector3Int> gridList = new List<Vector3Int>();
         Dictionary<int, Vector3Int> globalPosDictionary = new Dictionary<int, Vector3Int>();
@@ -39,18 +44,37 @@ namespace MomodoraCopy
         Dictionary<int, Vector3Int> cellDicitonary = new Dictionary<int, Vector3Int>();
         Dictionary<RoomType, Dictionary<Vector3Int, TileType>> roomDictionary = 
             new Dictionary<RoomType, Dictionary<Vector3Int, TileType>>();
+        List<int> excludedPathList = new List<int>();
         List<int> pathList = new List<int>();
 
+        GameObject enterObject;
+        GameObject exitObject;
         void Start()
         {
             grid = 4;
             roomWidth = 40;
             roomHeight = 32;
-            Vector3Int cell = tileMap.WorldToCell(Vector3.zero);
+            enterObject = Instantiate(entrance);
+            exitObject = Instantiate(exit);
+            Vector3Int cell = platformTileMap.WorldToCell(Vector3.zero);
             DrawOutFrame(cell, roomWidth * grid + 1, roomHeight * grid + 1);
             SetGridList();
             SetCellDict();
+            SetExcludedPathList();
+
             SetSolutionPath();
+        }
+       
+        void InitLevelGenerator()
+        {
+
+        }
+        void SetExcludedPathList()
+        {
+            for(int i = 0; i < grid * grid; i++)
+            {
+                excludedPathList.Add(i);
+            }
         }
         void SetCellDict()
         {
@@ -69,28 +93,51 @@ namespace MomodoraCopy
             cell.y -= 1;
             for (int i = 0; i < width; i++)
             {
-                tileMap.SetTile(cell, ruleTile);
+                platformTileMap.SetTile(cell, platform);
                 cell.x += 1;
             }
             for (int i = 0; i < height; i++)
             {
-                tileMap.SetTile(cell, ruleTile);
+                platformTileMap.SetTile(cell, platform);
                 cell.y += 1;
             }
             for (int i = 0; i < width; i++)
             {
-                tileMap.SetTile(cell, ruleTile);
+                platformTileMap.SetTile(cell, platform);
                 cell.x -= 1;
             }
             for (int i = 0; i < height; i++)
             {
-                tileMap.SetTile(cell, ruleTile);
+                platformTileMap.SetTile(cell, platform);
                 cell.y -= 1;
             }
+            cell.x -= 1;
+            cell.y -= 1;
+            for (int i = 0; i < width + 2; i++)
+            {
+                platformTileMap.SetTile(cell, platform);
+                cell.x += 1;
+            }
+            for (int i = 0; i < height + 2; i++)
+            {
+                platformTileMap.SetTile(cell, platform);
+                cell.y += 1;
+            }
+            for (int i = 0; i < width + 2; i++)
+            {
+                platformTileMap.SetTile(cell, platform);
+                cell.x -= 1;
+            }
+            for (int i = 0; i < height + 2; i++)
+            {
+                platformTileMap.SetTile(cell, platform);
+                cell.y -= 1;
+            }
+
         }
         void SetGridList()
         {
-            Vector3Int cell = tileMap.WorldToCell(Vector3.zero);
+            Vector3Int cell = platformTileMap.WorldToCell(Vector3.zero);
             for(int i = grid - 1; i >= 0; i--)
             {
                 cell.y = i;
@@ -105,42 +152,15 @@ namespace MomodoraCopy
             //    Debug.Log(v);
             //}
         }
-        void SetTile(int cellNumber, int roomNumber, TileBase tile)
-        {
-            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
-                + cellDicitonary[cellNumber];
-            tileMap.SetTile(globalPosition, tile);
-        }
-        void SetTile(int startCell, int endCell, int roomNumber, TileBase tile)
-        {
-            int start = startCell;
-            int end = endCell;
-            if(startCell > endCell)
-            {
-                start = endCell;
-                end = startCell;
-            }
-            for(int i = start; i <= end; i++)
-            {
-                Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
-                    + cellDicitonary[i];
-                tileMap.SetTile(globalPosition, tile);
-            }
-        }
-        void SetTile(Vector3Int localPosition, int roomNumber, TileBase tile)
-        {
-            Vector3Int globalPosition = new Vector3Int(localPosition.x + gridList[roomNumber].x * roomWidth, 
-                localPosition.y + gridList[roomNumber].y * roomHeight, 0);
-            tileMap.SetTile(globalPosition, tile);
-        }
 
-        void RemoveTile(int cellNumber, int roomNumber, TileBase tile)
+        #region PlatformTile
+        void SetPlatformTile(int cellNumber, int roomNumber, TileBase tile)
         {
             Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
                 + cellDicitonary[cellNumber];
-            tileMap.SetTile(globalPosition, null);
+            platformTileMap.SetTile(globalPosition, tile);
         }
-        void RemoveTile(int startCell, int endCell, int roomNumber, TileBase tile)
+        void SetPlatformTile(int startCell, int endCell, int roomNumber, TileBase tile)
         {
             int start = startCell;
             int end = endCell;
@@ -153,58 +173,530 @@ namespace MomodoraCopy
             {
                 Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
                     + cellDicitonary[i];
-                tileMap.SetTile(globalPosition, null);
+                platformTileMap.SetTile(globalPosition, tile);
             }
         }
-        void RemoveTile(Vector3Int localPosition, int roomNumber, TileBase tile)
+        void SetPlatformTile(int colsNumber, int startCell, int endCell, int roomNumber, TileBase tile)
+        {
+            int start = startCell + colsNumber * roomWidth;
+            int end = endCell + colsNumber * roomWidth;
+            if(startCell > endCell)
+            {
+                start = endCell + colsNumber * roomWidth;
+                end = startCell + colsNumber * roomWidth;
+            }
+            for(int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                platformTileMap.SetTile(globalPosition, tile);
+            }
+        }
+        void SetPlatformTile(Vector3Int localPosition, int roomNumber, TileBase tile)
+        {
+            Vector3Int globalPosition = new Vector3Int(localPosition.x + gridList[roomNumber].x * roomWidth, 
+                localPosition.y + gridList[roomNumber].y * roomHeight, 0);
+            platformTileMap.SetTile(globalPosition, tile);
+        }
+
+        void RemovePlatformTile(int cellNumber, int roomNumber, TileBase tile)
+        {
+            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellNumber];
+            platformTileMap.SetTile(globalPosition, null);
+        }
+        void RemovePlatformTile(int startCell, int endCell, int roomNumber, TileBase tile)
+        {
+            int start = startCell;
+            int end = endCell;
+            if (startCell > endCell)
+            {
+                start = endCell;
+                end = startCell;
+            }
+            for (int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                platformTileMap.SetTile(globalPosition, null);
+            }
+        }
+        void RemovePlatformTile(int colsNumber, int startCell, int endCell, int roomNumber, TileBase tile)
+        {
+            int start = startCell + colsNumber * roomWidth;
+            int end = endCell + colsNumber * roomWidth;
+            if (startCell > endCell)
+            {
+                start = endCell + colsNumber * roomWidth;
+                end = startCell + colsNumber * roomWidth;
+            }
+            for (int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                platformTileMap.SetTile(globalPosition, null);
+            }
+        }
+        void RemovePlatformTile(Vector3Int localPosition, int roomNumber, TileBase tile)
         {
             Vector3Int globalPosition = new Vector3Int(localPosition.x + gridList[roomNumber].x * roomWidth,
                 localPosition.y + gridList[roomNumber].y * roomHeight, 0);
-            tileMap.SetTile(globalPosition, null);
+            platformTileMap.SetTile(globalPosition, null);
         }
+        #endregion
+
+        #region LadderTile
+        void SetLadderTile(int cellNumber, int roomNumber, TileBase tile)
+        {
+            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellNumber];
+            ladderTileMap.SetTile(globalPosition, tile);
+        }
+        void SetLadderTile(int startCell, int endCell, int roomNumber, TileBase tile)
+        {
+            int start = startCell;
+            int end = endCell;
+            if (startCell > endCell)
+            {
+                start = endCell;
+                end = startCell;
+            }
+            for (int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                platformTileMap.SetTile(globalPosition, tile);
+            }
+        }
+        void SetLadderTile(int colsNumber, int startCell, int endCell, int roomNumber, TileBase tile)
+        {
+            int start = startCell + colsNumber * roomWidth;
+            int end = endCell + colsNumber * roomWidth;
+            if (startCell > endCell)
+            {
+                start = endCell + colsNumber * roomWidth;
+                end = startCell + colsNumber * roomWidth;
+            }
+            for (int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                platformTileMap.SetTile(globalPosition, tile);
+            }
+        }
+        void SetLadderTile(Vector3Int localPosition, int roomNumber, TileBase tile)
+        {
+            Vector3Int globalPosition = new Vector3Int(localPosition.x + gridList[roomNumber].x * roomWidth,
+                localPosition.y + gridList[roomNumber].y * roomHeight, 0);
+            platformTileMap.SetTile(globalPosition, tile);
+        }
+        #endregion
+        void SetEntranceObject(int cellNumber, int roomNumber)
+        {
+            int cellPosition = cellNumber + 2;
+            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellPosition];
+            Vector3 position = globalPosition;
+            enterObject.transform.position = position;
+        }
+        void SetEntranceObject(int colsNumber, int cellNumber, int roomNumber)
+        {
+            int cellPosition = cellNumber + 2 + colsNumber * roomWidth;
+            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellPosition];
+            Vector3 position = globalPosition;
+            enterObject.transform.position = position;
+        }
+
+        void SetExitObject(int cellNumber, int roomNumber)
+        {
+            int cellPosition = cellNumber + 2;
+            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellPosition];
+            Vector3 position = globalPosition;
+            exitObject.transform.position = position;
+        }
+        void SetExitObject(int colsNumber, int cellNumber, int roomNumber)
+        {
+            int cellPosition = cellNumber + 2 + colsNumber * roomWidth;
+            Vector3Int globalPosition = new Vector3Int(gridList[roomNumber].x * roomWidth, gridList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellPosition];
+            Vector3 position = globalPosition;
+            exitObject.transform.position = position;
+        }
+
+        #region EntranceRoom Templets
+        IEnumerator GetLREntranceTemplets0(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetEntranceObject(6, 33, roomNumber);
+            yield return null;
+        }
+        IEnumerator GetLREntranceTemplets1(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetEntranceObject(6, 4, roomNumber);
+            yield return null;
+        }
+
+        IEnumerator GetLRBEntranceTemplets0(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                RemovePlatformTile(i, 10, 29, roomNumber, platform);
+            }
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetEntranceObject(6, 33, roomNumber);
+            yield return null;
+        }
+        IEnumerator GetLRBEntranceTemplets1(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                RemovePlatformTile(i, 10, 29, roomNumber, platform);
+            }
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetEntranceObject(6, 4, roomNumber);
+            yield return null;
+        }
+
+        #endregion
+
+        #region LRRoom Templets
+
+        #endregion
+
+        #region LRBRoom Templets
+
+        #endregion
+
+        #region LRBTRoom Templets
+
+        #endregion
+
+        #region LRTRoom Templets
+
+        #endregion
+
+        #region ExitRoom Templets
+        IEnumerator GetLRExitTemplets0(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetExitObject(6, 33, roomNumber);
+            yield return null;
+        }
+        IEnumerator GetLRExitTemplets1(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetExitObject(6, 4, roomNumber);
+            yield return null;
+        }
+
+        IEnumerator GetLRTExitTemplets0(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            RemovePlatformTile(31, 10, 29, roomNumber, platform);
+            RemovePlatformTile(30, 10, 29, roomNumber, platform);
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetExitObject(6, 33, roomNumber);
+            yield return null;
+        }
+        IEnumerator GetLRTExitTemplets1(int roomNumber)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < roomHeight; i++)
+            {
+                SetPlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 1; i <= roomHeight; i++)
+            {
+                SetPlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            RemovePlatformTile(31, 10, 29, roomNumber, platform);
+            RemovePlatformTile(30, 10, 29, roomNumber, platform);
+            for (int i = 10; i < roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40, roomNumber, platform);
+            }
+            for (int i = 11; i <= roomHeight - 10; i++)
+            {
+                RemovePlatformTile(i * 40 - 1, roomNumber, platform);
+            }
+            SetExitObject(6, 4, roomNumber);
+            yield return null;
+        }
+        #endregion
 
         void DrawCell()
         {
             
         }
-        void DrawRoom0(int roomNumber)
-        {
 
-        }
-        void DrawRoom1(int roomNumber)
+        void ClearRoom(int roomNumber)
         {
-            int templet = Random.Range(0, 4);
-            switch (templet)
+            for (int i = 0; i < roomHeight; i++)
             {
-                case 0:
-                    Vector3Int cell = tileMap.WorldToCell(Vector3.zero);
-                    tileMap.SetTile(cell, ruleTile);
-                    break;
-                case 1:
-                    break;
-                default:
-                    break;
+                SetPlatformTile(i, 0, roomWidth - 1, roomNumber, null);
             }
         }
-        void DrawRoom2(int roomNumber)
+        void DrawRoom(int roomNumber, RoomType roomType)
         {
-
+            if(roomNumber == pathList[0])
+            {
+                DrawEntrance(roomNumber, roomType);
+            }
+            else
+            {
+                switch (roomType)
+                {
+                    case RoomType.LR:
+                        DrawLR(roomNumber);
+                        break;
+                    case RoomType.LRB:
+                        DrawLRB(roomNumber);
+                        break;
+                    case RoomType.LRBT:
+                        DrawLRBT(roomNumber);
+                        break;
+                    case RoomType.LRT:
+                        DrawLRT(roomNumber);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
-        void DrawRoom3(int roomNumber)
-        {
 
-        }
-        void DrawEntrance(int roomNumber)
+        void DrawLR(int roomNumber)
         {
-            Vector3Int cell = tileMap.WorldToCell(Vector3.zero);
-            SetTile(0, 80, roomNumber, ruleTile);
-            SetTile(81, 119, roomNumber, ruleTile);
-            SetTile(122, 158, roomNumber, ruleTile);
-            SetTile(163, 197, roomNumber, ruleTile);
+            if(roomNumber >= grid * grid)
+            {
+                return;
+            }
+            ClearRoom(roomNumber);
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
         }
-        void DrawExit(int roomNumber)
+        void DrawLRB(int roomNumber)
         {
-
+            if (roomNumber >= grid * grid)
+            {
+                return;
+            }
+            ClearRoom(roomNumber);
+            //int templet = Random.Range(0, 4);
+            //switch (templet)
+            //{
+            //    case 0:
+            //        Vector3Int cell = tileMap.WorldToCell(Vector3.zero);
+            //        tileMap.SetTile(cell, ruleTile);
+            //        break;
+            //    case 1:
+            //        break;
+            //    default:
+            //        break;
+            //}
+            SetPlatformTile(31, 0, 39, roomNumber, platform);
+            SetPlatformTile(30, 0, 39, roomNumber, platform);
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 19, roomNumber, platform);
+            }
+        }
+        void DrawLRBT(int roomNumber)
+        {
+            if (roomNumber >= grid * grid)
+            {
+                return;
+            }
+            ClearRoom(roomNumber);
+            SetPlatformTile(31, 0, 19, roomNumber, platform);
+            SetPlatformTile(30, 0, 19, roomNumber, platform);
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 19, roomNumber, platform);
+            }
+        }
+        void DrawLRT(int roomNumber)
+        {
+            if (roomNumber >= grid * grid)
+            {
+                return;
+            }
+            ClearRoom(roomNumber);
+            SetPlatformTile(31, 0, 19, roomNumber, platform);
+            SetPlatformTile(30, 0, 19, roomNumber, platform);
+            for (int i = 0; i < 5; i++)
+            {
+                SetPlatformTile(i, 0, 39, roomNumber, platform);
+            }
+        }
+        void DrawEntrance(int roomNumber, RoomType roomType)
+        {
+            int random = Random.Range(0, 2);
+            string str = string.Concat("Get", roomType.ToString(), "EntranceTemplets", random.ToString());
+            StartCoroutine(str, roomNumber);
+        }
+        void DrawExit(int roomNumber, RoomType roomType)
+        {
+            int random = Random.Range(0, 2);
+            string str = string.Concat("Get", roomType.ToString(), "ExitTemplets", random.ToString());
+            StartCoroutine(str, roomNumber);
         }
         void SetSolutionPath()
         {
@@ -216,7 +708,8 @@ namespace MomodoraCopy
 
             currentPath = Random.Range(0, 4);
             pathList.Add(currentPath);
-            DrawEntrance(currentPath);
+            excludedPathList.Remove(currentPath);
+            DrawEntrance(currentPath, RoomType.LR);
 
             while (cols < grid)
             {
@@ -225,7 +718,9 @@ namespace MomodoraCopy
                 {
                     if (currentDirection == PathDirection.Left)
                     {
+                        DrawRoom(currentPath, RoomType.LRB);
                         currentPath += grid;
+                        DrawRoom(currentPath, RoomType.LRT);
                         currentDirection = PathDirection.Down;
                         cols += 1;
                     }
@@ -233,13 +728,23 @@ namespace MomodoraCopy
                     {
                         if (currentPath % grid == grid - 1)
                         {
+                            if(currentDirection == PathDirection.Down)
+                            {
+                                DrawRoom(currentPath, RoomType.LRBT);
+                            }
+                            else
+                            {
+                                DrawRoom(currentPath, RoomType.LRB);
+                            }
                             currentPath += grid;
+                            DrawRoom(currentPath, RoomType.LRT);
                             currentDirection = PathDirection.Down;
                             cols += 1;
                         }
                         else
                         {
                             currentPath += 1;
+                            DrawRoom(currentPath, RoomType.LR);
                             currentDirection = PathDirection.Right;
                         }
                     }
@@ -248,7 +753,9 @@ namespace MomodoraCopy
                 {
                     if (currentDirection == PathDirection.Right)
                     {
+                        DrawRoom(currentPath, RoomType.LRB);
                         currentPath += grid;
+                        DrawRoom(currentPath, RoomType.LRT);
                         currentDirection = PathDirection.Down;
                         cols += 1;
                     }
@@ -256,43 +763,76 @@ namespace MomodoraCopy
                     {
                         if (currentPath % grid == 0)
                         {
+                            if (currentDirection == PathDirection.Down)
+                            {
+                                DrawRoom(currentPath, RoomType.LRBT);
+                            }
+                            else
+                            {
+                                DrawRoom(currentPath, RoomType.LRB);
+                            }
                             currentPath += grid;
+                            DrawRoom(currentPath, RoomType.LRT);
                             currentDirection = PathDirection.Down;
                             cols += 1;
                         }
                         else
                         {
                             currentPath -= 1;
+                            DrawRoom(currentPath, RoomType.LR);
                             currentDirection = PathDirection.Left;
                         } 
                     }
                 }
                 else
                 {
+                    if (currentDirection == PathDirection.Down)
+                    {
+                        DrawRoom(currentPath, RoomType.LRBT);
+                    }
+                    else
+                    {
+                        DrawRoom(currentPath, RoomType.LRB);
+                    }
                     currentPath += grid;
+                    DrawRoom(currentPath, RoomType.LRT);
                     cols++;
+                    if(cols < grid)
+                    {
+                        currentDirection = PathDirection.Down;
+                    }
                 }
                 if(cols >= grid)
                 {
                     currentPath -= grid;
-                    DrawExit(currentPath);
-                    foreach (int path in pathList)
+                    if(currentDirection == PathDirection.Down)
                     {
-                        Debug.Log(path);
+                        DrawExit(currentPath, RoomType.LRT);
                     }
-                    return;
+                    else
+                    {
+                        DrawExit(currentPath, RoomType.LR);
+                    }
+                    currentDirection = PathDirection.None;
+
+                    for(int i = 0; i < excludedPathList.Count; i++)
+                    {
+                        DrawRoom(excludedPathList[i], RoomType.LR);
+                    }
+
+                    string s = string.Empty;
+                    for(int i = 0; i < pathList.Count; i++)
+                    {
+                        s = string.Concat(s, "-", pathList[i]);
+                    }
+                    Debug.Log(s);
                 }
 
+                excludedPathList.Remove(currentPath);
                 pathList.Add(currentPath);
             }
         }
-        public struct Room
-        {
-            public int width;
-            public int height;
 
-            Dictionary<Vector3Int, TileType> cellDicitonary;
-        }
         // do late so that the player has a chance to move in update if necessary
         //private void LateUpdate()
         //{

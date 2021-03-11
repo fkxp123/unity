@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 namespace MomodoraCopy
@@ -39,13 +40,28 @@ namespace MomodoraCopy
         public IState crouchBowAttack;
         public IState airBowAttack;
         public IState hurt;
+        public IState climbLadder;
         public IState blownUp;
         #endregion
 
         #endregion
+        //void OnEnable()
+        //{
+        //    SceneManager.sceneLoaded += OnSceneLoaded;
+        //}
+        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        //{
+        //    enabled = false;
+        //    StartCoroutine(ResetEnabled());
+        //}
+        //void OnDisable()
+        //{
+        //    SceneManager.sceneLoaded -= OnSceneLoaded;
+        //}
 
         void Start()
         {
+            //enabled = false;
             animator = GetComponent<Animator>();
 
             playerPhysics = transform.parent;
@@ -69,10 +85,16 @@ namespace MomodoraCopy
             crouchBowAttack = new CrouchBowAttackState(this);
             airBowAttack = new AirBowAttackState(this);
             hurt = new HurtState(this);
+            climbLadder = new ClimbLadderState(this);
             blownUp = new BlownUpState(this);
             #endregion
 
             stateMachine = new PlayerStateMachine(idle);
+        }
+        IEnumerator ResetEnabled()
+        {
+            yield return null;
+            enabled = true;
         }
 
         void Update()

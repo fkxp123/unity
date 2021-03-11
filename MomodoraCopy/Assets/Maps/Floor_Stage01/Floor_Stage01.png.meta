@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: ebf9daf3f0c2e7f4b91ab69173578510
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6256407879784938870
+    second: Floor_Stage01_0
+  - first:
+      213: -3992001839701058827
+    second: Floor_Stage01_1
+  - first:
+      213: -967799531747078939
+    second: Floor_Stage01_2
+  - first:
+      213: -3487931227834117303
+    second: Floor_Stage01_3
+  - first:
+      213: 4750807962545890048
+    second: Floor_Stage01_4
+  - first:
+      213: 8470744490092553568
+    second: Floor_Stage01_5
+  - first:
+      213: -1179020087263120785
+    second: Floor_Stage01_6
+  - first:
+      213: -8378321892930655275
+    second: Floor_Stage01_7
+  - first:
+      213: -2940605390830766988
+    second: Floor_Stage01_8
+  - first:
+      213: 4806564776054717125
+    second: Floor_Stage01_9
+  - first:
+      213: 4619875217075910289
+    second: Floor_Stage01_10
+  - first:
+      213: 4998736916352609851
+    second: Floor_Stage01_11
+  - first:
+      213: -9130102940381584002
+    second: Floor_Stage01_12
+  - first:
+      213: 8470772253457018066
+    second: Floor_Stage01_13
+  - first:
+      213: -4954818025653303757
+    second: Floor_Stage01_14
+  - first:
+      213: -1339940031080035579
+    second: Floor_Stage01_15
+  - first:
+      213: 964211835754162274
+    second: Floor_Stage01_16
+  - first:
+      213: 2791007867285133214
+    second: Floor_Stage01_17
+  - first:
+      213: 789422531391505802
+    second: Floor_Stage01_18
+  - first:
+      213: -7961136948919797945
+    second: Floor_Stage01_19
+  - first:
+      213: 80508111255603453
+    second: Floor_Stage01_20
+  - first:
+      213: 484676928597254952
+    second: Floor_Stage01_21
+  - first:
+      213: 3029803742131526113
+    second: Floor_Stage01_22
+  - first:
+      213: -4421238263960459962
+    second: Floor_Stage01_23
+  - first:
+      213: 6726179537130583841
+    second: Floor_Stage01_24
+  - first:
+      213: 753721937909743569
+    second: Floor_Stage01_25
+  - first:
+      213: -3012406143907702864
+    second: Floor_Stage01_26
+  - first:
+      213: 3394339588889822692
+    second: Floor_Stage01_27
+  - first:
+      213: 2240976704218259845
+    second: Floor_Stage01_28
+  - first:
+      213: -2232617596466778241
+    second: Floor_Stage01_29
+  - first:
+      213: -6211347410369930760
+    second: Floor_Stage01_30
+  - first:
+      213: 7501766253232008277
+    second: Floor_Stage01_31
+  - first:
+      213: 1479987249268564395
+    second: Floor_Stage01_32
+  - first:
+      213: 6352178853546157588
+    second: Floor_Stage01_33
+  - first:
+      213: 2065549535687466133
+    second: Floor_Stage01_34
+  - first:
+      213: -5389230770502058863
+    second: Floor_Stage01_35
+  - first:
+      213: 3110770931321153614
+    second: Floor_Stage01_36
+  - first:
+      213: 7966898968979160775
+    second: Floor_Stage01_37
+  - first:
+      213: 3233799340849229320
+    second: Floor_Stage01_38
+  - first:
+      213: -2952699187491802166
+    second: Floor_Stage01_39
+  - first:
+      213: 364070054225836785
+    second: Floor_Stage01_40
+  - first:
+      213: 7189067199075044046
+    second: Floor_Stage01_41
+  - first:
+      213: 1684207270255386588
+    second: Floor_Stage01_42
+  - first:
+      213: -5956468923333977419
+    second: Floor_Stage01_43
+  - first:
+      213: -858231340698464410
+    second: Floor_Stage01_44
+  - first:
+      213: 1634418780886985654
+    second: Floor_Stage01_45
+  - first:
+      213: -824991084558182123
+    second: Floor_Stage01_46
+  - first:
+      213: -2337090540004548350
+    second: Floor_Stage01_47
+  - first:
+      213: -3742773793932678242
+    second: Floor_Stage01_48
+  - first:
+      213: 5455204640515289028
+    second: Floor_Stage01_49
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Floor_Stage01_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a82c6736e26cc29a0800000000000000
+      internalID: -6256407879784938870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fa99e13a7f8998c0800000000000000
+      internalID: -3992001839701058827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ec0d68147fa192f0800000000000000
+      internalID: -967799531747078939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94394f33701689fc0800000000000000
+      internalID: -3487931227834117303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 474feee1afed037d0800000000000000
+      internalID: -2940605390830766988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_9
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ca75a2923954b240800000000000000
+      internalID: 4806564776054717125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_10
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 196b07468081d1040800000000000000
+      internalID: 4619875217075910289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_11
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3e24d0bdb41f5540800000000000000
+      internalID: 4998736916352609851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 268aa565e81916d00800000000000000
+      internalID: 964211835754162274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_17
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e97d9de2ed6abb620800000000000000
+      internalID: 2791007867285133214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_18
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a85c7491c9794fa00800000000000000
+      internalID: 789422531391505802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_19
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 747f567ff1c548190800000000000000
+      internalID: -7961136948919797945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_26
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b75d219298c136d0800000000000000
+      internalID: -3012406143907702864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_27
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e5c2d24fdd1b1f20800000000000000
+      internalID: 3394339588889822692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_28
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 581ead4707c891f10800000000000000
+      internalID: 2240976704218259845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ba1a2c8df88f98410800000000000000
+      internalID: 1479987249268564395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Floor_Stage01_46
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5199b06cafa0d84f0800000000000000
+      internalID: -824991084558182123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

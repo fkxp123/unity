@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MomodoraCopy
 {
@@ -41,6 +42,7 @@ namespace MomodoraCopy
         float SecondAttackSpeed = 2;
         float ThirdAttackSpeed = 4;
         float rollSpeed = 18;
+        float climbSpeed = 10;
 
         public enum MoveType
         {
@@ -75,6 +77,8 @@ namespace MomodoraCopy
             get { return arrowInput; }
             set
             {
+                arrowInput.x = 0;
+                arrowInput.y = 0;
                 if (value.x == 1)
                 {
                     arrowInput.x = 1;
@@ -100,11 +104,6 @@ namespace MomodoraCopy
                 else if (value.y == -1)
                 {
                     arrowInput.y = -1;
-                }
-                else
-                {
-                    arrowInput.x = 0;
-                    arrowInput.y = 0;
                 }
             }
         }
@@ -208,6 +207,10 @@ namespace MomodoraCopy
         Player player;
         Vector3 forceAcceleration;
 
+        public bool isOnLadder;
+        Vector2 checkLadderArea;
+        public LayerMask ladderLayer;
+
         void Awake()
         {
             if (instance == null)
@@ -252,6 +255,7 @@ namespace MomodoraCopy
 
             SetNormalBoxCollider2D();
             SetCrushedArea();
+            SetCheckLadderArea();
         }
         void SetCrushedArea()
         {
@@ -259,6 +263,12 @@ namespace MomodoraCopy
             //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
             bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
+        }
+        void SetCheckLadderArea()
+        {
+            Bounds bounds = boxCollider.bounds;
+            bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
+            checkLadderArea = bounds.size;
         }
         void CheckCrushed()
         {
@@ -273,6 +283,45 @@ namespace MomodoraCopy
                 }
             }
         }
+        void CheckLadder()
+        {
+            float rayLength = 1.0f;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, rayLength, ladderLayer);
+            if (hit && player.stateMachine.CurrentState != player.climbLadder
+                    && player.stateMachine.CurrentState != player.jump
+                    && playerInput.directionalInput.y == 1)
+            {
+                isOnLadder = true;
+                player.stateMachine.SetState(player.climbLadder);
+                Vector3Int cell = hit.collider.GetComponent<GridLayout>().WorldToCell(transform.position);
+                float cellPosX = cell.x + 0.5f;
+
+                transform.position = new Vector3(cellPosX, transform.position.y, transform.position.z);
+            }
+            //Collider2D[] collider2Ds =
+            //    Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y, checkLadderArea, 0);
+            //foreach (Collider2D collider in collider2Ds)
+            //{
+            //    if (collider.transform.CompareTag("Ladder") && player.stateMachine.CurrentState != player.climbLadder 
+            //        && playerInput.directionalInput.y == 1)
+            //    {
+            //        isOnLadder = true;
+            //        player.stateMachine.SetState(player.climbLadder);
+            //        Vector3Int cell = collider.GetComponent<GridLayout>().WorldToCell(transform.position);
+            //        float cellPosX;
+            //        if (transform.rotation.y == 0)
+            //        {
+            //            cellPosX = cell.x + 1.5f;
+            //        }
+            //        else
+            //        {
+            //            cellPosX = cell.x - 0.5f;
+            //        }
+
+            //        transform.position = new Vector3(cellPosX, transform.position.y, transform.position.z);
+            //    }
+            //}
+        }
 
         void CalculateCurrentVelocity()
         {
@@ -283,6 +332,7 @@ namespace MomodoraCopy
         void Update()
         {
             CheckCrushed();
+            CheckLadder();
             SetDirectionalInput(playerInput.directionalInput);
             SetPlayerMovement();
             CheckVerticalCollision();
@@ -344,8 +394,19 @@ namespace MomodoraCopy
         {
             this.moveType = moveType;
             float targetVelocityX;
+            float targetVelocityY;
 
-            velocity.y += gravity * Time.deltaTime;
+            if (isOnLadder)
+            {
+                targetVelocityY = directionalInput.y * climbSpeed;
+                velocity.y = Mathf.SmoothDamp(velocity.y, targetVelocityY, ref velocityXSmoothing, 0);
+                velocity.x = 0;
+                return;
+            }
+            else
+            {
+                velocity.y += gravity * Time.deltaTime;
+            }
             velocity.y = Mathf.Clamp(velocity.y, -50, 50);
             if (isForced)
             {
@@ -685,15 +746,21 @@ namespace MomodoraCopy
         public void SetNormalBoxCollider2D()
         {
             boxCollider.offset = new Vector2(0.0f, 0.22f);
-            boxCollider.size = new Vector2(1.13f, 2.32f);
+            boxCollider.size = new Vector2(1.0f, 2.32f);
             SetCrushedArea();
         }
         public void SetCrouchBoxCollider2D()
         {
             boxCollider.offset = new Vector2(0.0f, -0.19f);
-            boxCollider.size = new Vector2(1.13f, 1.5f);
+            boxCollider.size = new Vector2(1.0f, 1.5f);
             SetCrushedArea();
         }
+
+        //private void OnDrawGizmos()
+        //{
+        //    Gizmos.color = Color.green;
+        //    Gizmos.DrawWireCube(transform.position + Vector3.up * boxCollider.offset.y, checkLadderArea);
+        //}
     }
 
 }

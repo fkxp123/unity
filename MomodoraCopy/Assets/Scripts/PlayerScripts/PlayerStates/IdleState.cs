@@ -52,6 +52,10 @@ namespace MomodoraCopy
                 player.stateMachine.SetState(player.crouch);
                 return;
             }
+            else if(playerInput.directionalInput.y == 1)
+            {
+
+            }
             else if (playerMovement.velocity.y < 0)
             {
                 player.stateMachine.SetState(player.fall);

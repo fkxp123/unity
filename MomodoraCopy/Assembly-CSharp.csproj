@@ -72,9 +72,12 @@
      <Compile Include="Assets\Scripts\OtherScripts\ChildGUI.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\CoroutineExtensions.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\ElevatorController.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\Entrance.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\Exit.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\Explosion.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\FpsChecker.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\LevelGenerator.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\MovingTrapController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\SceneTransferPoint.cs" />
@@ -93,6 +96,7 @@
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\AttackState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\BlownUpState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\BowAttackState.cs" />
+     <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\ClimbLadderState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\CrouchBowAttackState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\CrouchState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\FallState.cs" />
@@ -707,6 +711,9 @@
  <Reference Include="UnityEditor.Purchasing">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEditor.Purchasing.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.2D.Tilemap.Extras.Editor">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
+ </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
@@ -737,6 +744,9 @@
  <Reference Include="Unity.2D.PixelPerfect">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.2D.Tilemap.Extras">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEditor.SpatialTracking">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
  </Reference>
@@ -757,12 +767,6 @@
  </Reference>
  <Reference Include="com.unity.multiplayer-hlapi.Runtime">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Tilemap.Extras.Editor">
- <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Tilemap.Extras">
- <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

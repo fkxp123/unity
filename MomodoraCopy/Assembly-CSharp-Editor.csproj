@@ -684,6 +684,9 @@
  <Reference Include="UnityEditor.Purchasing">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEditor.Purchasing.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.2D.Tilemap.Extras.Editor">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
+ </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
@@ -714,6 +717,9 @@
  <Reference Include="Unity.2D.PixelPerfect">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.2D.Tilemap.Extras">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEditor.SpatialTracking">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEditor.SpatialTracking.dll</HintPath>
  </Reference>
@@ -734,12 +740,6 @@
  </Reference>
  <Reference Include="com.unity.multiplayer-hlapi.Runtime">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Tilemap.Extras.Editor">
- <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.2D.Tilemap.Extras">
- <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
