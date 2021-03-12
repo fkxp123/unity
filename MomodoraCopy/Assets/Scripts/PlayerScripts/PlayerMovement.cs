@@ -208,8 +208,10 @@ namespace MomodoraCopy
         Vector3 forceAcceleration;
 
         public bool isOnLadder;
-        Vector2 checkLadderArea;
         public LayerMask ladderLayer;
+        public RaycastHit2D ladderHit;
+
+        Vector3 checkPushBlockArea;
 
         void Awake()
         {
@@ -255,7 +257,7 @@ namespace MomodoraCopy
 
             SetNormalBoxCollider2D();
             SetCrushedArea();
-            SetCheckLadderArea();
+            SetCheckPushBlockArea();
         }
         void SetCrushedArea()
         {
@@ -264,63 +266,79 @@ namespace MomodoraCopy
             bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
         }
-        void SetCheckLadderArea()
+        void SetCheckPushBlockArea()
         {
             Bounds bounds = boxCollider.bounds;
-            bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
-            checkLadderArea = bounds.size;
+            bounds.Expand(new Vector2(0, boxCollider.size.y * -0.5f));
+            checkPushBlockArea = bounds.size;
         }
+        
         void CheckCrushed()
         {
             Collider2D[] collider2Ds = 
                 Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y , crushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
-                if (collider.transform.CompareTag("Platform") || 
-                    collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+                if (collider.transform.tag == "Platform" || 
+                   (collider.transform.tag == "Trap" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")) ||
+                   (collider.transform.tag == "PushBlock" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")))
                 {
                     playerStatus.CrushedDeath();
                 }
             }
         }
+        void CheckSpike()
+        {
+            Collider2D[] collider2Ds =
+                Physics2D.OverlapBoxAll(boxCollider.bounds.center, boxCollider.bounds.size, 0);
+            foreach (Collider2D collider in collider2Ds)
+            {
+                if (collider.transform.tag == "Spike")
+                {
+                    playerStatus.CrushedDeath();
+                }
+            }
+        }
+        void CheckPushBlock()
+        {
+            Collider2D[] collider2Ds =
+                Physics2D.OverlapBoxAll(boxCollider.bounds.center, checkPushBlockArea, 0);
+            foreach (Collider2D collider in collider2Ds)
+            {
+                if (collider.transform.tag == "PushBlock")
+                {
+                    if(collider.GetComponent<PushBlockController>().velocity.y == 0)
+                    {
+                        if ((transform.position.x < collider.transform.position.x && playerInput.directionalInput.x > 0) ||
+                                                       (transform.position.x > collider.transform.position.x && playerInput.directionalInput.x < 0))
+                        {
+                            player.stateMachine.SetState(player.pushBlock);
+                            collider.GetComponent<PushBlockController>().Move(new Vector3(velocity.x * 0.25f * Time.deltaTime, 0));
+                        }
+                    }
+                }
+            }
+        }
+
         void CheckLadder()
         {
-            float rayLength = 1.0f;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, rayLength, ladderLayer);
-            if (hit && player.stateMachine.CurrentState != player.climbLadder
+            Vector2 ladderRayOrigin = playerInput.directionalInput.y == 1 ? 
+                (Vector2)boxCollider.bounds.center : new Vector2(boxCollider.bounds.center.x, boxCollider.bounds.min.y);
+            float ladderRayLength = 1f;
+            float directionY = playerInput.directionalInput.y == -1 ? -1 : 1;
+            ladderHit = Physics2D.Raycast(ladderRayOrigin, Vector2.up , ladderRayLength, ladderLayer);
+            //Debug.DrawRay(ladderRayOrigin, Vector2.up  * ladderRayLength, Color.green);
+            if (ladderHit && player.stateMachine.CurrentState != player.climbLadder
                     && player.stateMachine.CurrentState != player.jump
                     && playerInput.directionalInput.y == 1)
             {
                 isOnLadder = true;
                 player.stateMachine.SetState(player.climbLadder);
-                Vector3Int cell = hit.collider.GetComponent<GridLayout>().WorldToCell(transform.position);
+                Vector3Int cell = ladderHit.collider.GetComponent<GridLayout>().WorldToCell(transform.position);
                 float cellPosX = cell.x + 0.5f;
 
                 transform.position = new Vector3(cellPosX, transform.position.y, transform.position.z);
             }
-            //Collider2D[] collider2Ds =
-            //    Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y, checkLadderArea, 0);
-            //foreach (Collider2D collider in collider2Ds)
-            //{
-            //    if (collider.transform.CompareTag("Ladder") && player.stateMachine.CurrentState != player.climbLadder 
-            //        && playerInput.directionalInput.y == 1)
-            //    {
-            //        isOnLadder = true;
-            //        player.stateMachine.SetState(player.climbLadder);
-            //        Vector3Int cell = collider.GetComponent<GridLayout>().WorldToCell(transform.position);
-            //        float cellPosX;
-            //        if (transform.rotation.y == 0)
-            //        {
-            //            cellPosX = cell.x + 1.5f;
-            //        }
-            //        else
-            //        {
-            //            cellPosX = cell.x - 0.5f;
-            //        }
-
-            //        transform.position = new Vector3(cellPosX, transform.position.y, transform.position.z);
-            //    }
-            //}
         }
 
         void CalculateCurrentVelocity()
@@ -332,6 +350,8 @@ namespace MomodoraCopy
         void Update()
         {
             CheckCrushed();
+            CheckSpike();
+            CheckPushBlock();
             CheckLadder();
             SetDirectionalInput(playerInput.directionalInput);
             SetPlayerMovement();
@@ -361,6 +381,8 @@ namespace MomodoraCopy
         }
 
         float coefficient;
+        float blownUpPercent;
+
         void CheckVerticalCollision()
         {
             if (isForced)
@@ -389,7 +411,6 @@ namespace MomodoraCopy
             return -1;
         }
 
-        float blownUpPercent;
         void CalculateVelocity(MoveType moveType)
         {
             this.moveType = moveType;
@@ -398,8 +419,17 @@ namespace MomodoraCopy
 
             if (isOnLadder)
             {
-                targetVelocityY = directionalInput.y * climbSpeed;
-                velocity.y = Mathf.SmoothDamp(velocity.y, targetVelocityY, ref velocityXSmoothing, 0);
+                if (player.stateMachine.CurrentState == player.climbLadder 
+                    && playerInput.directionalInput.y == 1
+                    && !ladderHit)
+                {
+                    velocity.y = 0;
+                }
+                else
+                {
+                    targetVelocityY = directionalInput.y * climbSpeed;
+                    velocity.y = Mathf.SmoothDamp(velocity.y, targetVelocityY, ref velocityXSmoothing, 0);
+                }
                 velocity.x = 0;
                 return;
             }

@@ -41,6 +41,7 @@ namespace MomodoraCopy
         public IState airBowAttack;
         public IState hurt;
         public IState climbLadder;
+        public IState pushBlock;
         public IState blownUp;
         #endregion
 
@@ -86,6 +87,7 @@ namespace MomodoraCopy
             airBowAttack = new AirBowAttackState(this);
             hurt = new HurtState(this);
             climbLadder = new ClimbLadderState(this);
+            pushBlock = new PushBlockState(this);
             blownUp = new BlownUpState(this);
             #endregion
 

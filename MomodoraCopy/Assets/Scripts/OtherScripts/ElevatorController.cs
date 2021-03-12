@@ -40,9 +40,7 @@ namespace MomodoraCopy
 
             CalculatePassengerMovement(velocity);
 
-            MovePassengers(true);
             Move(velocity);
-            MovePassengers(false);
         }
 
         Vector3 CalculatePlatformMovement()
@@ -166,7 +164,7 @@ namespace MomodoraCopy
 
         public void Move(Vector2 moveAmount)
         {
-            UpdateRaycastOrigins();
+            MovePassengers(true);
 
             Vector2 newMoveAmount = moveAmount;
             collisions.Reset();
@@ -191,6 +189,8 @@ namespace MomodoraCopy
             }
 
             transform.Translate(newMoveAmount, Space.World);
+
+            MovePassengers(false);
         }
 
         public struct CollisionInfo

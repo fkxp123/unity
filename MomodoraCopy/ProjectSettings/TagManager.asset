@@ -11,6 +11,8 @@ TagManager:
   - Enemy
   - CheckPoint
   - Ladder
+  - Spike
+  - PushBlock
   layers:
   - Default
   - TransparentFX

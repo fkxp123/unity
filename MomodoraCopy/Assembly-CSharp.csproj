@@ -80,6 +80,7 @@
      <Compile Include="Assets\Scripts\OtherScripts\LevelGenerator.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\MovingTrapController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\PlatformController.cs" />
+     <Compile Include="Assets\Scripts\OtherScripts\PushBlockController.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\SceneTransferPoint.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\Singleton.cs" />
      <Compile Include="Assets\Scripts\OtherScripts\StartPoint.cs" />
@@ -106,6 +107,7 @@
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\JumpState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\LandState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\PlayerState.cs" />
+     <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\PushBlockState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\RollState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\RunState.cs" />
      <Compile Include="Assets\Scripts\PlayerScripts\PlayerStates\SampleState.cs" />

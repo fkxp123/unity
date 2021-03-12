@@ -6,30 +6,37 @@ namespace MomodoraCopy
 {
     public class ClimbLadderState : PlayerState
     {
-        float climbTime;
-
         public ClimbLadderState(Player player) : base(player)
         {
         }
         public override void OperateEnter()
         {
             base.OperateEnter();
-            climbTime = 0.2f;
+            playerMovement.jumpCount = 0;
+            playerMovement.jumpPosY = playerMovement.transform.position.y;
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
+
             if(playerInput.directionalInput.y == 1)
             {
+                if (playerMovement.velocity.y == 0)
+                {
+                    player.animator.enabled = false;
+                    return;
+                }
+                player.animator.enabled = true;
                 player.animator.Play("climbLadder");
             }
             else if(playerInput.directionalInput.y == -1)
             {
+                player.animator.enabled = true;
                 player.animator.Play("climbLadder");
             }
             else
             {
-                player.animator.Play("climbLadder", -1, 0);
+                player.animator.enabled = false;
             }
             if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
@@ -37,6 +44,13 @@ namespace MomodoraCopy
                 return;
             }
             if(playerMovement.isGround)
+            {
+                player.stateMachine.SetState(player.idle);
+                return;
+            }
+            if (!playerMovement.ladderHit 
+                && playerInput.directionalInput.y == -1
+                && playerMovement.velocity.y != 0)
             {
                 player.stateMachine.SetState(player.idle);
                 return;
@@ -49,6 +63,8 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
+            player.isAnimationFinished = true;
+            player.animator.enabled = true;
             playerMovement.isOnLadder = false;
         }
     }

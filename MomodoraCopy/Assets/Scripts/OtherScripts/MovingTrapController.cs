@@ -81,9 +81,7 @@ namespace MomodoraCopy
 
             CalculatePassengerMovement(Velocity);
 
-            MovePassengers(true);
             Move(Velocity);
-            MovePassengers(false);
 
             CheckVerticalCollision();
         }
@@ -228,7 +226,7 @@ namespace MomodoraCopy
         }
         public void Move(Vector2 moveAmount)
         {
-            UpdateRaycastOrigins();
+            MovePassengers(true);
 
             Vector2 newMoveAmount = moveAmount;
             collisions.Reset();
@@ -253,6 +251,8 @@ namespace MomodoraCopy
             }
 
             transform.Translate(newMoveAmount, Space.World);
+
+            MovePassengers(false);
         }
 
         public void HorizontalCollisions(ref Vector2 moveAmount)
