@@ -317,3 +317,7 @@ C:\Users\user\Documents\Unity_git\2d_platformer\Temp\bin\Debug\UnityEngine.TestR
 C:\Users\user\Documents\Unity_git\2d_platformer\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 C:\Users\user\Documents\Unity_git\2d_platformer\obj\Debug\Assembly-CSharp.dll
 C:\Users\user\Documents\Unity_git\2d_platformer\obj\Debug\Assembly-CSharp.pdb
+C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\Assembly-CSharp.dll
+C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\Assembly-CSharp.pdb

@@ -1,0 +1,2 @@
+C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\Assembly-CSharp-Editor.csprojAssemblyReference.cache
+C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\Assembly-CSharp-Editor.csproj.CoreCompileInputs.cache

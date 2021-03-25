@@ -4942,7 +4942,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   transitionState: 0
-  executeState: 0
+  temporaryState: 0
   none: 0
   idle: 0
   patrol: 0
@@ -14832,7 +14832,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionMask:
     serializedVersion: 2
-    m_Bits: 21504
+    m_Bits: 87040
   horizontalRayCount: 0
   verticalRayCount: 0
   horizontalRaySpacing: 0
