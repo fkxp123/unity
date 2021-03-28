@@ -924,11 +924,11 @@ namespace MomodoraCopy
                 }
 
                 SetEntranceObject(CheckObjectPlaceable(4, roomNumber, templet), roomNumber);
-                for(int i = 0; i < 20; i++)
-                {
-                    SetPushBlockObject(CheckObjectPlaceable(2, roomNumber, templet), roomNumber);
+                //for(int i = 0; i < 20; i++)
+                //{
+                //    SetPushBlockObject(CheckObjectPlaceable(2, roomNumber, templet), roomNumber);
 
-                }
+                //}
             }
             else
             {

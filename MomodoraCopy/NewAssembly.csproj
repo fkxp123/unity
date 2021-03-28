@@ -105,6 +105,7 @@
      <Compile Include="Assets\Scripts\Enemy\MonkeyFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\PlantFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\SimpleTest.cs" />
+     <Compile Include="Assets\Scripts\Enemy\boss\EdeaFsm.cs" />
      <Compile Include="Assets\Scripts\EventManager.cs" />
      <Compile Include="Assets\Scripts\EventTest.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator\LevelGenerator.cs" />
