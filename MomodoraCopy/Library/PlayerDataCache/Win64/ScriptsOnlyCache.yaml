@@ -1,36 +1,58 @@
 ScriptsOnlyBuild:
   usedScripts:
-    Assembly-CSharp.dll:
+    CompileTimeTracker.dll:
+    - DTCompileTimeTracker.CompileTimeTrackerWindow
+    NewAssembly.dll:
     - MomodoraCopy.Arrow
     - MomodoraCopy.ArrowSpawner
     - MomodoraCopy.BackgroundMenu
-    - MomodoraCopy.BasicEnemyController
     - MomodoraCopy.BigArrow
     - MomodoraCopy.BigArrowSpawner
+    - MomodoraCopy.BossMovement
+    - MomodoraCopy.BossStatus
     - MomodoraCopy.CameraFollow
+    - MomodoraCopy.CheckPoint
+    - MomodoraCopy.CheckPointManager
     - MomodoraCopy.Controller2D
     - MomodoraCopy.Dagger
     - MomodoraCopy.DaggerSpawner
-    - MomodoraCopy.Enemy
+    - MomodoraCopy.EdeaFsm
+    - MomodoraCopy.ElevatorController
     - MomodoraCopy.EnemyMovement
     - MomodoraCopy.EnemySpawner
+    - MomodoraCopy.EnemyStatus
+    - MomodoraCopy.Entrance
     - MomodoraCopy.EventManager
     - MomodoraCopy.EventTest
+    - MomodoraCopy.Exit
+    - MomodoraCopy.Explosion
+    - MomodoraCopy.FpsChecker
     - MomodoraCopy.GameManager
     - MomodoraCopy.HealthBar
     - MomodoraCopy.ImpFsm
     - MomodoraCopy.KeyChangeMenu
     - MomodoraCopy.KeyboardManager
+    - MomodoraCopy.LevelGenerator
     - MomodoraCopy.MainMenu
     - MomodoraCopy.MenuManager
+    - MomodoraCopy.MonkeyFsm
+    - MomodoraCopy.MovingTrapController
     - MomodoraCopy.ObjectPooler
+    - MomodoraCopy.PlantFsm
     - MomodoraCopy.PlatformController
     - MomodoraCopy.Player
     - MomodoraCopy.PlayerInput
     - MomodoraCopy.PlayerMovement
     - MomodoraCopy.PlayerStatus
+    - MomodoraCopy.PoisonBombController
+    - MomodoraCopy.PoisonBombSpawner
+    - MomodoraCopy.PoisonBreath
     - MomodoraCopy.PostTest
+    - MomodoraCopy.PushBlockController
+    - MomodoraCopy.SceneTransferPoint
     - MomodoraCopy.SettingMenu
+    - MomodoraCopy.StartPoint
+    - MomodoraCopy.TempletToJsonConverter
     Unity.2D.PixelPerfect.dll:
     - UnityEngine.U2D.PixelPerfectCamera
     Unity.2D.Tilemap.Editor.dll:
@@ -43,6 +65,17 @@ ScriptsOnlyBuild:
     - UnityEditor.Tilemaps.PaintableSceneViewGrid
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.TileDragAndDropManager
+    Unity.2D.Tilemap.Extras.Editor.dll:
+    - UnityEditor.Tilemaps.CoordinateBrush
+    - UnityEditor.Tilemaps.GameObjectBrush
+    - UnityEditor.Tilemaps.GroupBrush
+    - UnityEditor.Tilemaps.LineBrush
+    - UnityEditor.Tilemaps.RandomBrush
+    - UnityEditor.Tilemaps.TintBrush
+    - UnityEditor.Tilemaps.TintBrushSmooth
+    Unity.2D.Tilemap.Extras.dll:
+    - UnityEngine.RuleTile
+    - UnityEngine.Tilemaps.WeightedRandomTile
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     UnityEditor.Graphs.dll:
@@ -70,6 +103,147 @@ ScriptsOnlyBuild:
     com.unity.multiplayer-hlapi.Runtime.dll:
     - UnityEngine.Networking.NetworkCallbacks
   sceneClasses:
+    Assets/Scenes/Tutorial.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 43
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 61
+      Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 652}
+    - Class: 114
+      Script: {instanceID: 11304}
+    - Class: 114
+      Script: {instanceID: 11332}
+    - Class: 114
+      Script: {instanceID: 11624}
+    - Class: 114
+      Script: {instanceID: 11632}
+    - Class: 114
+      Script: {instanceID: 11686}
+    - Class: 114
+      Script: {instanceID: 11778}
+    - Class: 114
+      Script: {instanceID: 11818}
+    - Class: 114
+      Script: {instanceID: 11868}
+    - Class: 114
+      Script: {instanceID: 11988}
+    - Class: 114
+      Script: {instanceID: 12102}
+    - Class: 114
+      Script: {instanceID: 12236}
+    - Class: 114
+      Script: {instanceID: 12240}
+    - Class: 114
+      Script: {instanceID: 12252}
+    - Class: 114
+      Script: {instanceID: 12408}
+    - Class: 114
+      Script: {instanceID: 12410}
+    - Class: 114
+      Script: {instanceID: 12444}
+    - Class: 114
+      Script: {instanceID: 12530}
+    - Class: 114
+      Script: {instanceID: 12550}
+    - Class: 114
+      Script: {instanceID: 12784}
+    - Class: 114
+      Script: {instanceID: 12798}
+    - Class: 114
+      Script: {instanceID: 12812}
+    - Class: 114
+      Script: {instanceID: 12948}
+    - Class: 114
+      Script: {instanceID: 13048}
+    - Class: 114
+      Script: {instanceID: 13110}
+    - Class: 114
+      Script: {instanceID: 13168}
+    - Class: 114
+      Script: {instanceID: 13258}
+    - Class: 114
+      Script: {instanceID: 13276}
+    - Class: 114
+      Script: {instanceID: 13360}
+    - Class: 114
+      Script: {instanceID: 13540}
+    - Class: 114
+      Script: {instanceID: 13564}
+    - Class: 114
+      Script: {instanceID: 13660}
+    - Class: 114
+      Script: {instanceID: 13802}
+    - Class: 114
+      Script: {instanceID: 13860}
+    - Class: 114
+      Script: {instanceID: 13916}
+    - Class: 114
+      Script: {instanceID: 13976}
+    - Class: 114
+      Script: {instanceID: 14040}
+    - Class: 114
+      Script: {instanceID: 14208}
+    - Class: 114
+      Script: {instanceID: 14288}
+    - Class: 114
+      Script: {instanceID: 14458}
+    - Class: 114
+      Script: {instanceID: 14608}
+    - Class: 114
+      Script: {instanceID: 14624}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 198
+      Script: {instanceID: 0}
+    - Class: 199
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    - Class: 19719996
+      Script: {instanceID: 0}
+    - Class: 156049354
+      Script: {instanceID: 0}
+    - Class: 483693784
+      Script: {instanceID: 0}
+    - Class: 1839735485
+      Script: {instanceID: 0}
     Assets/Scenes/test.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -89,7 +263,184 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 50
+    - Class: 61
+      Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 652}
+    - Class: 114
+      Script: {instanceID: 11304}
+    - Class: 114
+      Script: {instanceID: 11332}
+    - Class: 114
+      Script: {instanceID: 11436}
+    - Class: 114
+      Script: {instanceID: 11580}
+    - Class: 114
+      Script: {instanceID: 11624}
+    - Class: 114
+      Script: {instanceID: 11632}
+    - Class: 114
+      Script: {instanceID: 11678}
+    - Class: 114
+      Script: {instanceID: 11686}
+    - Class: 114
+      Script: {instanceID: 11708}
+    - Class: 114
+      Script: {instanceID: 11748}
+    - Class: 114
+      Script: {instanceID: 11778}
+    - Class: 114
+      Script: {instanceID: 11794}
+    - Class: 114
+      Script: {instanceID: 11800}
+    - Class: 114
+      Script: {instanceID: 11818}
+    - Class: 114
+      Script: {instanceID: 11868}
+    - Class: 114
+      Script: {instanceID: 11986}
+    - Class: 114
+      Script: {instanceID: 11988}
+    - Class: 114
+      Script: {instanceID: 12102}
+    - Class: 114
+      Script: {instanceID: 12236}
+    - Class: 114
+      Script: {instanceID: 12240}
+    - Class: 114
+      Script: {instanceID: 12252}
+    - Class: 114
+      Script: {instanceID: 12334}
+    - Class: 114
+      Script: {instanceID: 12408}
+    - Class: 114
+      Script: {instanceID: 12410}
+    - Class: 114
+      Script: {instanceID: 12444}
+    - Class: 114
+      Script: {instanceID: 12530}
+    - Class: 114
+      Script: {instanceID: 12550}
+    - Class: 114
+      Script: {instanceID: 12674}
+    - Class: 114
+      Script: {instanceID: 12784}
+    - Class: 114
+      Script: {instanceID: 12798}
+    - Class: 114
+      Script: {instanceID: 12812}
+    - Class: 114
+      Script: {instanceID: 12948}
+    - Class: 114
+      Script: {instanceID: 12960}
+    - Class: 114
+      Script: {instanceID: 13030}
+    - Class: 114
+      Script: {instanceID: 13048}
+    - Class: 114
+      Script: {instanceID: 13110}
+    - Class: 114
+      Script: {instanceID: 13168}
+    - Class: 114
+      Script: {instanceID: 13258}
+    - Class: 114
+      Script: {instanceID: 13276}
+    - Class: 114
+      Script: {instanceID: 13360}
+    - Class: 114
+      Script: {instanceID: 13540}
+    - Class: 114
+      Script: {instanceID: 13564}
+    - Class: 114
+      Script: {instanceID: 13616}
+    - Class: 114
+      Script: {instanceID: 13620}
+    - Class: 114
+      Script: {instanceID: 13648}
+    - Class: 114
+      Script: {instanceID: 13660}
+    - Class: 114
+      Script: {instanceID: 13802}
+    - Class: 114
+      Script: {instanceID: 13838}
+    - Class: 114
+      Script: {instanceID: 13860}
+    - Class: 114
+      Script: {instanceID: 13916}
+    - Class: 114
+      Script: {instanceID: 13976}
+    - Class: 114
+      Script: {instanceID: 13984}
+    - Class: 114
+      Script: {instanceID: 14040}
+    - Class: 114
+      Script: {instanceID: 14208}
+    - Class: 114
+      Script: {instanceID: 14276}
+    - Class: 114
+      Script: {instanceID: 14288}
+    - Class: 114
+      Script: {instanceID: 14372}
+    - Class: 114
+      Script: {instanceID: 14458}
+    - Class: 114
+      Script: {instanceID: 14608}
+    - Class: 114
+      Script: {instanceID: 14624}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 198
+      Script: {instanceID: 0}
+    - Class: 199
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    - Class: 19719996
+      Script: {instanceID: 0}
+    - Class: 156049354
+      Script: {instanceID: 0}
+    - Class: 483693784
+      Script: {instanceID: 0}
+    - Class: 1839735485
+      Script: {instanceID: 0}
+    Assets/Scenes/test1-1.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 43
+      Script: {instanceID: 0}
+    - Class: 48
       Script: {instanceID: 0}
     - Class: 61
       Script: {instanceID: 0}
@@ -104,91 +455,81 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 646}
+      Script: {instanceID: 652}
     - Class: 114
-      Script: {instanceID: 11298}
+      Script: {instanceID: 11304}
     - Class: 114
-      Script: {instanceID: 11326}
+      Script: {instanceID: 11332}
     - Class: 114
-      Script: {instanceID: 11424}
+      Script: {instanceID: 11348}
     - Class: 114
-      Script: {instanceID: 11600}
+      Script: {instanceID: 11624}
     - Class: 114
-      Script: {instanceID: 11608}
+      Script: {instanceID: 11632}
     - Class: 114
-      Script: {instanceID: 11652}
+      Script: {instanceID: 11686}
     - Class: 114
-      Script: {instanceID: 11660}
+      Script: {instanceID: 11778}
     - Class: 114
-      Script: {instanceID: 11680}
+      Script: {instanceID: 11818}
     - Class: 114
-      Script: {instanceID: 11750}
+      Script: {instanceID: 11868}
     - Class: 114
-      Script: {instanceID: 11768}
+      Script: {instanceID: 11986}
     - Class: 114
-      Script: {instanceID: 11786}
+      Script: {instanceID: 12102}
     - Class: 114
-      Script: {instanceID: 11836}
+      Script: {instanceID: 12236}
     - Class: 114
-      Script: {instanceID: 11942}
+      Script: {instanceID: 12240}
     - Class: 114
-      Script: {instanceID: 12054}
+      Script: {instanceID: 12252}
     - Class: 114
-      Script: {instanceID: 12184}
+      Script: {instanceID: 12302}
     - Class: 114
-      Script: {instanceID: 12188}
+      Script: {instanceID: 12408}
     - Class: 114
-      Script: {instanceID: 12200}
+      Script: {instanceID: 12550}
     - Class: 114
-      Script: {instanceID: 12350}
+      Script: {instanceID: 12674}
     - Class: 114
-      Script: {instanceID: 12378}
+      Script: {instanceID: 12784}
     - Class: 114
-      Script: {instanceID: 12482}
+      Script: {instanceID: 12798}
     - Class: 114
-      Script: {instanceID: 12708}
+      Script: {instanceID: 12812}
     - Class: 114
-      Script: {instanceID: 12722}
+      Script: {instanceID: 12948}
     - Class: 114
-      Script: {instanceID: 12736}
+      Script: {instanceID: 13110}
     - Class: 114
-      Script: {instanceID: 12814}
+      Script: {instanceID: 13258}
     - Class: 114
-      Script: {instanceID: 12870}
+      Script: {instanceID: 13276}
     - Class: 114
-      Script: {instanceID: 12882}
+      Script: {instanceID: 13466}
     - Class: 114
-      Script: {instanceID: 13020}
+      Script: {instanceID: 13540}
     - Class: 114
-      Script: {instanceID: 13180}
+      Script: {instanceID: 13564}
     - Class: 114
-      Script: {instanceID: 13262}
+      Script: {instanceID: 13802}
     - Class: 114
-      Script: {instanceID: 13438}
+      Script: {instanceID: 13916}
     - Class: 114
-      Script: {instanceID: 13460}
+      Script: {instanceID: 13976}
     - Class: 114
-      Script: {instanceID: 13680}
+      Script: {instanceID: 14040}
     - Class: 114
-      Script: {instanceID: 13784}
+      Script: {instanceID: 14288}
     - Class: 114
-      Script: {instanceID: 13844}
+      Script: {instanceID: 14406}
     - Class: 114
-      Script: {instanceID: 13904}
+      Script: {instanceID: 14458}
     - Class: 114
-      Script: {instanceID: 14062}
+      Script: {instanceID: 14608}
     - Class: 114
-      Script: {instanceID: 14128}
-    - Class: 114
-      Script: {instanceID: 14140}
-    - Class: 114
-      Script: {instanceID: 14224}
-    - Class: 114
-      Script: {instanceID: 14308}
-    - Class: 114
-      Script: {instanceID: 14454}
-    - Class: 114
-      Script: {instanceID: 14470}
+      Script: {instanceID: 14624}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -196,6 +537,10 @@ ScriptsOnlyBuild:
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 198
+      Script: {instanceID: 0}
+    - Class: 199
       Script: {instanceID: 0}
     - Class: 212
       Script: {instanceID: 0}
@@ -230,6 +575,12 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
+      Hash: e4457d88bb4d454845780a0eeacc91e7
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: Exit
+  - hash:
+      serializedVersion: 2
       Hash: c42672c997f8be6b1aa86a927ebea785
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -261,13 +612,25 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 15c633e99253935bbf21a7193548bbf5
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: Enemy
   - hash:
       serializedVersion: 2
+      Hash: 95c52154bbbf9a1fb8c377f4bd077bcc
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: EdeaFsm
+  - hash:
+      serializedVersion: 2
+      Hash: 68f26f7aaec56a248cd35351dd730889
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PoisonBomb
+  - hash:
+      serializedVersion: 2
       Hash: 3d0c761d53b42b7c39df59e32e5d8c34
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: InventoryMenu
   - hash:
@@ -291,7 +654,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 220bd265f54cc4cee8f1539ad2b2c64a
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: BaseSpawner
   - hash:
@@ -303,7 +666,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 7628bad90862470e003f8f62d624963e
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: test
   - hash:
@@ -314,6 +677,12 @@ ScriptsOnlyBuild:
     className: GroupTrack
   - hash:
       serializedVersion: 2
+      Hash: 97f35756ac95d5dadd792710b3942646
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: MovingTrapController
+  - hash:
+      serializedVersion: 2
       Hash: a5781dc71a671b1ad2b38de19f24b71f
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -321,7 +690,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: 
     className: TestGUI
   - hash:
@@ -332,8 +701,8 @@ ScriptsOnlyBuild:
     className: Scrollbar
   - hash:
       serializedVersion: 2
-      Hash: 8ae6ee75aacaf23a0820af8c2680360f
-    assemblyName: Assembly-CSharp.dll
+      Hash: da7c609065ab261540ca19b907fa1eea
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: PlayerMovement
   - hash:
@@ -363,13 +732,13 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: b07a56b1c622334fca795382402f9f30
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: 
     className: CheckAirBowPos
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: EventTest
   - hash:
@@ -387,7 +756,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 025d039dcbf49dee6667219faaad7334
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: BigArrow
   - hash:
@@ -404,10 +773,10 @@ ScriptsOnlyBuild:
     className: NetworkTransform
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
+      Hash: fa19dcd7351d1ab90b32f5f683f3e4e1
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
-    className: SimpleTest
+    className: BossStatus
   - hash:
       serializedVersion: 2
       Hash: 7ab0e790220bdca831fdd886b339039d
@@ -417,19 +786,31 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 3d0c761d53b42b7c39df59e32e5d8c34
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: KeyItemMenu
   - hash:
       serializedVersion: 2
+      Hash: 92583f5c853ea78ec8d05eed0dcbb497
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: RandomTile
+  - hash:
+      serializedVersion: 2
+      Hash: e49ce63a3c327ee5cc086bf56234981e
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: ElevatorController
+  - hash:
+      serializedVersion: 2
       Hash: ef859b195e446ec699ad74002b6aa997
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: BigArrowSpawner
   - hash:
       serializedVersion: 2
-      Hash: d4977066fd9e9576421d912217a0725b
-    assemblyName: Assembly-CSharp.dll
+      Hash: 4cfd55fd6ff822213041e4fd1c8240cd
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: KeyboardManager
   - hash:
@@ -452,6 +833,18 @@ ScriptsOnlyBuild:
     className: SuperObjectLayer
   - hash:
       serializedVersion: 2
+      Hash: 62096fa5004fe2172cf8d9cc01a460f7
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: BasicBossFsm
+  - hash:
+      serializedVersion: 2
+      Hash: 518396919427fe5be14810d37274e010
+    assemblyName: NewAssembly.dll
+    namespaceName: 
+    className: ParticleTest
+  - hash:
+      serializedVersion: 2
       Hash: f9820f716c2c89089b4542e7e5a4ce0a
     assemblyName: SuperTiled2Unity.dll
     namespaceName: SuperTiled2Unity
@@ -470,8 +863,20 @@ ScriptsOnlyBuild:
     className: PhysicsRaycaster
   - hash:
       serializedVersion: 2
+      Hash: cd1c93a552a813159175d818a844dc09
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: AdvancedRuleOverrideTile
+  - hash:
+      serializedVersion: 2
+      Hash: fc29f975ab35a5033d05bcfda3c82435
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine
+    className: RuleTile
+  - hash:
+      serializedVersion: 2
       Hash: ccb1b421952b449223c18ad9726ec9d5
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: DaggerSpawner
   - hash:
@@ -530,8 +935,8 @@ ScriptsOnlyBuild:
     className: AnimationPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 3657cc14e23c0a3f2eb610859ea95280
-    assemblyName: Assembly-CSharp.dll
+      Hash: e25041161ecbffdd4b6cd8589844e2ef
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: MenuManager
   - hash:
@@ -543,7 +948,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: c4350ce4e5a5239143fd569ef196747f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: MainMenu
   - hash:
@@ -560,6 +965,18 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
+      Hash: 6dbbffb5f33c046df515ac1b4574bdbc
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: TempletToJsonConverter
+  - hash:
+      serializedVersion: 2
+      Hash: 90720c059f8695b2de8a7cd5dc816b64
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: Explosion
+  - hash:
+      serializedVersion: 2
       Hash: 303ad70ce203ad874efe2965d0fbcff9
     assemblyName: Unity.Analytics.Tracker.dll
     namespaceName: UnityEngine.Analytics
@@ -572,8 +989,8 @@ ScriptsOnlyBuild:
     className: AnalyticsTracker
   - hash:
       serializedVersion: 2
-      Hash: a4b259a8366ed65689c473053c5e91ac
-    assemblyName: Assembly-CSharp.dll
+      Hash: 9768f9c633d30294c0ff52e6649d99bc
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: BasicEnemyFsm
   - hash:
@@ -584,14 +1001,26 @@ ScriptsOnlyBuild:
     className: EventSystem
   - hash:
       serializedVersion: 2
+      Hash: 6942e6d92bad21447fc351e1ceb9b810
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PoisonBombController
+  - hash:
+      serializedVersion: 2
       Hash: 0fb27be807aa299702f28ad0bcad1f46
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 1f76ef2914f269b6962ea16e1a8bbce1
-    assemblyName: Assembly-CSharp.dll
+      Hash: 20b5b913f1e000bd28c96728f45aab93
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PoisonExplosion
+  - hash:
+      serializedVersion: 2
+      Hash: 9455b0690b9ba554e20fc12da2770a58
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: ImpFsm
   - hash:
@@ -620,10 +1049,22 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
+      Hash: 0bc1c34e56bce1989012b6edc3d00ee5
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: SceneTransferPoint
+  - hash:
+      serializedVersion: 2
       Hash: 1a5023dd2db3c120a53b70c366a06c2b
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: KeyChangeMenu
+  - hash:
+      serializedVersion: 2
+      Hash: ab6a2fed0a3d86e42cbaa680bbf9bfac
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: AnimatedTile
   - hash:
       serializedVersion: 2
       Hash: 37c2d6f2890fcfc20cd2ffeb02d7e28b
@@ -644,6 +1085,12 @@ ScriptsOnlyBuild:
     className: NetworkTransformVisualizer
   - hash:
       serializedVersion: 2
+      Hash: 5e7162ef5b4ea3c3546c06f5406f5987
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PushBlockController
+  - hash:
+      serializedVersion: 2
       Hash: 46978845e7207c0143361709136085d3
     assemblyName: SuperTiled2Unity.dll
     namespaceName: SuperTiled2Unity
@@ -657,7 +1104,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 3d0c761d53b42b7c39df59e32e5d8c34
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: LogOutMenu
   - hash:
@@ -669,7 +1116,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: test3
   - hash:
@@ -680,20 +1127,20 @@ ScriptsOnlyBuild:
     className: ScrollRect
   - hash:
       serializedVersion: 2
-      Hash: 025d039dcbf49dee6667219faaad7334
-    assemblyName: Assembly-CSharp.dll
+      Hash: 4a68166e4961c5dbb7fa0a5895b7db01
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: Arrow
   - hash:
       serializedVersion: 2
       Hash: 3d0c761d53b42b7c39df59e32e5d8c34
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: SampleMenu
   - hash:
       serializedVersion: 2
       Hash: 3ad4a1ff0f6fd002757c985fb3f0274a
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: SettingMenu
   - hash:
@@ -708,12 +1155,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 8f4b1e26066c067025c24b705403dec0
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: MomodoraCopy
-    className: BasicEnemyController
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -735,13 +1176,13 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 974df7421d781e71613bcc5e66efe8a6
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: Controller2D
   - hash:
       serializedVersion: 2
       Hash: beec4616b997f3faf4402e2193739c59
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: EnemySpawner
   - hash:
@@ -752,10 +1193,34 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
+      Hash: b662d4611253740bde04a25c584ddf3a
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: MonkeyFsm
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
     className: RemoteTestResultSender
+  - hash:
+      serializedVersion: 2
+      Hash: fa19dcd7351d1ab90b32f5f683f3e4e1
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: EnemyStatus
+  - hash:
+      serializedVersion: 2
+      Hash: 7ba35897a6eb27627ed456c682c34253
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: PipelineTile
+  - hash:
+      serializedVersion: 2
+      Hash: ba62abe34655d7e7cd27c0bf1fa1b39d
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: RuleOverrideTile
   - hash:
       serializedVersion: 2
       Hash: b46f6b2cbbaa491412478833d04ab4ad
@@ -764,8 +1229,8 @@ ScriptsOnlyBuild:
     className: SuperColliderComponent
   - hash:
       serializedVersion: 2
-      Hash: c357cb8f51d5c4c375a6123f19bbce26
-    assemblyName: Assembly-CSharp.dll
+      Hash: cb42c2a2d55bb64c3afea5f8bc798d72
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: PlayerStatus
   - hash:
@@ -782,6 +1247,12 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
+      Hash: ccbb0dab02979d8fecfc16d69013bf20
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: StartPoint
+  - hash:
+      serializedVersion: 2
       Hash: 5f1752ed2092162f016c19510c28a8b9
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -794,8 +1265,20 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
+      Hash: 8cb9c869ab50566c3424fcaae4d4269b
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine
+    className: HexagonalRuleTile
+  - hash:
+      serializedVersion: 2
+      Hash: ac1c6d37cb3327fac8aee970fe1746b8
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: CheckPointManager
+  - hash:
+      serializedVersion: 2
       Hash: a12e4c6ecaa781244f325a1fbaa2bbfa
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: PlayerInput
   - hash:
@@ -812,10 +1295,22 @@ ScriptsOnlyBuild:
     className: NetworkStartPosition
   - hash:
       serializedVersion: 2
-      Hash: 097db3d1b22fdaf760f8621a28ea0dbb
-    assemblyName: Assembly-CSharp.dll
+      Hash: 9d7f55ddfcb8540f9ad76424ff9eb523
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: EnemyMovement
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: NewAssembly.dll
+    namespaceName: 
+    className: test4
+  - hash:
+      serializedVersion: 2
+      Hash: 768228c0b572899dd5eeec9576c81451
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: LevelGenerator
   - hash:
       serializedVersion: 2
       Hash: 783f593b9380cf72d0f7ebfd4a0d4bcd
@@ -842,8 +1337,8 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
-      Hash: bfd9238add2d9c1878abe2edeae4e594
-    assemblyName: Assembly-CSharp.dll
+      Hash: ac1c6d37cb3327fac8aee970fe1746b8
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: ObjectPooler
   - hash:
@@ -861,7 +1356,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 634752563cc74ac9ee634440fff0c38e
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: CameraFollow
   - hash:
@@ -878,6 +1373,30 @@ ScriptsOnlyBuild:
     className: NetworkMigrationManager
   - hash:
       serializedVersion: 2
+      Hash: 017ea39a56a6a3bf5bb46df0f817a7de
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: BossMovement
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PoisonBreath
+  - hash:
+      serializedVersion: 2
+      Hash: cdf089f6cdbdaf804990606672273b73
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: WeightedRandomTile
+  - hash:
+      serializedVersion: 2
+      Hash: 35f384e8e6487ab2227bc98d8f039c88
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PoisonBombSpawner
+  - hash:
+      serializedVersion: 2
       Hash: c1933cc0a2f4ff6eb13333347497beb3
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -885,19 +1404,19 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: 
     className: ChildGUI
   - hash:
       serializedVersion: 2
       Hash: 3d0c761d53b42b7c39df59e32e5d8c34
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: MappingMenu
   - hash:
       serializedVersion: 2
-      Hash: 54c1752cadce86a229d7e699dc3fdf20
-    assemblyName: Assembly-CSharp.dll
+      Hash: e1348099fa9bfa1628ebe4e99b92123c
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: HealthBar
   - hash:
@@ -914,14 +1433,38 @@ ScriptsOnlyBuild:
     className: NetworkBehaviour
   - hash:
       serializedVersion: 2
+      Hash: fc29f975ab35a5033d05bcfda3c82435
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine
+    className: IsometricRuleTile
+  - hash:
+      serializedVersion: 2
+      Hash: 756b4c2f05f7880470c7912d3e37f740
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: PlantFsm
+  - hash:
+      serializedVersion: 2
+      Hash: 3b3bf14021899a113dbb5c9e4f0d86ad
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: GridInformation
+  - hash:
+      serializedVersion: 2
+      Hash: 5efd4a572e931110df429870ac4be56a
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: CheckPoint
+  - hash:
+      serializedVersion: 2
       Hash: 8001a5f7502aab37e42206da015e6914
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
-      Hash: 500f65028241a78e1b02296495f7a745
-    assemblyName: Assembly-CSharp.dll
+      Hash: 633883a314390fb3b072bf274791ced6
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: GameManager
   - hash:
@@ -950,6 +1493,12 @@ ScriptsOnlyBuild:
     className: GraphicRaycaster
   - hash:
       serializedVersion: 2
+      Hash: 0beacb1c3c147299338ac66423d80a62
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: FpsChecker
+  - hash:
+      serializedVersion: 2
       Hash: 8e6ceabfd38a184413d69b7db56c89cc
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools
@@ -963,9 +1512,21 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: ccb1b421952b449223c18ad9726ec9d5
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: ArrowSpawner
+  - hash:
+      serializedVersion: 2
+      Hash: 490a4632ae50fb0b65bba5aaaf7edebd
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: 
+    className: TintTextureGenerator
+  - hash:
+      serializedVersion: 2
+      Hash: 7ba35897a6eb27627ed456c682c34253
+    assemblyName: Unity.2D.Tilemap.Extras.dll
+    namespaceName: UnityEngine.Tilemaps
+    className: TerrainTile
   - hash:
       serializedVersion: 2
       Hash: 1dcb82730d983b77cec736c6ef19f814
@@ -980,8 +1541,8 @@ ScriptsOnlyBuild:
     className: SwingArmModel
   - hash:
       serializedVersion: 2
-      Hash: 025d039dcbf49dee6667219faaad7334
-    assemblyName: Assembly-CSharp.dll
+      Hash: 39c693b55e2cf93311425cff973c9b47
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: Dagger
   - hash:
@@ -1005,13 +1566,13 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 085d670eaf7a5d3f326f633590922d9f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: PostTest
   - hash:
       serializedVersion: 2
-      Hash: bfd9238add2d9c1878abe2edeae4e594
-    assemblyName: Assembly-CSharp.dll
+      Hash: ac1c6d37cb3327fac8aee970fe1746b8
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: EventManager
   - hash:
@@ -1029,9 +1590,15 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: ccfa4728f06d276df745f9b88e0330ba
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: PlatformController
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: Entrance
   - hash:
       serializedVersion: 2
       Hash: 21d73eda81c18eacd2c91ad5dfaf2e32
@@ -1047,13 +1614,13 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: c8e0c9ae5ff0ebe7c2890c3d276cf2d4
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: RaycastController
   - hash:
       serializedVersion: 2
-      Hash: ae247292455c83722a32e88ec1af0d86
-    assemblyName: Assembly-CSharp.dll
+      Hash: 0f0f383df718e1926f643d4665af457a
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: Player
   - hash:
@@ -1143,7 +1710,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: c026a1efd7ca1bc4db923d6b7dad009f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: BackgroundMenu
   - hash:
@@ -1167,7 +1734,7 @@ ScriptsOnlyBuild:
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
+    assemblyName: NewAssembly.dll
     namespaceName: MomodoraCopy
     className: test2
   - hash:
@@ -1176,6 +1743,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.Advertisements.dll
     namespaceName: UnityEngine.Advertisements.Utilities
     className: CoroutineExecutor
+  - hash:
+      serializedVersion: 2
+      Hash: 6c13d3f506852a1049a584da3a4f03c6
+    assemblyName: NewAssembly.dll
+    namespaceName: MomodoraCopy
+    className: TileMapTest
   - hash:
       serializedVersion: 2
       Hash: 0fd6822f6177297bd0eb4d83cc7a9030
@@ -1188,13 +1761,9 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: test4
   platform: 19
   scenePathNames:
+  - Assets/Scenes/Tutorial.unity
   - Assets/Scenes/test.unity
+  - Assets/Scenes/test1-1.unity
   playerPath: C:/Users/user/Desktop/Test/test04.exe

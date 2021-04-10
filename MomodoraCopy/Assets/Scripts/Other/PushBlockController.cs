@@ -44,6 +44,11 @@ namespace MomodoraCopy
         Vector3 currentVelocity;
         Vector3 previousVelocity;
 
+        public Vector2 direction;
+        float speed = 3;
+
+        public float targetVelocityX;
+
         public override void Start()
         {
             base.Start();
@@ -80,12 +85,6 @@ namespace MomodoraCopy
 
         //    //velocity = new Vector3(direction.x * speed * Time.deltaTime, direction.y * speed * Time.deltaTime);
         //}
-        public Vector2 direction;
-        float speed = 3;
-        float velocityXSmoothing;
-        float accelerationTimeAirborne = .2f;
-        float accelerationTimeGrounded = .1f;
-        public float targetVelocityX;
         void CalculateVelocity()
         {
             //velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);

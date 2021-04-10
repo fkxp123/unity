@@ -595,7 +595,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: SHOW_DEBUG_MESSAGE;/STATE_DEBUG_MOD;/SIMPLE_TEST
+    1: SHOW_DEBUG_MESSAGE;STATE_DEBUG_MOD;/SIMPLE_TEST
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

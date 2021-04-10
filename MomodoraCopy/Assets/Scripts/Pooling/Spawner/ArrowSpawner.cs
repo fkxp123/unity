@@ -10,7 +10,11 @@ namespace MomodoraCopy
         public const float ACTIVATE_TIME = 5.0f;
         [HideInInspector]
         public PoolingObjectInfo info;
-
+        void Start()
+        {
+            info = SetPoolingObjectInfo(prefab, gameObject, gameObject.transform.position, transform.rotation);
+            CreatePoolingObjectQueue(info, 10);
+        }
         void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;

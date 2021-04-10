@@ -152,13 +152,16 @@ namespace MomodoraCopy
                 string path = Path.Combine(Application.dataPath, "playerData.json");
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+                //Vector3 relaxedLoadAmount = Vector2.up * 0.015f;
+                //playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
                 //SceneManager.LoadScene(playerData.sceneName);
                 StartCoroutine(LoadScene(playerData.sceneName));
             }
         }
         IEnumerator LoadScene(string sceneName)
         {
-            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            yield return null;
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
             asyncOperation.allowSceneActivation = true;
             while (!asyncOperation.isDone)
             {

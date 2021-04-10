@@ -6,7 +6,9 @@ namespace MomodoraCopy
 {
     public class ImpFsm : BasicEnemyFsm
     {
-        bool findFriend;
+        System.Random random = new System.Random();
+
+        public bool wantInteract;
 
         public Transform wallCheck;
         public float wallCheckRadius;
@@ -21,15 +23,35 @@ namespace MomodoraCopy
 
         bool canAttack = true;
         
-        Vector3 daggerSpawnPosition;
-        int throwDirection = 1;
-
         public GameObject daggerSpawnerObject;
         DaggerSpawner daggerSpawner;
-        PoolingObjectInfo info;
+        Vector3 daggerSpawnPosition;
+        PoolingObjectInfo daggerInfo;
+
+        public GameObject poisonBombSpawnerObject;
+        PoisonBombSpawner poisonBombSpawner;
+        Vector3 poisonBombSpawnPosition;
+        PoolingObjectInfo poisonBombInfo;
+
+        int throwDirection = 1;
 
         public ParticleSystem bloodEffect;
         public ParticleSystem hitEffect;
+
+        int idleAnimHash;
+        int knifeThrowAnimHash;
+        int hurtAnimHash;
+        int jumpAnimHash;
+        int fallAnimHash;
+        int patrolAnimHash;
+        int interactAnimHash;
+        int smileInteractAnimHash;
+        WaitForSeconds idleTime;
+        WaitForSeconds knifeThrowTime;
+        WaitForSeconds hurtTime;
+
+        float coroutineCycle = 0.1f;
+        WaitForSeconds waitTime;
 
         protected override void Start()
         {
@@ -37,33 +59,239 @@ namespace MomodoraCopy
 
             daggerSpawner = daggerSpawnerObject.GetComponent<DaggerSpawner>();
             daggerSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
-        }
-        int idleAnimHash;
-        int knifeThrowAnimHash;
-        int hurtAnimHash;
-        int jumpAnimHash;
-        int fallAnimHash;
-        int patrolAnimHash;
-        float idleTime;
-        float knifeThrowTime;
-        float hurtTime;
+            poisonBombSpawner = poisonBombSpawnerObject.GetComponent<PoisonBombSpawner>();
+            poisonBombSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
 
+            //StartCoroutine(Fsm());
+        }
         protected override void CachingAnimation()
         {
             idleAnimHash = Animator.StringToHash("idle");
-            idleTime = animTimeDictionary[idleAnimHash];
-
             knifeThrowAnimHash = Animator.StringToHash("knifeThrow");
-            knifeThrowTime = animTimeDictionary[knifeThrowAnimHash];
-
             hurtAnimHash = Animator.StringToHash("hurt");
-            hurtTime = animTimeDictionary[hurtAnimHash];
-
-            jumpAnimHash = Animator.StringToHash("jump");
             fallAnimHash = Animator.StringToHash("fall");
+            jumpAnimHash = Animator.StringToHash("jump");
             patrolAnimHash = Animator.StringToHash("patrol");
+            interactAnimHash = Animator.StringToHash("interact");
+            smileInteractAnimHash = Animator.StringToHash("smileInteract");
+
+            knifeThrowTime = new WaitForSeconds(animTimeDictionary[knifeThrowAnimHash]);
+            hurtTime = new WaitForSeconds(animTimeDictionary[hurtAnimHash]);
         }
 
+        void FindPlayer()
+        {
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.tag == "Player")
+                {
+                    playerPosition = collider.transform.position;
+                    if (playerPosition.x < transform.position.x)
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                    }
+                    else
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    }
+                    currentState = State.Chase;
+                }
+            }
+        }
+        void FindFriend()
+        {
+            Vector3 friendPosition;
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.tag == "Enemy" && collider.name == "ImpPhysics")
+                {
+                    friendPosition = collider.transform.position;
+                    if (friendPosition.x < transform.position.x)
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                    }
+                    else
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    }
+                    if(currentState == State.Idle && collider.GetComponent<ImpFsm>().currentState == State.Idle)
+                    {
+                        currentState = State.Interact;
+                    }
+                }
+            }
+        }
+        IEnumerator Fsm()
+        {
+            yield return null;
+            while (true)
+            {
+                if (enemyStatus.currentHp <= 0)
+                {
+                    currentState = State.Die;
+                }
+                if (temporaryState != State.None)
+                {
+                    yield return StartCoroutine(temporaryState.ToString());
+                }
+                else
+                {
+                    yield return StartCoroutine(currentState.ToString());
+                }
+            }
+        }
+        IEnumerator Idle()
+        {
+            enemyMovement.direction.x = 0;
+            float randomTime = random.Next(2, 4) + (float)random.NextDouble();
+            int desicion = random.Next(0, 4);
+            animator.Play(idleAnimHash);
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("idle"))
+            {
+                desicion = 3;
+            }
+
+            switch (desicion)
+            {
+                case 0:
+                    animator.Play(idleAnimHash);
+                    transitionState = State.Patrol;
+                    break;
+                case 1:
+                    animator.CrossFade("sit", 0.3f);
+                    transitionState = State.Idle;
+                    break;
+                case 2:
+                    animator.CrossFade("smileSit", 0.3f);
+                    transitionState = State.Idle;
+                    break;
+                case 3:
+                    animator.Play(idleAnimHash);
+                    transitionState = State.Idle;
+                    break;
+                default:
+                    break;
+            }
+            while(randomTime > 0)
+            {
+                if (enemyMovement.velocity.y < 0)
+                {
+                    animator.Play(fallAnimHash);
+                }
+                if (enemyMovement.velocity.y == 0 && animator.GetCurrentAnimatorStateInfo(0).IsName("fall"))
+                {
+                    animator.Play(idleAnimHash);
+                }
+
+                if (currentState != State.Idle)
+                {
+                    randomTime = 0;
+                }
+                FindPlayer();
+                FindFriend();
+                randomTime -= coroutineCycle;
+                yield return waitTime;
+            }
+            if (currentState == State.Idle)
+            {
+                switch (desicion)
+                {
+                    case 0:
+                        currentState = State.Patrol;
+                        break;
+                    case 1:
+                        currentState = State.Idle;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        IEnumerator Patrol()
+        {
+            animator.Play(patrolAnimHash);
+            int directionDesicion = random.Next(0, 2);
+            float randomTime = (float)(1 + random.NextDouble());
+            switch (directionDesicion)
+            {
+                case 0:
+                    enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                    break;
+                default:
+                    break;
+            }
+            enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+            while (randomTime > 0)
+            {
+                isNearToWall = Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, platform);
+                isCliff = Physics2D.OverlapCircle(cliffCheck.position, cliffCheckRadius, platform);
+                if (isNearToWall)
+                {
+                    enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                    enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+                    randomTime = (float)(1 + random.NextDouble());
+                }
+                if (!isCliff)
+                {
+                    enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
+                    enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+                    randomTime = random.Next(2, 4) + (float)random.NextDouble();
+                }
+                FindPlayer();
+                if (currentState != State.Patrol)
+                {
+                    randomTime = 0;
+                }
+                randomTime -= coroutineCycle;
+                yield return waitTime;
+            }
+            if (currentState == State.Patrol)
+            {
+                currentState = State.Idle;
+            }
+        }
+        IEnumerator Interact()
+        {
+            enemyMovement.direction.x = 0;
+            float randomTime = random.Next(2, 4) + (float)random.NextDouble();
+            while(randomTime > 0)
+            {
+                float randomCycle = random.Next(0, 4);
+                float interactTime = animTimeDictionary[interactAnimHash];
+                animator.Play(interactAnimHash);
+                while (interactTime > 0)
+                {
+                    interactTime -= coroutineCycle;
+                    yield return waitTime;
+                }
+                FindFriend();
+                randomTime -= coroutineCycle;
+                yield return waitTime;
+            }
+        }
+
+        void SpawnDagger()
+        {
+            daggerInfo = daggerSpawner.info;
+            throwDirection = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+            daggerSpawnPosition.x = throwDirection * Mathf.Abs(daggerSpawnPosition.x);
+            daggerInfo.position = transform.position + daggerSpawnPosition;
+            daggerInfo.objectRotation = enemyPhysics.rotation;
+            daggerSpawner.OperateSpawn(daggerInfo, DaggerSpawner.ACTIVATE_TIME);
+        }
+        void SpawnBomb()
+        {
+            daggerInfo = poisonBombSpawner.info;
+            throwDirection = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+            poisonBombSpawnPosition.x = throwDirection * Mathf.Abs(poisonBombSpawnPosition.x);
+            poisonBombInfo.position = transform.position + poisonBombSpawnPosition;
+            poisonBombInfo.objectRotation = enemyPhysics.rotation;
+            poisonBombSpawner.OperateSpawn(poisonBombInfo, PoisonBombSpawner.ACTIVATE_TIME);
+        }
+
+        #region Update-based fsm
         protected override void Update()
         {
             if (temporaryState != State.None)
@@ -71,17 +299,17 @@ namespace MomodoraCopy
                 ExecuteState(temporaryState);
                 return;
             }
-            if(enemyStatus.currentHp <= 0)
+            if (enemyStatus.currentHp <= 0)
             {
                 currentState = State.Die;
             }
-            if(currentState == State.Die)
+            if (currentState == State.Die)
             {
                 animator.Play(hurtAnimHash);
                 return;
             }
 
-            if (currentState != State.Chase && currentState != State.Attack 
+            if (currentState != State.Chase && currentState != State.Attack
                 && currentState != State.Hurt && currentState != State.Die)
             {
                 Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
@@ -128,12 +356,11 @@ namespace MomodoraCopy
                     break;
             }
         }
-        
-        //execute-debug only
+
         protected override void DoIdle()
         {
             enemyMovement.direction.x = 0;
-            if(enemyMovement.velocity.y < 0)
+            if (enemyMovement.velocity.y < 0)
             {
                 animator.Play(fallAnimHash);
             }
@@ -149,7 +376,7 @@ namespace MomodoraCopy
                 {
                     desicion = 3;
                 }
-                currentTime = idleTime * 4;
+                currentTime = animTimeDictionary[idleAnimHash] * 4;
                 switch (desicion)
                 {
                     case 0:
@@ -157,7 +384,7 @@ namespace MomodoraCopy
                         transitionState = State.Patrol;
                         break;
                     case 1:
-                        animator.CrossFade("sit",0.3f);
+                        animator.CrossFade("sit", 0.3f);
                         transitionState = State.Idle;
                         break;
                     case 2:
@@ -230,7 +457,7 @@ namespace MomodoraCopy
         }
         protected override void DoDie()
         {
-            
+
         }
 
         protected override void DoAttack()
@@ -238,7 +465,7 @@ namespace MomodoraCopy
             if (currentTime <= 0.0f)
             {
                 animator.Play(knifeThrowAnimHash);
-                currentTime = knifeThrowTime;
+                currentTime = animTimeDictionary[knifeThrowAnimHash];
             }
             currentTime -= Time.deltaTime;
             if (currentTime <= 0.0f)
@@ -266,8 +493,8 @@ namespace MomodoraCopy
                 }
             }
             float lookAtPlayerRotationY;
-            
-            if(GameManager.instance.playerPhysics.transform.position.x < enemyPhysics.position.x)
+
+            if (GameManager.instance.playerPhysics.transform.position.x < enemyPhysics.position.x)
             {
                 lookAtPlayerRotationY = 180;
             }
@@ -297,28 +524,7 @@ namespace MomodoraCopy
             currentTime = 0;
             currentState = State.Attack;
         }
-
-        //void CalculateTime(float activeTime, State transitionState)
-        //{
-        //    if(currentTime <= 0.0f)
-        //    {
-        //        currentTime = activeTime;
-        //    }
-        //    currentTime -= Time.deltaTime;
-        //    if(currentTime <= 0.0f)
-        //    {
-        //        currentState = transitionState;
-        //    }
-        //}
-        void SpawnDagger()
-        {
-            info = daggerSpawner.info;
-            throwDirection = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
-            daggerSpawnPosition.x = throwDirection * Mathf.Abs(daggerSpawnPosition.x);
-            info.position = transform.position + daggerSpawnPosition;
-            info.objectRotation = enemyPhysics.rotation;
-            daggerSpawner.OperateSpawn(info, DaggerSpawner.ACTIVATE_TIME);
-        }
+        #endregion
 
         private void OnDrawGizmos()
         {

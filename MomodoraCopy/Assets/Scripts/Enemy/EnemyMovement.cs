@@ -74,7 +74,7 @@ namespace MomodoraCopy
             while (true)
             {
                 Collider2D[] collider2Ds =
-                    Physics2D.OverlapBoxAll(transform.position + Vector3.up * boxCollider.offset.y * transform.localScale.y, crushedArea, 0);
+                    Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
                 foreach (Collider2D collider in collider2Ds)
                 {
                     if (collider.transform.CompareTag("Platform") ||
@@ -147,8 +147,8 @@ namespace MomodoraCopy
         //}
         void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position + Vector3.up * -0.34f * transform.localScale.y, crushedArea);
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawWireCube(boxCollider.bounds.center, crushedArea);
         }
     }
 }

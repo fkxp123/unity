@@ -232,7 +232,7 @@ namespace MomodoraCopy
         {
             GameManager.instance.Load();
             DontDestroyOnLoad(transform.parent.gameObject);
-
+            
             playerInput = GetComponent<PlayerInput>();
             controller = GetComponent<Controller2D>();
             boxCollider = GetComponent<BoxCollider2D>();
@@ -263,8 +263,8 @@ namespace MomodoraCopy
         void SetCrushedArea()
         {
             Bounds bounds = boxCollider.bounds;
-            bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
-            //bounds.Expand(0.015f * -4);
+            //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
+            bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
         }
         void SetCheckPushBlockArea()
@@ -287,6 +287,18 @@ namespace MomodoraCopy
                     playerStatus.CrushedDeath();
                 }
             }
+            //separate pushblock and trap??
+            //Collider2D[] collider2D =
+            //    Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
+            //foreach (Collider2D collider in collider2D)
+            //{
+            //    if (collider.transform.tag == "Platform" ||
+            //       (collider.transform.tag == "Trap" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")) ||
+            //       (collider.transform.tag == "PushBlock" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")))
+            //    {
+            //        playerStatus.CrushedDeath();
+            //    }
+            //}
         }
         void CheckSpike()
         {
@@ -338,12 +350,13 @@ namespace MomodoraCopy
         }
         void CheckLadder()
         {
-            Vector2 ladderRayOrigin = playerInput.directionalInput.y == 1 ? 
+            Vector2 ladderRayOrigin = playerInput.directionalInput.y == 1 ?
                 (Vector2)boxCollider.bounds.center : new Vector2(boxCollider.bounds.center.x, boxCollider.bounds.min.y);
             float ladderRayLength = 1f;
             float directionY = playerInput.directionalInput.y == -1 ? -1 : 1;
-            ladderHit = Physics2D.Raycast(ladderRayOrigin, Vector2.up * directionY, ladderRayLength, ladderLayer);
+            ladderHit = Physics2D.Raycast(ladderRayOrigin, (isGround ? Vector2.up * directionY : Vector2.up), ladderRayLength, ladderLayer);
             //Debug.DrawRay(ladderRayOrigin, Vector2.up  * ladderRayLength, Color.green);
+
             if (ladderHit && player.stateMachine.CurrentState != player.climbLadder
                     && player.stateMachine.CurrentState != player.jump
                     && (playerInput.directionalInput.y == 1 || playerInput.directionalInput.y == -1))
@@ -376,6 +389,7 @@ namespace MomodoraCopy
             CheckisGround();
             CalculateCurrentVelocity();
         }
+
         void SetDirectionalInput(Vector2 directionalInput)
         {
             if (isStun)
@@ -436,16 +450,17 @@ namespace MomodoraCopy
 
             if (isOnLadder)
             {
-                if (player.stateMachine.CurrentState == player.climbLadder 
-                    && playerInput.directionalInput.y == 1
-                    && !ladderHit)
+                if (player.stateMachine.CurrentState == player.climbLadder)
                 {
-                    velocity.y = 0;
-                }
-                else
-                {
-                    targetVelocityY = directionalInput.y * climbSpeed;
-                    velocity.y = Mathf.SmoothDamp(velocity.y, targetVelocityY, ref velocityXSmoothing, 0);
+                    if (playerInput.directionalInput.y == 1 && !ladderHit)
+                    {
+                        velocity.y = 0;
+                    }
+                    else if(player.stateMachine.CurrentState != player.jump)
+                    {
+                        targetVelocityY = directionalInput.y * climbSpeed;
+                        velocity.y = Mathf.SmoothDamp(velocity.y, targetVelocityY, ref velocityXSmoothing, 0);
+                    }
                 }
                 velocity.x = 0;
                 return;
@@ -595,8 +610,7 @@ namespace MomodoraCopy
                 }
             }
             #endregion
-
-            if (directionalInput.y != -1 || !controller.isThroughPlatform)//
+            if((directionalInput.y != -1 && !isOnLadder )|| controller.isThroughPlatform)
             {
                 velocity.y = maxJumpVelocity;
             }
