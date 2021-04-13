@@ -1,1 +1,1 @@
-{"m_DefineSymbols":[{"first":1,"second":"SHOW_DEBUG_MESSAGE;STATE_DEBUG_MOD;/SIMPLE_TEST"}],"m_AllowUnsafeCode":false}
+{"m_DefineSymbols":[{"first":1,"second":"SHOW_DEBUG_MESSAGE;/STATE_DEBUG_MOD;/SIMPLE_TEST"}],"m_AllowUnsafeCode":false}

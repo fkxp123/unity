@@ -43,11 +43,11 @@ namespace MomodoraCopy
                         transform.parent.gameObject.SetActive(false);
                         return;
                     }
-                    StartCoroutine(VibrateSprite());
+                    //StartCoroutine(VibrateSprite());
                 }
                 else if (hp != maxHp)
                 {
-                    StartCoroutine(BlinkSprite());
+                    //StartCoroutine(BlinkSprite());
                 }
             }
         }

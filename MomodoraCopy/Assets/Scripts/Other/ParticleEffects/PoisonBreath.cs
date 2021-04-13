@@ -11,6 +11,8 @@ namespace MomodoraCopy
             if (other.tag == "Player")
             {
                 Debug.Log("player poison!!!");
+                GameManager.instance.playerPhysics.transform.GetChild(1)
+                    .GetComponent<PlayerStatus>().TakeDamage(0, DamageType.Poisoned, transform.rotation);
             }
         }
     }

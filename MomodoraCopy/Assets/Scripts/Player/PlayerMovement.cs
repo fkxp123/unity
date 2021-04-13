@@ -610,7 +610,8 @@ namespace MomodoraCopy
                 }
             }
             #endregion
-            if((directionalInput.y != -1 && !isOnLadder )|| controller.isThroughPlatform)
+
+            if (directionalInput.y != -1 || !controller.isThroughPlatform)
             {
                 velocity.y = maxJumpVelocity;
             }

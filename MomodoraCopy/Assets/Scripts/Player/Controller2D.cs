@@ -127,6 +127,9 @@ namespace MomodoraCopy
             float directionY = Mathf.Sign(moveAmount.y);
             float rayLength = Mathf.Abs(moveAmount.y) + skinWidth;
 
+            fallingThrough = false;
+            isThroughPlatform = false;
+
             for (int i = 0; i < verticalRayCount; i++)
             {
 
@@ -160,11 +163,11 @@ namespace MomodoraCopy
                             continue;
                         }
                     }
-                    else
-                    {
-                        fallingThrough = false;
-                        isThroughPlatform = false;
-                    }
+                    //else
+                    //{
+                    //    fallingThrough = false;
+                    //    isThroughPlatform = false;
+                    //}
 
                     moveAmount.y = (hit.distance - skinWidth) * directionY;
                     rayLength = hit.distance;

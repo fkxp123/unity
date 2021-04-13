@@ -53,7 +53,7 @@ namespace MomodoraCopy
 
             coroutineCycle = 0.1f;
             waitTime = new WaitForSeconds(coroutineCycle);
-            StartCoroutine(CheckCrushed());
+            //StartCoroutine(CheckCrushed());
         }
 
         public void SetCrushedArea()

@@ -8,7 +8,7 @@ namespace MomodoraCopy
     {
         [HideInInspector]
         public Quaternion bombRotation;
-        public const float ACTIVATE_TIME = 1.5f;
+        public const float ACTIVATE_TIME = 5.0f;
         [HideInInspector]
         public PoolingObjectInfo info;
 

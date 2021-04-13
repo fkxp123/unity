@@ -52,6 +52,14 @@ namespace MomodoraCopy
         WaitForSeconds meleeKnockBackTime;
         WaitForSeconds rangeKnockBackTime;
 
+        float coroutineCycle = 0.1f;
+        WaitForSeconds waitTime;
+
+        float poisonedCycle = 1.0f;
+        WaitForSeconds poisonWaitTime;
+
+        public ParticleSystem poisonedEffect;
+
         void Awake()
         {
             Hp = maxHp;
@@ -69,6 +77,24 @@ namespace MomodoraCopy
 
             meleeKnockBackTime = new WaitForSeconds(hurtTime);
             rangeKnockBackTime = new WaitForSeconds(hurtTime);
+
+            waitTime = new WaitForSeconds(coroutineCycle);
+            poisonWaitTime = new WaitForSeconds(poisonedCycle);
+        }
+
+        IEnumerator Poisoned()
+        {
+            float poisonedTime = 10f;
+            poisonedEffect.Play();
+            float totalDamage = 0;
+            while(poisonedTime > 0)
+            {
+                poisonedTime -= poisonedCycle;
+                yield return poisonWaitTime;
+                Hp -= 2f;
+                totalDamage += 2f;
+            }
+            poisonedEffect.Stop();
         }
 
         public void Hit(int enemyAtk)
@@ -139,18 +165,29 @@ namespace MomodoraCopy
             {
                 return;
             }
-            Hp -= damage;
-            if(Hp <= 0)
+            if(damage > 0)
             {
-                return;
+                Hp -= damage;
+                if(Hp <= 0)
+                {
+                    return;
+                }
+                playerFsm.stateMachine.SetState(playerFsm.hurt);
+                playerPhysics.rotation =
+                    Quaternion.Euler(playerPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, playerPhysics.rotation.z);
             }
-            playerFsm.stateMachine.SetState(playerFsm.hurt);
-
-            playerPhysics.rotation =
-                Quaternion.Euler(playerPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, playerPhysics.rotation.z);
             if (damageType == DamageType.Range)
             {
                 StartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation));
+            }
+            else if (damageType == DamageType.Poisoned)
+            {
+                if(damage > 0)
+                {
+                    StartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation));
+                }
+                this.RestartCoroutine(Poisoned(), ref coroutine);
+                //StartCoroutine(Poisoned());
             }
             else
             {

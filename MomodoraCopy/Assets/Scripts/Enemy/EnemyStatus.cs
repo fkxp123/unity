@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace MomodoraCopy
 {
-    public enum DamageType
-    {
-        Melee,
-        Range
-    }
     public class EnemyStatus : MonoBehaviour
     {
         EnemyMovement enemyMovement;

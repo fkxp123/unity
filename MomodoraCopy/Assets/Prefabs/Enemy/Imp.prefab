@@ -148,6 +148,7 @@ MonoBehaviour:
   poisonBombSpawnerObject: {fileID: 3335623825808426736}
   bloodEffect: {fileID: 1262917962455973348}
   hitEffect: {fileID: 115009070050383823}
+  siegeMode: 1
 --- !u!114 &2176490833036211356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,7 +295,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3335623825808426736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.7415657, y: 0.74128723, z: -3.0875585}
+  m_LocalPosition: {x: 0.83, y: 0.21, z: -3.0875585}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8071107270091605050}

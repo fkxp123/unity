@@ -46,6 +46,17 @@ namespace MomodoraCopy
             }
         }
 
+        public void PoisonedHealth()
+        {
+            fill.color = new Color(0, 255, 0);
+            effectImg.color = new Color(0, 150, 0);
+        }
+        public void NormalHealth()
+        {
+            fill.color = new Color(255, 255, 255);
+            effectImg.color = new Color(255, 255, 255);
+        }
+
         public void LoseHp(float hp)
         {
             currentHp -= hp;

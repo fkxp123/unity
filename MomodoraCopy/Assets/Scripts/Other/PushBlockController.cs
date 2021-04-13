@@ -446,7 +446,6 @@ namespace MomodoraCopy
                     movedPassengers.Add(collider.transform);
                     float pushX = velocity.x - (hitDistance - skinWidth) * directionX;
                     float pushY = -skinWidth;
-                    Debug.Log(pushX);
 
                     passengerMovement.Add(new PassengerMovement(collider.transform, new Vector3(pushX, pushY), false, true));
                 }

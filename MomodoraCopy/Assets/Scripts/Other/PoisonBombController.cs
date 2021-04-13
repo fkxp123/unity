@@ -29,22 +29,33 @@ namespace MomodoraCopy
         public ParticleSystem poisonBombEffect;
         Transform sprite;
 
+        PoisonBombSpawner poisonBombSpawner;
+        [SerializeField]
+        LayerMask playerMask;
+
+        float bombRadius;
+        float poisonBombDamage;
+
         public override void Start()
         {
             base.Start();
             sprite = transform.GetChild(0);
             gravity = 50f;
-            direction.x = -1;
+            direction.x = transform.parent.transform.rotation.y == 0 ? 1 : -1;
             direction.y = -1;
             //velocity.y = 20;
             //speed = 20;
             boxCollider = GetComponent<BoxCollider2D>();
+            playerMask = 1 << 8;
+            bombRadius = 0.2f;
+            poisonBombDamage = 10f;
+            poisonBombSpawner = transform.parent.transform.parent.GetComponent<PoisonBombSpawner>();
         }
 
         void OnEnable()
         {
-            speed = transform.position.x - GameManager.instance.playerPhysics.transform.position.x +
-                Mathf.Sign(transform.position.x - GameManager.instance.playerPhysics.transform.position.x) * Random.Range(4.0f, 7.0f);
+            speed = Mathf.Abs(transform.position.x - GameManager.instance.playerPhysics.transform.position.x +
+                Mathf.Sign(transform.position.x - GameManager.instance.playerPhysics.transform.position.x) * Random.Range(4.0f, 7.0f));
             velocity.y = Mathf.Abs(speed);
         }
         void OnDisable()
@@ -59,7 +70,7 @@ namespace MomodoraCopy
             CalculateVelocity();
             sprite.Rotate(0, 0, 10);
             Move(velocity * Time.deltaTime);
-
+            CheckPlayerCollisions();
             CheckVerticalCollisions();
         }
         void CalculateVelocity()
@@ -75,6 +86,17 @@ namespace MomodoraCopy
             //friction += -1 * direction.x * Time.deltaTime;
             //friction = direction.x == 1 ? Mathf.Clamp(friction, -10, 0) : Mathf.Clamp(friction, 0, 10);
             //velocity.x -= friction * Time.deltaTime;
+        }
+
+        void CheckPlayerCollisions()
+        {
+            bool isPlayer = Physics2D.OverlapCircle(transform.position, bombRadius, playerMask);
+            if (isPlayer)
+            {
+                gameObject.SetActive(false);
+                GameManager.instance.playerPhysics.transform.GetChild(1)
+                    .GetComponent<PlayerStatus>().TakeDamage(poisonBombDamage, DamageType.Poisoned, transform.rotation);
+            }
         }
 
         void CheckVerticalCollisions()
@@ -223,6 +245,12 @@ namespace MomodoraCopy
                 above = below = false;
                 left = right = false;
             }
+        }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, bombRadius);
         }
     }
 }
