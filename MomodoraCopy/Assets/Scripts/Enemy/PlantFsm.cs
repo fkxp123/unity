@@ -137,9 +137,12 @@ namespace MomodoraCopy
             {
                 if(currentState != State.Idle)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
-                FindPlayer();
+                else
+                {
+                    FindPlayer();
+                }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
@@ -193,7 +196,7 @@ namespace MomodoraCopy
                 FindPlayer();
                 if (currentState != State.Patrol)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
@@ -219,12 +222,12 @@ namespace MomodoraCopy
                     if (collider.tag == "Player")
                     {
                         currentState = State.Attack;
-                        randomTime = 0;
+                        yield break;
                     }
                 }
                 if(currentState != State.Chase)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
@@ -259,7 +262,7 @@ namespace MomodoraCopy
                 }
                 if(currentState != State.Attack)
                 {
-                    attackTime = 0;
+                    yield break;
                 }
                 attackTime -= coroutineCycle;
                 yield return waitTime;

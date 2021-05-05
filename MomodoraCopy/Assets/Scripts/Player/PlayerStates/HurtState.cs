@@ -9,6 +9,9 @@ namespace MomodoraCopy
         float waitTime;
         float currentTime;
 
+        float hitEffectTime;
+        WaitForSeconds hitEffectWaitTime;
+
         public HurtState(Player player) : base(player)
         {
             waitTime = player.playerStatus.hurtTime;
@@ -18,6 +21,8 @@ namespace MomodoraCopy
             base.OperateEnter();
             currentTime = waitTime;
             player.animator.Play("hurt");
+            player.spriteRenderer.material.shader = player.shaderGUItext;
+            player.spriteRenderer.color = Color.white;
         }
         public override void OperateUpdate()
         {
@@ -31,6 +36,8 @@ namespace MomodoraCopy
         }
         public override void OperateExit()
         {
+            player.spriteRenderer.material.shader = player.shaderSpritesDefault;
+            player.spriteRenderer.color = Color.white;
             base.OperateExit();
             player.animator.Play("idle");
         }

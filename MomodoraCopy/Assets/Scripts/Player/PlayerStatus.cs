@@ -31,7 +31,7 @@ namespace MomodoraCopy
         public float meleeAtk = 10.0f;
         public int alpha = 0;
 
-        Animator animator;
+        //Animator animator;
         SpriteRenderer spriteRenderer;
         [SerializeField]
 
@@ -67,7 +67,7 @@ namespace MomodoraCopy
         void Start()
         {
             playerFsm = GetComponent<Player>();
-            animator = GetComponent<Animator>();;
+            //animator = GetComponent<Animator>();;
             spriteRenderer = GetComponent<SpriteRenderer>();
             uiCanvas.transform.SetParent(transform);
             healthBar = uiCanvas.GetComponent<HealthBar>();
@@ -87,6 +87,7 @@ namespace MomodoraCopy
             float poisonedTime = 10f;
             poisonedEffect.Play();
             float totalDamage = 0;
+            healthBar.PoisonedHealth();
             while(poisonedTime > 0)
             {
                 poisonedTime -= poisonedCycle;
@@ -95,97 +96,93 @@ namespace MomodoraCopy
                 totalDamage += 2f;
             }
             poisonedEffect.Stop();
+            healthBar.NormalHealth();
         }
 
-        public void Hit(int enemyAtk)
-        {
-            if (!noHitMode)
-            {
-                if (!isHit)
-                {
-                    StartCoroutine("HitCoroutine", enemyAtk);
-                }
-            }
-        }
-        IEnumerator HitCoroutine(int enemyAtk)
-        {
-            isHit = true;
-            //CurrentHp -= enemyAtk;
-            //HealthBar.CurrentHp -= enemyAtk;
-            //HealthBar.SetBlinkImg();
-            //Debug.Log("hp : " + CurrentHp);
-            animator.SetTrigger("takeDamage");
-            //player.stopAllInput = true;
-            //player.stopMoving_X = true;
-            //boxCollider.isTrigger = true;
-            //player.directionalInput = new Vector2(0, 0);
-            //if (CurrentHp <= 0)
-            //{
-            //    Debug.Log("game over");
-            //}
-            //if (enemy.transform.position.x <= transform.position.x)
-            //{
-            //    //rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
-            //}
-            //else
-            //{
-            //    //rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
-            //}
-            yield return new WaitForSeconds(0.6f);
-            //rigid.velocity = new Vector2(0, rigid.velocity.y);
-            //player.stopMoving_X = false;
-            //player.stopAllInput = false;
-        }
-        IEnumerator HitGracePeriod()
-        {
-            Debug.Log("im hit");
-            for (int i = 0; i < 10; i++)
-            {
-                spriteRenderer.material.color = new Color(1f, 1f, 1f, .5f);
-                yield return new WaitForSeconds(0.1f);
-                spriteRenderer.material.color = new Color(1f, 1f, 1f, 1f);
-                yield return new WaitForSeconds(0.1f);
-            }
-            isHit = false;
-            //boxCollider.isTrigger = false;
-            StopCoroutine("HitGracePeriod");
-        }
-
-        //void Update()
+        //public void Hit(int enemyAtk)
         //{
-        //    if (isHit)
+        //    if (!noHitMode)
         //    {
-        //        StartCoroutine("HitGracePeriod");
+        //        if (!isHit)
+        //        {
+        //            StartCoroutine("HitCoroutine", enemyAtk);
+        //        }
         //    }
+        //}
+        //IEnumerator HitCoroutine(int enemyAtk)
+        //{
+        //    isHit = true;
+        //    //CurrentHp -= enemyAtk;
+        //    //HealthBar.CurrentHp -= enemyAtk;
+        //    //HealthBar.SetBlinkImg();
+        //    //Debug.Log("hp : " + CurrentHp);
+        //    animator.SetTrigger("takeDamage");
+        //    //player.stopAllInput = true;
+        //    //player.stopMoving_X = true;
+        //    //boxCollider.isTrigger = true;
+        //    //player.directionalInput = new Vector2(0, 0);
+        //    //if (CurrentHp <= 0)
+        //    //{
+        //    //    Debug.Log("game over");
+        //    //}
+        //    //if (enemy.transform.position.x <= transform.position.x)
+        //    //{
+        //    //    //rigid.velocity = new Vector2(HitDistance, rigid.velocity.y);
+        //    //}
+        //    //else
+        //    //{
+        //    //    //rigid.velocity = new Vector2(-1 * HitDistance, rigid.velocity.y);
+        //    //}
+        //    yield return new WaitForSeconds(0.6f);
+        //    //rigid.velocity = new Vector2(0, rigid.velocity.y);
+        //    //player.stopMoving_X = false;
+        //    //player.stopAllInput = false;
+        //}
+        //IEnumerator HitGracePeriod()
+        //{
+        //    Debug.Log("im hit");
+        //    for (int i = 0; i < 10; i++)
+        //    {
+        //        spriteRenderer.material.color = new Color(1f, 1f, 1f, .5f);
+        //        yield return new WaitForSeconds(0.1f);
+        //        spriteRenderer.material.color = new Color(1f, 1f, 1f, 1f);
+        //        yield return new WaitForSeconds(0.1f);
+        //    }
+        //    isHit = false;
+        //    //boxCollider.isTrigger = false;
+        //    StopCoroutine("HitGracePeriod");
         //}
 
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
         {
-            if(playerFsm.stateMachine.CurrentState == playerFsm.hurt)
+            if(playerFsm.stateMachine.CurrentState == playerFsm.hurt || 
+               playerFsm.stateMachine.CurrentState == playerFsm.roll)
             {
                 return;
             }
-            if(damage > 0)
+            if(damage <= 0)
             {
-                Hp -= damage;
-                if(Hp <= 0)
+                if(damageType == DamageType.Poisoned)
                 {
-                    return;
+                    this.RestartCoroutine(Poisoned(), ref coroutine);
                 }
-                playerFsm.stateMachine.SetState(playerFsm.hurt);
-                playerPhysics.rotation =
-                    Quaternion.Euler(playerPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, playerPhysics.rotation.z);
+                return;
             }
+            Hp -= damage;
+            if(Hp <= 0)
+            {
+                return;
+            }
+            playerFsm.stateMachine.SetState(playerFsm.hurt);
+            playerPhysics.rotation =
+                Quaternion.Euler(playerPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, playerPhysics.rotation.z);
             if (damageType == DamageType.Range)
             {
                 StartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation));
             }
             else if (damageType == DamageType.Poisoned)
             {
-                if(damage > 0)
-                {
-                    StartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation));
-                }
+                StartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation));
                 this.RestartCoroutine(Poisoned(), ref coroutine);
                 //StartCoroutine(Poisoned());
             }

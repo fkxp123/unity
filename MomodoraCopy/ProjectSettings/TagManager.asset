@@ -13,6 +13,8 @@ TagManager:
   - Ladder
   - Spike
   - PushBlock
+  - Boss
+  - BossHitBox
   layers:
   - Default
   - TransparentFX
@@ -31,7 +33,7 @@ TagManager:
   - ArrowPlatform
   - Ladder
   - PushBlock
-  - 
+  - Fluids
   - 
   - 
   - 
@@ -52,6 +54,9 @@ TagManager:
     locked: 0
   - name: background
     uniqueID: 4066620809
+    locked: 0
+  - name: Interaction
+    uniqueID: 3559853933
     locked: 0
   - name: player
     uniqueID: 1739831049

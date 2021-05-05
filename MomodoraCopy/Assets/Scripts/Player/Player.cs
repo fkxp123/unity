@@ -21,6 +21,11 @@ namespace MomodoraCopy
         public ParticleSystem breakStepDustEffect;
 
         public Animator animator;
+        public SpriteRenderer spriteRenderer;
+
+        public Shader shaderGUItext;
+        public Shader shaderSpritesDefault;
+
         Transform playerPhysics;
 
         public bool isAnimationFinished = true;
@@ -64,6 +69,10 @@ namespace MomodoraCopy
         {
             //enabled = false;
             animator = GetComponent<Animator>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            shaderGUItext = Shader.Find("GUI/Text Shader");
+            shaderSpritesDefault = Shader.Find("Sprites/Default");
 
             playerPhysics = transform.parent;
             playerMovement = playerPhysics.GetComponent<PlayerMovement>();

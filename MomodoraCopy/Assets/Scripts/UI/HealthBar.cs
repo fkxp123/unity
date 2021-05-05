@@ -9,6 +9,7 @@ namespace MomodoraCopy
         public Image fill;
         public Image effectImg;
         public Image blinkImg;
+        public Image background;
 
         public static float currentHp;
         public static float maxHp;
@@ -50,11 +51,13 @@ namespace MomodoraCopy
         {
             fill.color = new Color(0, 255, 0);
             effectImg.color = new Color(0, 150, 0);
+            background.color = new Color(0, 150, 0);
         }
         public void NormalHealth()
         {
             fill.color = new Color(255, 255, 255);
             effectImg.color = new Color(255, 255, 255);
+            background.color = new Color(255, 255, 255);
         }
 
         public void LoseHp(float hp)

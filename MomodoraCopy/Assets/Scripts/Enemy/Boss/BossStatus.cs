@@ -12,6 +12,8 @@ namespace MomodoraCopy
 
         public ParticleSystem hitEffect;
         ParticleSystemRenderer hitEffectRenderer;
+        public ParticleSystem bloodEffect;
+        public GameObject hitBox;
         public ParticleSystem crushedDeathEffect;
         SpriteRenderer spriteRenderer;
 
@@ -150,7 +152,12 @@ namespace MomodoraCopy
                 bossMovement.direction.x = 0;
                 return;
             }
-            fsm.currentState = BasicBossFsm.State.Hurt;
+            if(Hp % 30 == 0)
+            {
+                fsm.currentState = BasicBossFsm.State.Hurt;
+                bloodEffect.transform.position = hitBox.transform.position;
+                bloodEffect.Play();
+            }
             bossPhysics.rotation =
                 Quaternion.Euler(bossPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, bossPhysics.rotation.z);
 
@@ -175,8 +182,9 @@ namespace MomodoraCopy
         IEnumerator KnockBack(WaitForSeconds waitTime, Quaternion damagedRotation)
         {
             bossMovement.velocity.x = damagedRotation.y == 0 ? 5 : -5;
-            bossMovement.velocity.y = 5;
+            bossMovement.velocity.y = 1;
             hitEffectRenderer.flip = bossPhysics.rotation.y == 0 ? new Vector3(1, 0, 0) : new Vector3(0, 0, 0);
+            hitEffect.transform.position = hitBox.transform.position;
             hitEffect.Play();
             yield return waitTime;
             bossMovement.direction.x = 0;

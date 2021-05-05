@@ -25,7 +25,7 @@ namespace MomodoraCopy
         Controller2D controller;
         PlayerInput playerInput;
 
-        public SpriteRenderer spriteRenderer;
+        //public SpriteRenderer spriteRenderer;
         PlayerStatus playerStatus;
         Enemy enemy;
         #endregion
@@ -240,7 +240,7 @@ namespace MomodoraCopy
             playerSprite = transform.GetChild(1);
             player = playerSprite.GetComponent<Player>();
             playerStatus = playerSprite.GetComponent<PlayerStatus>();
-            spriteRenderer = playerSprite.GetComponent<SpriteRenderer>();
+            //spriteRenderer = playerSprite.GetComponent<SpriteRenderer>();
 
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
             maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
@@ -553,11 +553,11 @@ namespace MomodoraCopy
         {
             if (directionalInput.x == 1)
             {
-                spriteRenderer.flipX = false;
+                //spriteRenderer.flipX = false;
             }
             else if (directionalInput.x == -1)
             {
-                spriteRenderer.flipX = true;
+                //spriteRenderer.flipX = true;
             }
         }
 
@@ -670,6 +670,12 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(3f, .1f));
+                            }
+                            else if (collider.tag == "BossHitBox")
+                            {
+                                collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -685,6 +691,12 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
+                            }
+                            else if (collider.tag == "BossHitBox")
+                            {
+                                collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -700,6 +712,12 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(5f, .1f));
+                            }
+                            else if (collider.tag == "BossHitBox")
+                            {
+                                collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -723,13 +741,19 @@ namespace MomodoraCopy
                     if (collider.tag == "Enemy")
                     {
                         collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                        StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
+                    }
+                    else if (collider.tag == "BossHitBox")
+                    {
+                        collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                        //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                     }
                     else if(collider.tag == "CheckPoint")
                     {
                         collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
                     }
                     player.AttackFlag = false;
-                }
+                }   
             }
         }
         public void OperateFirstAttack()

@@ -137,6 +137,16 @@ namespace MomodoraCopy
                 component.enabled = false;
             }
         }
+        public void StopPlayerInput()
+        {
+            playerPhysics.GetComponent<PlayerInput>().enabled = false;
+            playerSprite.GetComponent<Player>().enabled = false;
+        }
+        public void StartPlayerInput()
+        {
+            playerPhysics.GetComponent<PlayerInput>().enabled = true;
+            playerSprite.GetComponent<Player>().enabled = true;
+        }
         public void Save(GameObject checkPoint)
         {
             playerData.playerPosition = checkPoint.transform.position;

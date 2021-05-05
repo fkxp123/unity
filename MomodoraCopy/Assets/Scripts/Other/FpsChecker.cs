@@ -31,7 +31,7 @@ namespace MomodoraCopy
             GUIStyle style = new GUIStyle();
 
             Rect rect = new Rect(0, 0, w, h * 2 / 100);
-            style.alignment = TextAnchor.UpperLeft;
+            style.alignment = TextAnchor.UpperRight;
             style.fontSize = h * 2 / fontSize;
             style.normal.textColor = new Color(red, green, blue, 1.0f);
             float msec = deltaTime * 1000.0f;

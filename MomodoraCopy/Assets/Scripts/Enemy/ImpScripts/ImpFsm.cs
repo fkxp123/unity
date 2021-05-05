@@ -6,7 +6,7 @@ namespace MomodoraCopy
 {
     public class ImpFsm : BasicEnemyFsm
     {
-        System.Random random = new System.Random();
+        //System.Random random = new System.Random();
 
         public bool wantInteract;
 
@@ -58,20 +58,28 @@ namespace MomodoraCopy
         public bool siegeMode;
         public bool shielderMode;
 
+        LayerMask playerMask;
+        public bool isInteract;
+        public ImpFsm impFriend;
+
         protected override void Start()
         {
             base.Start();
+
+            transform.position = new Vector3(transform.position.x, transform.position.y, Random.Range(0.0f, 1.0f));
 
             daggerSpawner = daggerSpawnerObject.GetComponent<DaggerSpawner>();
             daggerSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
             poisonBombSpawner = poisonBombSpawnerObject.GetComponent<PoisonBombSpawner>();
             poisonBombSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
 
-            siegeMode = false;
+            siegeMode = true;
             shielderMode = false;
 
             waitTime = new WaitForSeconds(coroutineCycle);
             StartCoroutine(Fsm());
+
+            playerMask = 1 << 8;
         }
         protected override void CachingAnimation()
         {
@@ -87,19 +95,36 @@ namespace MomodoraCopy
 
             knifeThrowTime = new WaitForSeconds(animTimeDictionary[knifeThrowAnimHash]);
             throwBombTime = new WaitForSeconds(animTimeDictionary[throwBombAnimHash]);
-            hurtTime = new WaitForSeconds(animTimeDictionary[hurtAnimHash]);
+            hurtTime = new WaitForSeconds(animTimeDictionary[hurtAnimHash] * 4);
         }
 
         void FindPlayer()
         {
-            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
+            #region find player by distance
+            //Vector3 playerPos = GameManager.instance.playerPhysics.transform.position;
+            //if (GameManager.instance.playerPhysics.transform.rotation.y != enemyPhysics.transform.rotation.y &&
+            //    Mathf.Abs(playerPos.x - transform.position.x) < 10 && Mathf.Abs(playerPos.y - transform.position.y) < 5)
+            //{
+            //    if (playerPos.x < transform.position.x)
+            //    {
+            //        enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+            //    }
+            //    else
+            //    {
+            //        enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+            //    }
+            //    currentState = State.Chase;
+            //}
+            #endregion
+
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, playerMask);
             foreach (Collider2D collider in colliders)
             {
                 if (collider.tag == "Player")
                 {
                     playerPosition = collider.transform.position;
                     //siegeMode = Mathf.Abs(playerPosition.x - transform.position.x) > 10f ? true : false;
-                    
+                    Debug.Log(collider.name);
                     if (playerPosition.x < transform.position.x)
                     {
                         enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
@@ -114,27 +139,30 @@ namespace MomodoraCopy
         }
         void FindFriend()
         {
-            //Vector3 friendPosition;
-            //Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
-            //foreach (Collider2D collider in colliders)
-            //{
-            //    if (collider.tag == "Enemy" && collider.name == "ImpPhysics")
-            //    {
-            //        friendPosition = collider.transform.position;
-            //        if (friendPosition.x < transform.position.x)
-            //        {
-            //            enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-            //        }
-            //        else
-            //        {
-            //            enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-            //        }
-            //        if(currentState == State.Idle && collider.GetComponent<ImpFsm>().currentState == State.Idle)
-            //        {
-            //            currentState = State.Interact;
-            //        }
-            //    }
-            //}
+            Vector3 friendPosition;
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.tag == "Enemy" && collider.name == "ImpPhysics")
+                {
+                    Debug.Log(collider.name);
+                    friendPosition = collider.transform.position;
+                    if (friendPosition.x < transform.position.x)
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                    }
+                    else
+                    {
+                        enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                    }
+                    if (currentState == State.Idle && collider.transform.GetChild(0).GetComponent<ImpFsm>().isInteract)
+                    {
+                        currentState = State.Interact;
+                        collider.transform.GetChild(0).GetComponent<ImpFsm>().currentState = State.Interact;
+                        impFriend = collider.transform.GetChild(0).GetComponent<ImpFsm>();
+                    }
+                }
+            }
         }
         IEnumerator Fsm()
         {
@@ -158,8 +186,10 @@ namespace MomodoraCopy
         IEnumerator Idle()
         {
             enemyMovement.direction.x = 0;
-            float randomTime = random.Next(2, 4) + (float)random.NextDouble();
-            int desicion = random.Next(0, 4);
+            //float randomTime = random.Next(2, 4) + (float)random.NextDouble();
+            float randomTime = Random.Range(2.0f, 4.0f);
+            //int desicion = random.Next(0, 4);
+            int desicion = Random.Range(0, 4);
             animator.Play(idleAnimHash);
             if (!animator.GetCurrentAnimatorStateInfo(0).IsName("idle"))
             {
@@ -170,23 +200,25 @@ namespace MomodoraCopy
             {
                 case 0:
                     animator.Play(idleAnimHash);
-                    transitionState = State.Patrol;
+                    //transitionState = State.Patrol;
                     break;
                 case 1:
                     animator.CrossFade("sit", 0.3f);
-                    transitionState = State.Idle;
+                    //transitionState = State.Idle;
                     break;
                 case 2:
                     animator.CrossFade("smileSit", 0.3f);
-                    transitionState = State.Idle;
+                    //transitionState = State.Idle;
                     break;
                 case 3:
                     animator.Play(idleAnimHash);
-                    transitionState = State.Idle;
+                    isInteract = true;
+                    //transitionState = State.Idle;
                     break;
                 default:
                     break;
             }
+            //isInteract = true;
             while(randomTime > 0)
             {
                 if (enemyMovement.velocity.y < 0)
@@ -197,13 +229,16 @@ namespace MomodoraCopy
                 {
                     animator.Play(idleAnimHash);
                 }
-
-                if (currentState != State.Idle)
+                if(currentState != State.Idle)
                 {
-                    randomTime = 0;
+                    isInteract = false;
+                    yield break;
                 }
-                FindPlayer();
-                FindFriend();
+                else
+                {
+                    FindPlayer();
+                    //FindFriend();
+                }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
@@ -221,12 +256,15 @@ namespace MomodoraCopy
                         break;
                 }
             }
+            isInteract = false;
         }
         IEnumerator Patrol()
         {
             animator.Play(patrolAnimHash);
-            int directionDesicion = random.Next(0, 2);
-            float randomTime = (float)(1 + random.NextDouble());
+            //int directionDesicion = random.Next(0, 2);
+            int directionDesicion = Random.Range(0, 2);
+            //float randomTime = (float)(1 + random.NextDouble());
+            float randomTime = Random.Range(1.0f, 2.0f);
             switch (directionDesicion)
             {
                 case 0:
@@ -244,18 +282,20 @@ namespace MomodoraCopy
                 {
                     enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
                     enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
-                    randomTime = (float)(1 + random.NextDouble());
+                    //randomTime = (float)(1 + random.NextDouble());
+                    randomTime = Random.Range(1.0f, 2.0f);
                 }
                 if (!isCliff)
                 {
                     enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
                     enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
-                    randomTime = random.Next(2, 4) + (float)random.NextDouble();
+                    //randomTime = random.Next(2, 4) + (float)random.NextDouble();
+                    randomTime = Random.Range(2.0f, 4.0f);
                 }
                 FindPlayer();
                 if (currentState != State.Patrol)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
@@ -268,21 +308,63 @@ namespace MomodoraCopy
         IEnumerator Interact()
         {
             enemyMovement.direction.x = 0;
-            float randomTime = random.Next(2, 4) + (float)random.NextDouble();
-            while(randomTime > 0)
+            float totalInteractTime = 5f;
+            while(totalInteractTime > 0)
             {
-                float randomCycle = random.Next(0, 4);
-                float interactTime = animTimeDictionary[interactAnimHash];
-                animator.Play(interactAnimHash);
-                while (interactTime > 0)
+                float randomTime = Random.Range(2.0f, 4.0f);
+                while(randomTime > 0)
                 {
-                    interactTime -= coroutineCycle;
+                    float randomCycle = Random.Range(0.0f, 4.0f);
+                    int interactDesicion = Random.Range(0, 2);
+                    float interactTime; 
+                    if(interactDesicion == 1)
+                    {
+                        animator.Play(interactAnimHash);
+                        interactTime = animTimeDictionary[interactAnimHash];
+                    }
+                    else
+                    {
+                        animator.Play(smileInteractAnimHash);
+                        interactTime = animTimeDictionary[smileInteractAnimHash];
+                    }
+                    while (interactTime > 0)
+                    {
+                        if (currentState != State.Interact)
+                        {
+                            isInteract = false;
+                            yield break;
+                        }
+                        else
+                        {
+                            FindPlayer();
+                        }
+                        interactTime -= coroutineCycle;
+                        yield return waitTime;
+                    }
+                    if (currentState != State.Interact)
+                    {
+                        isInteract = false;
+                        yield break;
+                    }
+                    else
+                    {
+                        FindPlayer();
+                    }
+                    randomTime -= coroutineCycle;
                     yield return waitTime;
                 }
-                FindFriend();
-                randomTime -= coroutineCycle;
-                yield return waitTime;
+                totalInteractTime -= randomTime;
+                if(totalInteractTime < 0)
+                {
+                    yield break;
+                }
+                yield return randomTime;
             }
+            if(currentState == State.Interact)
+            {
+                currentState = State.Idle;
+            }
+            isInteract = false;
         }
         IEnumerator Attack()
         {
@@ -290,7 +372,19 @@ namespace MomodoraCopy
             float lookAtPlayerRotationY;
             lookAtPlayerRotationY = GameManager.instance.playerPhysics.transform.position.x < enemyPhysics.position.x ? 180 : 0;
             enemyPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
+
+            float randomTime = Random.Range(0.0f, 1.0f);
             float attackTime;
+            while(randomTime > 0)
+            {
+                if (currentState != State.Attack)
+                {
+                    yield break;
+                }
+                randomTime -= coroutineCycle;
+                yield return waitTime;
+            }
+
             if (siegeMode)
             {
                 animator.Play(throwBombAnimHash);
@@ -305,7 +399,7 @@ namespace MomodoraCopy
             {
                 if (currentState != State.Attack)
                 {
-                    attackTime = 0;
+                    yield break;
                 }
                 attackTime -= coroutineCycle;
                 yield return waitTime;
@@ -320,7 +414,8 @@ namespace MomodoraCopy
         {
             float lookAtPlayerRotationY;
             //enemyMovement.direction.x = enemyPhysics.rotation.y == 0 ? 1 : -1;
-            float randomTime = 1 + (float)random.NextDouble();
+            //float randomTime = 1 + (float)random.NextDouble();
+            float randomTime = Random.Range(1.0f, 2.0f);
             animator.Play(idleAnimHash);
             while (randomTime > 0)
             {
@@ -356,7 +451,7 @@ namespace MomodoraCopy
 
                 if (currentState != State.Chase)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
@@ -382,7 +477,7 @@ namespace MomodoraCopy
         {
             enemyMovement.direction.x = 0;
             bloodEffect.Play();
-            float hurtTime = animTimeDictionary[hurtAnimHash];
+            float hurtTime = animTimeDictionary[hurtAnimHash] * 4;
             animator.Play(hurtAnimHash, -1, 0);
             currentState = State.Idle;
             while (hurtTime > 0)
@@ -393,7 +488,7 @@ namespace MomodoraCopy
                 {
                     enemyMovement.direction.x = 0;
                     bloodEffect.Play();
-                    hurtTime = animTimeDictionary[hurtAnimHash];
+                    hurtTime = animTimeDictionary[hurtAnimHash] * 4;
                     animator.Play(hurtAnimHash, -1, 0);
                     currentState = State.Idle;
                 }

@@ -1,7 +1,9 @@
 {
     "name": "NewAssembly",
     "references": [
-        "Unity.2D.Tilemap.Extras"
+        "Unity.2D.Tilemap.Extras",
+        "Cinemachine",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

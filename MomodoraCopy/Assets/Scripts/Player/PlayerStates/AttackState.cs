@@ -48,6 +48,7 @@ namespace MomodoraCopy
         {
             base.OperateExit();
             playerMovement.AttackCount = 0;
+            comboFlag = false;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
         void CheckCanComboAttack()

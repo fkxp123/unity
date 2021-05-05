@@ -149,6 +149,7 @@ MonoBehaviour:
   bloodEffect: {fileID: 1262917962455973348}
   hitEffect: {fileID: 115009070050383823}
   siegeMode: 1
+  shielderMode: 0
 --- !u!114 &2176490833036211356
 MonoBehaviour:
   m_ObjectHideFlags: 0

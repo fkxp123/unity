@@ -50,7 +50,6 @@ namespace MomodoraCopy
         float coroutineCycle = 0.1f;
         WaitForSeconds waitTime;
 
-        public ParticleSystem bloodEffect;
         public ParticleSystem breathEffect;
         public ParticleSystem breathCollisions;
 
@@ -193,7 +192,7 @@ namespace MomodoraCopy
                 bossPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
                 if (currentState != State.MovePattern1)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
@@ -206,7 +205,7 @@ namespace MomodoraCopy
                 bossPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
                 if (currentState != State.MovePattern1)
                 {
-                    randomTime = 0;
+                    yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
@@ -246,6 +245,10 @@ namespace MomodoraCopy
             bossMovement.direction.x = bossPhysics.rotation.y == 0 ? 1 : -1;
             while (moveToPlayerTime > 0)
             {
+                if (currentState != State.AttackPattern1)
+                {
+                    yield break;
+                }
                 moveToPlayerTime -= coroutineCycle;
                 yield return waitTime;
             }
@@ -268,7 +271,7 @@ namespace MomodoraCopy
                 }
                 if (currentState != State.AttackPattern1)
                 {
-                    attackTime = 0;
+                    yield break;
                 }
                 attackTime -= coroutineCycle;
                 yield return waitTime;
@@ -305,7 +308,7 @@ namespace MomodoraCopy
                 }
                 if (currentState != State.AttackPattern2)
                 {
-                    attackTime = 0;
+                    yield break;
                 }
                 attackTime -= coroutineCycle;
                 yield return waitTime;
@@ -330,7 +333,7 @@ namespace MomodoraCopy
 
                 if (currentState != State.AttackPattern3)
                 {
-                    attackTime = 0;
+                    yield break;
                 }
                 attackTime -= coroutineCycle;
                 yield return waitTime;
@@ -545,7 +548,6 @@ namespace MomodoraCopy
         IEnumerator Hurt()
         {
             bossMovement.direction.x = 0;
-            bloodEffect.Play();
             float hurtTime = animTimeDictionary[hurtAnimHash];
             animator.Play(hurtAnimHash, -1, 0);
             currentState = State.Idle;
@@ -556,7 +558,6 @@ namespace MomodoraCopy
                 if (currentState == State.Hurt)
                 {
                     bossMovement.direction.x = 0;
-                    bloodEffect.Play();
                     hurtTime = animTimeDictionary[hurtAnimHash];
                     animator.Play(hurtAnimHash, -1, 0);
                     currentState = State.Idle;

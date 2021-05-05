@@ -27,6 +27,7 @@ namespace MomodoraCopy
         float accelerationTimeGrounded = .1f;
 
         public ParticleSystem poisonBombEffect;
+        public ParticleSystem poisonBombCollision;
         Transform sprite;
 
         PoisonBombSpawner poisonBombSpawner;
@@ -54,6 +55,10 @@ namespace MomodoraCopy
 
         void OnEnable()
         {
+            if (GameManager.instance == null)
+            {
+                return;
+            }
             speed = Mathf.Abs(transform.position.x - GameManager.instance.playerPhysics.transform.position.x +
                 Mathf.Sign(transform.position.x - GameManager.instance.playerPhysics.transform.position.x) * Random.Range(4.0f, 7.0f));
             velocity.y = Mathf.Abs(speed);
@@ -61,7 +66,9 @@ namespace MomodoraCopy
         void OnDisable()
         {
             poisonBombEffect.transform.position = transform.position;
+            poisonBombCollision.transform.position = transform.position;
             poisonBombEffect.Play();
+            poisonBombCollision.Play();
         }
 
         void Update()
@@ -96,6 +103,11 @@ namespace MomodoraCopy
                 gameObject.SetActive(false);
                 GameManager.instance.playerPhysics.transform.GetChild(1)
                     .GetComponent<PlayerStatus>().TakeDamage(poisonBombDamage, DamageType.Poisoned, transform.rotation);
+            }
+            bool isCollision = Physics2D.OverlapCircle(transform.position, bombRadius, collisionMask);
+            if (isCollision)
+            {
+                gameObject.SetActive(false);
             }
         }
 
