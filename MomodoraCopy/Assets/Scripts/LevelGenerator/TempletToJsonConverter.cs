@@ -9,9 +9,15 @@ namespace MomodoraCopy
 {
     public class TempletInfo
     {
+        #region Tiles
         public List<Vector3Int> platformTileList;
         public List<Vector3Int> ladderTileList;
         public List<Vector3Int> spikeTileList;
+        #endregion
+
+        #region Objects
+        public List<Vector3Int> pushBlockList;
+        #endregion
     }
 
     public class TempletToJsonConverter : MonoBehaviour
@@ -100,6 +106,17 @@ namespace MomodoraCopy
                 List<Vector3Int> ladderTileList = new List<Vector3Int>();
                 List<Vector3Int> spikeTileList = new List<Vector3Int>();
 
+                List<Vector3Int> pushBlockList = new List<Vector3Int>();
+                for(int j = 0; j < tilemap.transform.childCount; j++)
+                {
+                    if(tilemap.transform.GetChild(j).name == "PushBlock")
+                    {
+                        pushBlockList.Add(Vector3Int.FloorToInt(
+                            tilemap.transform.GetChild(j).transform.position)
+                            - tilemap.cellBounds.min);
+                    }
+                }
+
                 foreach (var position in tilemap.cellBounds.allPositionsWithin)
                 {
                     if (!tilemap.HasTile(position))
@@ -107,7 +124,7 @@ namespace MomodoraCopy
                         continue;
                     }
                     Vector3Int cellPos = tilemap.WorldToCell(position) - tilemap.cellBounds.min;
-                    //Debug.Log(tilemap.GetTile(position).name);
+
                     if (tilemap.GetTile(position).name.Equals(platform.name))
                     {
                         platformTileList.Add(cellPos);
@@ -124,6 +141,8 @@ namespace MomodoraCopy
                 templetList[i].platformTileList = platformTileList;
                 templetList[i].ladderTileList = ladderTileList;
                 templetList[i].spikeTileList = spikeTileList;
+
+                templetList[i].pushBlockList = pushBlockList;
 
                 string jsonData = JsonUtility.ToJson(templet, true);
                 string directoryPath = Path.Combine(superDirectoryPath, tilemap.name.Substring(0, tilemap.name.Length - 1));

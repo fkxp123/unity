@@ -7,13 +7,17 @@ namespace MomodoraCopy
         float crouchBowPositionY = -0.1f;
         public CrouchBowAttackState(Player player) : base(player)
         {
-            arrowSpawner = player.arrowSpawner;
-            info = player.arrowSpawner.info;
+            //arrowSpawner = player.arrowSpawner;
+            //info = player.arrowSpawner.info;
         }
         public override void OperateEnter()
         {
             base.OperateEnter();
             playerMovement.SetCrouchBoxCollider2D();
+
+            arrowSpawner = player.arrowSpawner;
+            info = player.arrowSpawner.info;
+
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + crouchBowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
             arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);

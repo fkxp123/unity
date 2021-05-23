@@ -53,9 +53,6 @@ namespace MomodoraCopy
         {
             base.Start();
             gravity = -50f;
-            collisions.below = true;
-            //start()에서 true로 설정한 이유 : 
-            //level generator에서 collisions 체크가 한 프레임 늦게되서 벽밑으로 빨려들어감(왜인지는 모름)
             boxCollider = GetComponent<BoxCollider2D>();
         }
         void CalculateCurrentVelocity()

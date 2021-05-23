@@ -77,9 +77,11 @@ namespace MomodoraCopy
         {
             UpdateRaycastOrigins();
 
+
             CalculateVelocity();
 
             CalculatePassengerMovement(Velocity);
+
 
             Move(Velocity);
 
@@ -267,6 +269,9 @@ namespace MomodoraCopy
                 rayLength = 2 * skinWidth;
             }
 
+            bool isLeft = false;
+            bool isRight = false;
+
             for (int i = 0; i < horizontalRayCount; i++)
             {
                 Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
@@ -299,13 +304,21 @@ namespace MomodoraCopy
                     {
                         direction.x = -1;
                         findPlayer = true;
+                        isLeft = true;
                     }
                     else if (findPlayerRight)
                     {
                         direction.x = 1;
                         findPlayer = true;
+                        isRight = true;
                     }
                 }
+            }
+            if ((isLeft && collisions.left) || (isRight && collisions.right))
+            {
+                direction.x = 0;
+                moveAmount.x = 0;
+                findPlayer = false;
             }
         }
 
@@ -320,6 +333,9 @@ namespace MomodoraCopy
             {
                 rayLength = 2 * skinWidth;
             }
+
+            bool isUp = false;
+            bool isDown = false;
 
             for (int i = 0; i < verticalRayCount; i++)
             {
@@ -337,6 +353,11 @@ namespace MomodoraCopy
 
                 if (hit)
                 {
+                    if (hit.distance == 0)
+                    {
+                        continue;
+                    }
+
                     moveAmount.y = (hit.distance - skinWidth) * directionY;
                     rayLength = hit.distance;
 
@@ -349,13 +370,21 @@ namespace MomodoraCopy
                     {
                         direction.y = 1;
                         findPlayer = true;
+                        isUp = true;
                     }
                     else if (findPlayerDown)
                     {
                         direction.y = -1;
                         findPlayer = true;
+                        isDown = true;
                     }
                 }
+            }
+            if((isUp && collisions.above) || (isDown && collisions.below))
+            {
+                direction.y = 0;
+                moveAmount.y = 0;
+                findPlayer = false;
             }
         }
 

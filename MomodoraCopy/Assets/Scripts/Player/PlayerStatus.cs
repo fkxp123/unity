@@ -69,7 +69,7 @@ namespace MomodoraCopy
             playerFsm = GetComponent<Player>();
             //animator = GetComponent<Animator>();;
             spriteRenderer = GetComponent<SpriteRenderer>();
-            uiCanvas.transform.SetParent(transform);
+            //uiCanvas.transform.SetParent(transform);
             healthBar = uiCanvas.GetComponent<HealthBar>();
 
             playerPhysics = transform.parent;

@@ -56,12 +56,14 @@ namespace MomodoraCopy
                 }
             }
 
-            backgroundRectTransform.sizeDelta = new Vector2((maxLength * 10) + 8, (contexts.Length) * 10 + 22);
+            backgroundRectTransform.sizeDelta = 
+                new Vector2((maxLength * 10) + 8, (contexts.Length) * 10 + 22);
             backgroundRectTransform.anchoredPosition = 
-                new Vector3(backgroundRectTransform.sizeDelta.x / 2, backgroundRectTransform.sizeDelta.y / 2, 0);
+                new Vector3(backgroundRectTransform.sizeDelta.x * 0.5f, 
+                backgroundRectTransform.sizeDelta.y * 0.5f, 0);
             nextButtonRectTransform.anchoredPosition =
-                new Vector3((backgroundRectTransform.sizeDelta.x / 2) - 4,
-                (-1 * backgroundRectTransform.sizeDelta.y / 2) + 2 + 4, 0);
+                new Vector3((backgroundRectTransform.sizeDelta.x * 0.5f) - 4,
+                (-1 * backgroundRectTransform.sizeDelta.y * 0.5f) + 2 + 4, 0);
         }
         public Vector3 GetBackgroundSize()
         {

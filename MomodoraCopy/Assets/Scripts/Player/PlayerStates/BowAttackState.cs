@@ -8,14 +8,17 @@ namespace MomodoraCopy
         bool isBowAttackKeyDown;
         public BowAttackState(Player player) : base(player)
         {
-            arrowSpawner = player.arrowSpawner;
-            info = player.arrowSpawner.info;
+            //arrowSpawner = player.arrowSpawner;
+            //info = player.arrowSpawner.info;
         }
         public override void OperateEnter()
         {
             base.OperateEnter();
             player.isAnimationFinished = false;
             player.animator.Play("bowAttack", -1, 0f);
+
+            arrowSpawner = player.arrowSpawner;
+            info = player.arrowSpawner.info;
 
             playerMovement.moveType = PlayerMovement.MoveType.StopMove;
             playerMovement.stopCheckFlip = true;

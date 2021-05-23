@@ -10,7 +10,6 @@ namespace MomodoraCopy
         float currentTime;
 
         float hitEffectTime;
-        WaitForSeconds hitEffectWaitTime;
 
         public HurtState(Player player) : base(player)
         {
@@ -23,10 +22,18 @@ namespace MomodoraCopy
             player.animator.Play("hurt");
             player.spriteRenderer.material.shader = player.shaderGUItext;
             player.spriteRenderer.color = Color.white;
+            hitEffectTime = 0.15f;
+            
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
+            hitEffectTime -= Time.deltaTime;
+            if(hitEffectTime <= 0)
+            {
+                player.spriteRenderer.material.shader = player.shaderSpritesDefault;
+                player.spriteRenderer.color = Color.white;
+            }
             currentTime -= Time.deltaTime;
             if(currentTime <= 0)
             {

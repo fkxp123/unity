@@ -6,6 +6,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
 
+using UnityEngine.Experimental.Rendering.Universal;
+
+
 namespace MomodoraCopy
 {
     [System.Serializable]
@@ -33,6 +36,10 @@ namespace MomodoraCopy
         public Dictionary<int, List<GameObject>> checkPointsDict = new Dictionary<int, List<GameObject>>();
         public List<GameObject> checkPointsList = new List<GameObject>();
 
+        public GameObject globalLightPrefab;
+        GameObject globalLightObject;
+        Light2D globalLight;
+
         void OnEnable()
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -56,11 +63,13 @@ namespace MomodoraCopy
         void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            Destroy(globalLightObject);
         }
 
         public override void Awake()
         {
             base.Awake();
+
             scene = SceneManager.GetActiveScene();
             currentScene = scene.name;
             if (playerPhysics == null || !playerPhysics.CompareTag("Player"))
@@ -76,6 +85,8 @@ namespace MomodoraCopy
             {
                 checkPoints = GameObject.FindGameObjectsWithTag("CheckPoint");
             }
+            globalLightObject = Instantiate(globalLightPrefab, Vector3.zero, Quaternion.identity);
+            globalLight = globalLightObject.GetComponent<Light2D>();
         }
         public void Start()
         {

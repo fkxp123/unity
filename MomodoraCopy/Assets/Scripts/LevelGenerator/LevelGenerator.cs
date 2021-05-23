@@ -6,14 +6,33 @@ using System.IO;
 
 namespace MomodoraCopy
 {
+    //public class Room
+    //{
+    //    public int roomNumber;
+    //    public int roomWidth;
+    //    public int roomHeight;
+
+    //    public List<Vector3Int> cellList = new List<Vector3Int>();
+
+    //    public bool isOpenLeft;
+    //    public bool isOpenRight;
+    //    public bool isOpenBottom;
+    //    public bool isOpenTop;
+    //}
+
     public enum RoomType
     {
-        Void, LR, LRB, LRBT, LRT, L, LB, LBT, LT, R, RB, RBT, RT
+        Void, LR, LRB, LRBT, LRT, L, LB, LBT, LT, R, RB, RBT, RT, BT, T, B
     };
     public enum TileType
     {
         Platform, Ladder, LadderPlatform, ObstacleGround, ObstacleAir, Spike, Stairs
     };
+    public enum ObjectType
+    {
+        Entrance, Exit, PushBlock, MovingTrap, ElevatorTrap
+    };
+    //SetPushObject, SetEntranceObject -> SetObject(Vector3Int pos, int roomnumber, ObjectType obj)
 
     public class LevelGenerator : MonoBehaviour
     {
@@ -97,6 +116,11 @@ namespace MomodoraCopy
             System.TimeSpan afterSPTime = afterSolutionPath - startTime;
             Debug.Log("afterSP :" + afterSPTime);
 
+            SetExcludedPath();
+            System.DateTime afterExcludedPath = System.DateTime.Now;
+            System.TimeSpan afterEPTime = afterExcludedPath - startTime;
+            Debug.Log("afterEP :" + afterEPTime);
+
             DrawAllRooms();
             System.DateTime afterDrawRooms = System.DateTime.Now;
             System.TimeSpan afterDRTime = afterDrawRooms - startTime;
@@ -105,10 +129,16 @@ namespace MomodoraCopy
             Debug.Log("end :" + endTime);
             System.TimeSpan totalTime = endTime - startTime;
             Debug.Log("total generate time :" + totalTime);
+
+            StartCoroutine(ActivateObjects());
         }
 
         void InitLevelGenerator()
         {
+            platformTileMap.gameObject.SetActive(true);
+            ladderTileMap.gameObject.SetActive(true);
+            spikeTileMap.gameObject.SetActive(true);
+
             pushBlockInfo = new PoolingObjectInfo
             {
                 prefab = pushBlock,
@@ -117,7 +147,18 @@ namespace MomodoraCopy
                 objectRotation = transform.rotation
             };
             //ObjectPooler.instance.CreatePoolingObjectQueue(pushBlockInfo, roomHeight * roomWidth * grid * grid / 4);
-            ObjectPooler.instance.CreatePoolingObjectQueue(pushBlockInfo, 1000);
+            ObjectPooler.instance.CreatePoolingObjectQueue(pushBlockInfo, 100);
+        }
+        IEnumerator ActivateObjects()
+        {
+            yield return null;
+            for (int i = 0; i < pushBlockObjectDict.Count; i++)
+            {
+                for (int j = 0; j < pushBlockObjectDict[i].Count; j++)
+                {
+                    pushBlockObjectDict[i][j].SetActive(true);
+                }
+            }
         }
 
         void SetExcludedPathList()
@@ -204,10 +245,8 @@ namespace MomodoraCopy
         }
 
         #region Draw & Erase Tile Functions
-        void SetTile(int cellNumber, int roomNumber, TileType tileType)
+        void DrawTile(Vector3Int globalPosition, TileType tileType)
         {
-            Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
-                + cellDicitonary[cellNumber];
             switch (tileType)
             {
                 case TileType.Platform:
@@ -224,111 +263,8 @@ namespace MomodoraCopy
                     break;
             }
         }
-        void SetTile(int startCell, int endCell, int roomNumber, TileType tileType)
+        void EraseTile(Vector3Int globalPosition, TileType tileType)
         {
-            int start = startCell;
-            int end = endCell;
-            if (startCell > endCell)
-            {
-                start = endCell;
-                end = startCell;
-            }
-
-            Tilemap targetTileMap;
-            TileBase targetTile;
-
-            switch (tileType)
-            {
-                case TileType.Platform:
-                    targetTileMap = platformTileMap;
-                    targetTile = platformTile;
-                    break;
-                case TileType.Ladder:
-                    targetTileMap = ladderTileMap;
-                    targetTile = ladderTile;
-                    break;
-                case TileType.Spike:
-                    targetTileMap = spikeTileMap;
-                    targetTile = spikeTile;
-                    break;
-                default:
-                    targetTileMap = platformTileMap;
-                    targetTile = platformTile;
-                    break;
-            }
-
-            for (int i = start; i <= end; i++)
-            {
-                Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
-                    + cellDicitonary[i];
-                targetTileMap.SetTile(globalPosition, targetTile);
-            }
-        }
-        void SetTile(int colsNumber, int startCell, int endCell, int roomNumber, TileType tileType)
-        {
-            int start = startCell + colsNumber * roomWidth;
-            int end = endCell + colsNumber * roomWidth;
-            if (startCell > endCell)
-            {
-                start = endCell + colsNumber * roomWidth;
-                end = startCell + colsNumber * roomWidth;
-            }
-
-            Tilemap targetTileMap;
-            TileBase targetTile;
-
-            switch (tileType)
-            {
-                case TileType.Platform:
-                    targetTileMap = platformTileMap;
-                    targetTile = platformTile;
-                    break;
-                case TileType.Ladder:
-                    targetTileMap = ladderTileMap;
-                    targetTile = ladderTile;
-                    break;
-                case TileType.Spike:
-                    targetTileMap = spikeTileMap;
-                    targetTile = spikeTile;
-                    break;
-                default:
-                    targetTileMap = platformTileMap;
-                    targetTile = platformTile;
-                    break;
-            }
-
-            for (int i = start; i <= end; i++)
-            {
-                Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
-                    + cellDicitonary[i];
-                targetTileMap.SetTile(globalPosition, targetTile);
-            }
-        }
-        void SetTile(Vector3Int localPosition, int roomNumber, TileType tileType)
-        {
-            Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
-                localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
-            switch (tileType)
-            {
-                case TileType.Platform:
-                    platformTileMap.SetTile(globalPosition, platformTile);
-                    break;
-                case TileType.Ladder:
-                    ladderTileMap.SetTile(globalPosition, ladderTile);
-                    break;
-                case TileType.Spike:
-                    spikeTileMap.SetTile(globalPosition, spikeTile);
-                    break;
-                default:
-                    platformTileMap.SetTile(globalPosition, platformTile);
-                    break;
-            }
-        }
-
-        void RemoveTile(int cellNumber, int roomNumber, TileType tileType)
-        {
-            Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
-                + cellDicitonary[cellNumber];
             switch (tileType)
             {
                 case TileType.Platform:
@@ -345,6 +281,107 @@ namespace MomodoraCopy
                     break;
             }
         }
+
+        void SetTile(int cellNumber, int roomNumber, TileType tileType)
+        {
+            Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellNumber];
+            DrawTile(globalPosition, tileType);
+        }
+        void SetTile(int startCell, int endCell, int roomNumber, TileType tileType)
+        {
+            int start = startCell;
+            int end = endCell;
+            if (startCell > endCell)
+            {
+                start = endCell;
+                end = startCell;
+            }
+
+            //Tilemap targetTileMap;
+            //TileBase targetTile;
+            //
+            //switch (tileType)
+            //{
+            //    case TileType.Platform:
+            //        targetTileMap = platformTileMap;
+            //        targetTile = platformTile;
+            //        break;
+            //    case TileType.Ladder:
+            //        targetTileMap = ladderTileMap;
+            //        targetTile = ladderTile;
+            //        break;
+            //    case TileType.Spike:
+            //        targetTileMap = spikeTileMap;
+            //        targetTile = spikeTile;
+            //        break;
+            //    default:
+            //        targetTileMap = platformTileMap;
+            //        targetTile = platformTile;
+            //        break;
+            //}
+
+            for (int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                //targetTileMap.SetTile(globalPosition, targetTile);
+                DrawTile(globalPosition, tileType);
+            }
+        }
+        void SetTile(int colsNumber, int startCell, int endCell, int roomNumber, TileType tileType)
+        {
+            int start = startCell + colsNumber * roomWidth;
+            int end = endCell + colsNumber * roomWidth;
+            if (startCell > endCell)
+            {
+                start = endCell + colsNumber * roomWidth;
+                end = startCell + colsNumber * roomWidth;
+            }
+
+            //Tilemap targetTileMap;
+            //TileBase targetTile;
+            //
+            //switch (tileType)
+            //{
+            //    case TileType.Platform:
+            //        targetTileMap = platformTileMap;
+            //        targetTile = platformTile;
+            //        break;
+            //    case TileType.Ladder:
+            //        targetTileMap = ladderTileMap;
+            //        targetTile = ladderTile;
+            //        break;
+            //    case TileType.Spike:
+            //        targetTileMap = spikeTileMap;
+            //        targetTile = spikeTile;
+            //        break;
+            //    default:
+            //        targetTileMap = platformTileMap;
+            //        targetTile = platformTile;
+            //        break;
+            //}
+
+            for (int i = start; i <= end; i++)
+            {
+                Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
+                    + cellDicitonary[i];
+                DrawTile(globalPosition, tileType);
+            }
+        }
+        void SetTile(Vector3Int localPosition, int roomNumber, TileType tileType)
+        {
+            Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
+                localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
+            DrawTile(globalPosition, tileType);
+        }
+
+        void RemoveTile(int cellNumber, int roomNumber, TileType tileType)
+        {
+            Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
+                + cellDicitonary[cellNumber];
+            EraseTile(globalPosition, tileType);
+        }
         void RemoveTile(int startCell, int endCell, int roomNumber, TileType tileType)
         {
             int start = startCell;
@@ -355,29 +392,11 @@ namespace MomodoraCopy
                 end = startCell;
             }
 
-            Tilemap targetTileMap;
-
-            switch (tileType)
-            {
-                case TileType.Platform:
-                    targetTileMap = platformTileMap;
-                    break;
-                case TileType.Ladder:
-                    targetTileMap = ladderTileMap;
-                    break;
-                case TileType.Spike:
-                    targetTileMap = spikeTileMap;
-                    break;
-                default:
-                    targetTileMap = platformTileMap;
-                    break;
-            }
-
             for (int i = start; i <= end; i++)
             {
                 Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
                     + cellDicitonary[i];
-                targetTileMap.SetTile(globalPosition, null);
+                EraseTile(globalPosition, tileType);
             }
         }
         void RemoveTile(int colsNumber, int startCell, int endCell, int roomNumber, TileType tileType)
@@ -390,36 +409,18 @@ namespace MomodoraCopy
                 end = startCell + colsNumber * roomWidth;
             }
 
-            Tilemap targetTileMap;
-
-            switch (tileType)
-            {
-                case TileType.Platform:
-                    targetTileMap = platformTileMap;
-                    break;
-                case TileType.Ladder:
-                    targetTileMap = ladderTileMap;
-                    break;
-                case TileType.Spike:
-                    targetTileMap = spikeTileMap;
-                    break;
-                default:
-                    targetTileMap = platformTileMap;
-                    break;
-            }
-
             for (int i = start; i <= end; i++)
             {
                 Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
                     + cellDicitonary[i];
-                targetTileMap.SetTile(globalPosition, null);
+                EraseTile(globalPosition, tileType);
             }
         }
         void RemoveTile(Vector3Int localPosition, int roomNumber, TileType tileType)
         {
             Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
                 localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
-            platformTileMap.SetTile(globalPosition, null);
+            EraseTile(globalPosition, tileType);
         }       
 
         void DrawTileVerticalLine(int startCell, int lineLength, int roomNumber, TileType tileType)
@@ -538,7 +539,7 @@ namespace MomodoraCopy
             }
             Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
                 localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
-            Vector3 position = new Vector3(globalPosition.x + 2, globalPosition.y + 2, globalPosition.z);
+            Vector3 position = new Vector3(globalPosition.x, globalPosition.y, globalPosition.z);
             enterObject.transform.position = position;
         }
         void SetEntranceObject(int cellNumber, int roomNumber)
@@ -566,7 +567,7 @@ namespace MomodoraCopy
             }
             Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
                 localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
-            Vector3 position = new Vector3(globalPosition.x + 2, globalPosition.y + 2, globalPosition.z);
+            Vector3 position = new Vector3(globalPosition.x, globalPosition.y, globalPosition.z);
             exitObject.transform.position = position;
         }
         void SetExitObject(int cellNumber, int roomNumber)
@@ -594,13 +595,14 @@ namespace MomodoraCopy
             }
             Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
                 localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
-            Vector3 position = new Vector3(globalPosition.x + 1, globalPosition.y + 1, globalPosition.z);
+            Vector3 position = new Vector3(globalPosition.x, globalPosition.y, globalPosition.z);
             GameObject pushBlockObject = ObjectPooler.instance.GetPoolingObject(pushBlockInfo);
             pushBlockObject.transform.position = position;
             List<GameObject> pushBlockObjectList = pushBlockObjectDict[roomNumber];
             pushBlockObjectList.Add(pushBlockObject);
             pushBlockObjectDict.Remove(roomNumber);
             pushBlockObjectDict.Add(roomNumber, pushBlockObjectList);
+            pushBlockObject.SetActive(false);
         }
         void SetPushBlockObject(int cellNumber, int roomNumber)
         {
@@ -614,6 +616,7 @@ namespace MomodoraCopy
             pushBlockObjectList.Add(pushBlockObject);
             pushBlockObjectDict.Remove(roomNumber);
             pushBlockObjectDict.Add(roomNumber, pushBlockObjectList);
+            pushBlockObject.SetActive(false);
         }
         void SetPushBlockObject(int colsNumber, int cellNumber, int roomNumber)
         {
@@ -627,6 +630,7 @@ namespace MomodoraCopy
             pushBlockObjectList.Add(pushBlockObject);
             pushBlockObjectDict.Remove(roomNumber);
             pushBlockObjectDict.Add(roomNumber, pushBlockObjectList);
+            pushBlockObject.SetActive(false);
         }
         #endregion
 
@@ -648,6 +652,30 @@ namespace MomodoraCopy
             }
             pushBlockObjectDict.Remove(roomNumber);
             pushBlockObjectDict.Add(roomNumber, new List<GameObject>());
+        }
+        void DrawTiles(int roomNumber, TempletInfo templet)
+        {
+            for (int i = 0; i < templet.platformTileList.Count; i++)
+            {
+                openPlaceableDict[roomNumber].Remove(templet.platformTileList[i]);
+                SetTile(templet.platformTileList[i], roomNumber, platform);
+            }
+            for (int i = 0; i < templet.ladderTileList.Count; i++)
+            {
+                openPlaceableDict[roomNumber].Remove(templet.ladderTileList[i]);
+                SetTile(templet.ladderTileList[i], roomNumber, ladder);
+            }
+            for (int i = 0; i < templet.spikeTileList.Count; i++)
+            {
+                openPlaceableDict[roomNumber].Remove(templet.spikeTileList[i]);
+                SetTile(templet.spikeTileList[i], roomNumber, spike);
+            }
+
+            for (int i = 0; i < templet.pushBlockList.Count; i++)
+            {
+                openPlaceableDict[roomNumber].Remove(templet.pushBlockList[i]);
+                SetPushBlockObject(templet.pushBlockList[i], roomNumber);
+            }
         }
         void ResetOpenPlaceableDict(int roomNumber)
         {
@@ -698,21 +726,7 @@ namespace MomodoraCopy
                     string jsonData = File.ReadAllText(path);
                     TempletInfo templet = JsonUtility.FromJson<TempletInfo>(jsonData);
 
-                    for (int i = 0; i < templet.platformTileList.Count; i++)
-                    {
-                        openPlaceableDict[roomNumber].Remove(templet.platformTileList[i]);
-                        SetTile(templet.platformTileList[i], roomNumber, platform);
-                    }
-                    for (int i = 0; i < templet.ladderTileList.Count; i++)
-                    {
-                        openPlaceableDict[roomNumber].Remove(templet.ladderTileList[i]);
-                        SetTile(templet.ladderTileList[i], roomNumber, ladder);
-                    }
-                    for (int i = 0; i < templet.spikeTileList.Count; i++)
-                    {
-                        openPlaceableDict[roomNumber].Remove(templet.spikeTileList[i]);
-                        SetTile(templet.spikeTileList[i], roomNumber, spike);
-                    }
+                    DrawTiles(roomNumber, templet);
                 }
                 else
                 {
@@ -907,24 +921,10 @@ namespace MomodoraCopy
                 string jsonData = File.ReadAllText(path);
                 TempletInfo templet = JsonUtility.FromJson<TempletInfo>(jsonData);
 
-                for (int i = 0; i < templet.platformTileList.Count; i++)
-                {
-                    openPlaceableDict[roomNumber].Remove(templet.platformTileList[i]);
-                    SetTile(templet.platformTileList[i], roomNumber, platform);
-                }
-                for (int i = 0; i < templet.ladderTileList.Count; i++)
-                {
-                    openPlaceableDict[roomNumber].Remove(templet.ladderTileList[i]);
-                    SetTile(templet.ladderTileList[i], roomNumber, ladder);
-                }
-                for (int i = 0; i < templet.spikeTileList.Count; i++)
-                {
-                    openPlaceableDict[roomNumber].Remove(templet.spikeTileList[i]);
-                    SetTile(templet.spikeTileList[i], roomNumber, spike);
-                }
+                DrawTiles(roomNumber, templet);
 
                 SetEntranceObject(CheckObjectPlaceable(4, roomNumber, templet), roomNumber);
-                //for(int i = 0; i < 20; i++)
+                //for (int i = 0; i < 20; i++)
                 //{
                 //    SetPushBlockObject(CheckObjectPlaceable(2, roomNumber, templet), roomNumber);
 
@@ -965,21 +965,7 @@ namespace MomodoraCopy
                 string jsonData = File.ReadAllText(path);
                 TempletInfo templet = JsonUtility.FromJson<TempletInfo>(jsonData);
 
-                for (int i = 0; i < templet.platformTileList.Count; i++)
-                {
-                    openPlaceableDict[roomNumber].Remove(templet.platformTileList[i]);
-                    SetTile(templet.platformTileList[i], roomNumber, platform);
-                }
-                for (int i = 0; i < templet.ladderTileList.Count; i++)
-                {
-                    openPlaceableDict[roomNumber].Remove(templet.ladderTileList[i]);
-                    SetTile(templet.ladderTileList[i], roomNumber, ladder);
-                }
-                for (int i = 0; i < templet.spikeTileList.Count; i++)
-                {
-                    openPlaceableDict[roomNumber].Remove(templet.spikeTileList[i]);
-                    SetTile(templet.spikeTileList[i], roomNumber, spike);
-                }
+                DrawTiles(roomNumber, templet);
 
                 SetExitObject(CheckObjectPlaceable(4, roomNumber, templet), roomNumber);
             }
@@ -1042,10 +1028,9 @@ namespace MomodoraCopy
             {
                 openPlaceableDict[roomNumber].Remove(closedPlaceableList[random] + Vector3Int.right * k);
             }
-            return closedPlaceableList[random];
+            return closedPlaceableList[random] + new Vector3Int(objectGrid / 2, objectGrid / 2, 0);
 
         }
-
         TileBase GetTile(Vector3Int localPosition, int roomNumber, TileType tileType)
         {
             Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
@@ -1507,73 +1492,6 @@ namespace MomodoraCopy
                     }
                     currentDirection = PathDirection.None;
 
-                    for (int i = 0; i < excludedPathList.Count; i++)
-                    {
-                        //roomDictionary.Add(excludedPathList[i], RoomType.LR);
-
-                        if (excludedPathList[i] % grid == 0)
-                        {
-                            int random = Random.Range(0, 4);
-                            if(random == 0)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.R);
-                            }
-                            else if (random == 1)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.RB);
-                            }
-                            else if (random == 0)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.RT);
-                            }
-                            else
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.RBT);
-                            }
-                        }
-                        else if(excludedPathList[i] % grid == grid - 1)
-                        {
-                            int random = Random.Range(0, 4);
-                            if (random == 0)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.L);
-                            }
-                            else if (random == 1)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LB);
-                            }
-                            else if (random == 0)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LT);
-                            }
-                            else
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LBT);
-                            }
-                        }
-                        else
-                        {
-                            int random = Random.Range(0, 4);
-                            if (random == 0)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LR);
-                            }
-                            else if (random == 1)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LRB);
-                            }
-                            else if (random == 0)
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LRT);
-                            }
-                            else
-                            {
-                                roomDictionary.Add(excludedPathList[i], RoomType.LRBT);
-                            }
-                        }
-
-                    }
-
                     string s = string.Empty;
                     string rs = string.Empty;
                     for (int i = 0; i < pathList.Count; i++)
@@ -1589,12 +1507,360 @@ namespace MomodoraCopy
                 pathList.Add(currentPath);
             }
         }
+        void SetExcludedPath()
+        {
+            #region branch
+            List<int> tempList = new List<int>();
+            List<int> subList = new List<int>();
+
+            for (int i = 0; i < excludedPathList.Count; i++)
+            {
+                tempList.Add(excludedPathList[i]);
+            }
+
+            for (int i = 0; i < excludedPathList.Count; i++)
+            {
+                string s = string.Empty;
+
+                if (excludedPathList[i] % grid == 0)
+                {
+                    if (pathList.Contains(excludedPathList[i] + 1) ||
+                       (pathList.Contains(excludedPathList[i] + grid) && excludedPathList[i] + grid < grid * grid) ||
+                       (pathList.Contains(excludedPathList[i] - grid) && excludedPathList[i] - grid >= 0))
+                    {
+                        if (pathList.Contains(excludedPathList[i] + 1) ||
+                            excludedPathList.Contains(excludedPathList[i] + 1))
+                        {
+                            s = string.Concat(s, "R");
+                        }
+                        if ((pathList.Contains(excludedPathList[i] + grid) ||
+                            excludedPathList.Contains(excludedPathList[i] + grid)) &&
+                            excludedPathList[i] + grid < grid * grid)
+                        {
+                            s = string.Concat(s, "B");
+                        }
+                        if ((pathList.Contains(excludedPathList[i] - grid) ||
+                            excludedPathList.Contains(excludedPathList[i] - grid)) &&
+                            excludedPathList[i] - grid >= 0)
+                        {
+                            s = string.Concat(s, "T");
+                        }
+                    }
+                }
+                else if (excludedPathList[i] % grid == grid - 1)
+                {
+                    if (pathList.Contains(excludedPathList[i] - 1) ||
+                       (pathList.Contains(excludedPathList[i] + grid) && excludedPathList[i] + grid < grid * grid) ||
+                       (pathList.Contains(excludedPathList[i] - grid) && excludedPathList[i] - grid >= 0))
+                    {
+                        if (pathList.Contains(excludedPathList[i] - 1) ||
+                            excludedPathList.Contains(excludedPathList[i] - 1))
+                        {
+                            s = string.Concat(s, "L");
+                        }
+                        if ((pathList.Contains(excludedPathList[i] + grid) ||
+                            excludedPathList.Contains(excludedPathList[i] + grid)) &&
+                            excludedPathList[i] + grid < grid * grid)
+                        {
+                            s = string.Concat(s, "B");
+                        }
+                        if ((pathList.Contains(excludedPathList[i] - grid) ||
+                            excludedPathList.Contains(excludedPathList[i] - grid)) &&
+                            excludedPathList[i] - grid >= 0)
+                        {
+                            s = string.Concat(s, "T");
+                        }
+                    }
+                }
+                else
+                {
+                    if (pathList.Contains(excludedPathList[i] + 1) ||
+                        pathList.Contains(excludedPathList[i] - 1) ||
+                       (pathList.Contains(excludedPathList[i] + grid) && excludedPathList[i] + grid < grid * grid) ||
+                       (pathList.Contains(excludedPathList[i] - grid) && excludedPathList[i] - grid >= 0))
+                    {
+                        if (pathList.Contains(excludedPathList[i] - 1) ||
+                            excludedPathList.Contains(excludedPathList[i] - 1))
+                        {
+                            s = string.Concat(s, "L");
+                        }
+                        if (pathList.Contains(excludedPathList[i] + 1) ||
+                            excludedPathList.Contains(excludedPathList[i] + 1))
+                        {
+                            s = string.Concat(s, "R");
+                        }
+                        if ((pathList.Contains(excludedPathList[i] + grid) ||
+                            excludedPathList.Contains(excludedPathList[i] + grid)) &&
+                            excludedPathList[i] + grid < grid * grid)
+                        {
+                            s = string.Concat(s, "B");
+                        }
+                        if ((pathList.Contains(excludedPathList[i] - grid) ||
+                            excludedPathList.Contains(excludedPathList[i] - grid)) &&
+                            excludedPathList[i] - grid >= 0)
+                        {
+                            s = string.Concat(s, "T");
+                        }
+                    }
+                }
+                if (s != string.Empty)
+                {
+                    RoomType roomType = (RoomType)System.Enum.Parse(typeof(RoomType), s);
+                    roomDictionary.Add(excludedPathList[i], roomType);
+                    tempList.Remove(excludedPathList[i]);
+                    subList.Add(excludedPathList[i]);
+                }
+            }
+
+            for (int row = 0; row < grid; row++)
+            {
+                List<int> tpList = new List<int>();
+                for (int i = 0; i < tempList.Count; i++)
+                {
+                    tpList.Add(tempList[i]);
+                }
+                List<int> removedList = new List<int>();
+                for (int i = 0; i < subList.Count; i++)
+                {
+                    removedList.Add(subList[i]);
+                }
+                subList.Clear();
+                for (int i = 0; i < tpList.Count; i++)
+                {
+                    string s = string.Empty;
+
+                    if (tpList[i] % grid == 0)
+                    {
+                        if (excludedPathList.Contains(tpList[i] + 1))
+                        {
+                            s = string.Concat(s, "R");
+                        }
+                        if (excludedPathList.Contains(tpList[i] + grid) &&
+                            tpList[i] + grid < grid * grid)
+                        {
+                            s = string.Concat(s, "B");
+                        }
+                        if (excludedPathList.Contains(tpList[i] - grid) &&
+                            tpList[i] - grid >= 0)
+                        {
+                            s = string.Concat(s, "T");
+                        }
+                    }
+                    else if (tpList[i] % grid == grid - 1)
+                    {
+                        if (excludedPathList.Contains(tpList[i] - 1))
+                        {
+                            s = string.Concat(s, "L");
+                        }
+                        if (excludedPathList.Contains(tpList[i] + grid) &&
+                            tpList[i] + grid < grid * grid)
+                        {
+                            s = string.Concat(s, "B");
+                        }
+                        if (excludedPathList.Contains(tpList[i] - grid) &&
+                            tpList[i] - grid >= 0)
+                        {
+                            s = string.Concat(s, "T");
+                        }
+                    }
+                    else
+                    {
+                        if (excludedPathList.Contains(tpList[i] - 1))
+                        {
+                            s = string.Concat(s, "L");
+                        }
+                        if (excludedPathList.Contains(tpList[i] + 1))
+                        {
+                            s = string.Concat(s, "R");
+                        }
+                        if (excludedPathList.Contains(tpList[i] + grid) &&
+                            tpList[i] + grid < grid * grid)
+                        {
+                            s = string.Concat(s, "B");
+                        }
+                        if (excludedPathList.Contains(tpList[i] - grid) &&
+                            tpList[i] - grid >= 0)
+                        {
+                            s = string.Concat(s, "T");
+                        }
+                    }
+                    if (s != string.Empty)
+                    {
+                        subList.Add(tpList[i]);
+                        if (tpList.Count == subList.Count)
+                        {
+                            int rand = Random.Range(0, s.Length);
+                            char[] c = s.ToCharArray();
+                            s = c[rand].ToString();
+                        }
+                        tempList.Remove(tpList[i]);
+                        RoomType roomType = (RoomType)System.Enum.Parse(typeof(RoomType), s);
+                        roomDictionary.Add(tpList[i], roomType);
+                    }
+                }
+            }
+            #endregion
+
+            #region all LR
+            //for (int i = 0; i < excludedPathList.Count; i++)
+            //{
+            //    roomDictionary.Add(excludedPathList[i], RoomType.LR);
+            //}
+            #endregion
+
+            #region side-separate
+            //for (int i = 0; i < excludedPathList.Count; i++)
+            //{
+            //    //LeftSide
+            //    if (excludedPathList[i] % grid == 0)
+            //    {
+            //        int random = Random.Range(0, 4);
+            //        if (random == 0)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.R);
+            //        }
+            //        else if (random == 1)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.RB);
+            //        }
+            //        else if (random == 2)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.RT);
+            //        }
+            //        else if (random == 3)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.RBT);
+            //        }
+            //        else if (random == 3)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.T);
+            //        }
+            //        else if (random == 3)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.B);
+            //        }
+            //    }
+            //    //RightSide
+            //    else if (excludedPathList[i] % grid == grid - 1)
+            //    {
+            //        int random = Random.Range(0, 4);
+            //        if (random == 0)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.L);
+            //        }
+            //        else if (random == 1)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LB);
+            //        }
+            //        else if (random == 2)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LT);
+            //        }
+            //        else if (random == 3)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LBT);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        int random = Random.Range(0, 4);
+            //        if (random == 0)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LR);
+            //        }
+            //        else if (random == 1)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LRB);
+            //        }
+            //        else if (random == 2)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LRT);
+            //        }
+            //        else if (random == 3)
+            //        {
+            //            roomDictionary.Add(excludedPathList[i], RoomType.LRBT);
+            //        }
+            //    }
+            //}
+            #endregion
+
+            #region random
+            //for (int i = 0; i < excludedPathList.Count; i++)
+            //{
+            //    int random = Random.Range(0, 15);
+            //    if (random == 0)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.L);
+            //    }
+            //    else if (random == 1)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.R);
+            //    }
+            //    else if (random == 2)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.B);
+            //    }
+            //    else if (random == 3)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.T);
+            //    }
+            //    else if (random == 4)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LR);
+            //    }
+            //    else if (random == 5)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LT);
+            //    }
+            //    else if (random == 6)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LB);
+            //    }
+            //    else if (random == 7)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.RB);
+            //    }
+            //    else if (random == 8)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.RT);
+            //    }
+            //    else if (random == 9)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.BT);
+            //    }
+            //    else if (random == 10)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LRB);
+            //    }
+            //    else if (random == 11)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LRT);
+            //    }
+            //    else if (random == 12)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LBT);
+            //    }
+            //    else if (random == 13)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.RBT);
+            //    }
+            //    else if (random == 14)
+            //    {
+            //        roomDictionary.Add(excludedPathList[i], RoomType.LRBT);
+            //    }
+            //}
+            #endregion
+        }
         void DrawAllRooms()
         {
+            string s = string.Empty;
+
             for (int i = 0; i < roomDictionary.Count - 1; i++)
             {
                 DrawRoom(i, roomDictionary[i]);
+                s = string.Concat(s, "-(", i, " : ",roomDictionary[i].ToString(), ")");
             }
+            Debug.Log(s);
         }
     }
 

@@ -7,8 +7,9 @@ namespace MomodoraCopy
         float airBowPositionY = 0.75f;
         public AirBowAttackState(Player player) : base(player)
         {
-            arrowSpawner = player.arrowSpawner;
-            info = player.arrowSpawner.info;
+            //arrowSpawner = player.arrowSpawner;
+            //info = player.arrowSpawner.info;
+            //why bug??
         }
         public override void OperateEnter()
         {
@@ -18,6 +19,10 @@ namespace MomodoraCopy
                 player.isAnimationFinished = false;
                 player.animator.Play("airBowAttack", -1, 0f);
             }
+            //replace from constructor
+            arrowSpawner = player.arrowSpawner;
+            info = player.arrowSpawner.info;
+            //------------------------
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + airBowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
             arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);

@@ -86,7 +86,7 @@ namespace MomodoraCopy
                 else if (collider.tag == "BossHitBox")
                 {
                     ObjectPooler.instance.RecyclePoolingObject(arrowSpawner.info, gameObject);
-                    collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(arrowDamage, DamageType.Range, transform.rotation);
+                    collider.transform.parent.GetComponent<BossStatus>().TakeDamage(arrowDamage, DamageType.Range, transform.rotation);
                 }
             }
             transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);

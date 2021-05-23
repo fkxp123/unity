@@ -84,7 +84,7 @@ namespace MomodoraCopy
             DialogueManager.instance.SetChatBox(dialogue[contextCount]);
             Vector3 backgroundSize = DialogueManager.instance.GetBackgroundSize();
             DialogueManager.instance.gameObject.transform.position =
-                new Vector3(transform.position.x, transform.position.y + backgroundSize.y / 32, transform.position.y);
+                new Vector3(transform.position.x, transform.position.y + backgroundSize.y * 0.0315f, transform.position.y);
             contextCount++;
         }
 
@@ -101,7 +101,7 @@ namespace MomodoraCopy
         void ShowInteractionBox()
         {
             DialogueManager.instance.gameObject.transform.position = new Vector3(transform.position.x,
-                transform.position.y + boxCollider.size.y / 2, transform.position.z);
+                transform.position.y + boxCollider.size.y * 0.5f, transform.position.z);
             DialogueManager.instance.interactionBox.SetActive(true);
         }
         void HideChatBox()

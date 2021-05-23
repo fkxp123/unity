@@ -263,6 +263,7 @@ namespace MomodoraCopy
         void SetCrushedArea()
         {
             Bounds bounds = boxCollider.bounds;
+            //bounds.Expand(new Vector2(boxCollider.size.x * -0.99f, boxCollider.size.y * -0.99f));
             //bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.66f));
             bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
@@ -379,17 +380,23 @@ namespace MomodoraCopy
 
         void Update()
         {
-            CheckCrushed();
-            CheckSpike();
-            CheckPushBlock();
-            CheckLadder();
+            //CheckCrushed();
+            //CheckSpike();
+            //CheckPushBlock();
+            //CheckLadder();
             SetDirectionalInput(playerInput.directionalInput);
             SetPlayerMovement();
             CheckVerticalCollision();
             CheckisGround();
             CalculateCurrentVelocity();
         }
-
+        void FixedUpdate()
+        {
+            CheckCrushed();
+            CheckSpike();
+            CheckPushBlock();
+            CheckLadder();
+        }
         void SetDirectionalInput(Vector2 directionalInput)
         {
             if (isStun)
@@ -674,12 +681,20 @@ namespace MomodoraCopy
                             }
                             else if (collider.tag == "BossHitBox")
                             {
-                                collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                                 //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
                                 collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
+                            }
+                            else if(collider.tag == "Gems")
+                            {
+                                collider.GetComponent<Rigidbody2D>().AddForce(new Vector3(0.1f * transform.rotation.y == 0 ? 1 : -1, 1f, 0), ForceMode2D.Impulse);
+                            }
+                            else if(collider.tag == "Chest")
+                            {
+                                collider.GetComponent<Chest>().OpenChest();
                             }
                             player.AttackFlag = false;
                         }
@@ -695,12 +710,20 @@ namespace MomodoraCopy
                             }
                             else if (collider.tag == "BossHitBox")
                             {
-                                collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                                 //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
                                 collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
+                            }
+                            else if (collider.tag == "Gems")
+                            {
+                                collider.GetComponent<Rigidbody2D>().AddForce(new Vector3(0.1f * transform.rotation.y == 0 ? 1 : -1, 1f, 0), ForceMode2D.Impulse);
+                            }
+                            else if (collider.tag == "Chest")
+                            {
+                                collider.GetComponent<Chest>().OpenChest();
                             }
                             player.AttackFlag = false;
                         }
@@ -716,12 +739,20 @@ namespace MomodoraCopy
                             }
                             else if (collider.tag == "BossHitBox")
                             {
-                                collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                                collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                                 //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
                                 collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
+                            }
+                            else if (collider.tag == "Gems")
+                            {
+                                collider.GetComponent<Rigidbody2D>().AddForce(new Vector3(0.1f * transform.rotation.y == 0 ? 1 : -1, 1f, 0), ForceMode2D.Impulse);
+                            }
+                            else if (collider.tag == "Chest")
+                            {
+                                collider.GetComponent<Chest>().OpenChest();
                             }
                             player.AttackFlag = false;
                         }
@@ -745,12 +776,20 @@ namespace MomodoraCopy
                     }
                     else if (collider.tag == "BossHitBox")
                     {
-                        collider.transform.parent.transform.GetChild(0).GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
+                        collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
                         //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                     }
                     else if(collider.tag == "CheckPoint")
                     {
                         collider.GetComponent<CheckPoint>().SetBellAngle(transform.rotation.y == 0 ? 1 : -1);
+                    }
+                    else if (collider.tag == "Gems")
+                    {
+                        collider.GetComponent<Rigidbody2D>().AddForce(new Vector3(0.1f * transform.rotation.y == 0 ? 1 : -1, 1f, 0), ForceMode2D.Impulse);
+                    }
+                    else if (collider.tag == "Chest")
+                    {
+                        collider.GetComponent<Chest>().OpenChest();
                     }
                     player.AttackFlag = false;
                 }   
@@ -837,13 +876,16 @@ namespace MomodoraCopy
             SetCrushedArea();
         }
 
-        //private void OnDrawGizmos()
-        //{
-        //    Gizmos.color = Color.green;
-        //    Gizmos.DrawWireCube(transform.rotation.y == 0 ?
-        //        boxCollider.bounds.center + Vector3.right * 0.25f + Vector3.up * 0.5f :
-        //        boxCollider.bounds.center + Vector3.left * 0.25f + Vector3.up * 0.5f, checkPushBlockArea);
-        //}
+        private void OnDrawGizmos()
+        {
+            //Gizmos.color = Color.green;
+            //Gizmos.DrawWireCube(transform.rotation.y == 0 ?
+            //    boxCollider.bounds.center + Vector3.right * 0.25f + Vector3.up * 0.5f :
+            //    boxCollider.bounds.center + Vector3.left * 0.25f + Vector3.up * 0.5f, checkPushBlockArea);
+
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawWireCube(boxCollider.bounds.center, crushedArea);
+        }
     }
 
 }

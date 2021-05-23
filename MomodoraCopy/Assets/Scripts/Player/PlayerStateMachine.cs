@@ -15,7 +15,7 @@ namespace MomodoraCopy
         {
             if (CurrentState == state)
             {
-#if SHOW_DEBUG_MESSAGE
+#if SHOW_DEBUG_MOD
                 Debug.Log("이미 " + state + "상태입니다");
 #endif
             }

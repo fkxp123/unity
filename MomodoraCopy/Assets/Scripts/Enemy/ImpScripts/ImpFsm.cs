@@ -124,7 +124,6 @@ namespace MomodoraCopy
                 {
                     playerPosition = collider.transform.position;
                     //siegeMode = Mathf.Abs(playerPosition.x - transform.position.x) > 10f ? true : false;
-                    Debug.Log(collider.name);
                     if (playerPosition.x < transform.position.x)
                     {
                         enemyPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
