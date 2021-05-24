@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
@@ -16,7 +16,8 @@ namespace MomodoraCopy
     {
         public Vector3 playerPosition;
         public string sceneName;
-        public bool isDead;
+
+        public int savedScore;
     }
 
     public class GameManager : Singleton<GameManager>
@@ -28,6 +29,8 @@ namespace MomodoraCopy
         GameObject[] checkPoints;
         Scene scene;
         public string currentScene;
+        int totalScore;
+        public Text score;
 
         MonoBehaviour[] cameraComponents;
         MonoBehaviour[] playerPhysicsComponents;
@@ -162,6 +165,8 @@ namespace MomodoraCopy
         {
             playerData.playerPosition = checkPoint.transform.position;
             playerData.sceneName = checkPoint.GetComponent<CheckPoint>().sceneName;
+            playerData.savedScore = totalScore;
+
             string jsonData = JsonUtility.ToJson(playerData, true);
             string path = Path.Combine(Application.dataPath, "playerData.json");
             File.WriteAllText(path, jsonData);
@@ -190,8 +195,24 @@ namespace MomodoraCopy
             }
             Vector3 relaxedLoadAmount = Vector2.up * 0.015f;
             playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
+            SetTotalScore(playerData.savedScore);
             currentScene = playerData.sceneName;
         }
+
+        public int GetTotalScore()
+        {
+            return totalScore;
+        }
+        public void SetTotalScore(int gemValue)
+        {
+            totalScore += gemValue;
+            UpdateScoreBoard();
+        }
+        void UpdateScoreBoard()
+        {
+            score.text = totalScore.ToString();
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.F5))

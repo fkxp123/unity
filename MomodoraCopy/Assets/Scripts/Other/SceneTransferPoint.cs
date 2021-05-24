@@ -31,7 +31,6 @@ namespace MomodoraCopy
                 {
                     if (collider.tag == "Player")
                     {
-                        Debug.Log("player!!");
                         SceneManager.LoadScene(transferSceneName);
                     }
                 }

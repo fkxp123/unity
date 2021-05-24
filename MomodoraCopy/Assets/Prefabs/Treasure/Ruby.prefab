@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2374387043024911189}
   - component: {fileID: 2374387043024911188}
   - component: {fileID: 2374387043024911187}
-  - component: {fileID: 2374387043024911186}
+  - component: {fileID: 2265295623729208335}
+  - component: {fileID: 5194769803785630844}
   m_Layer: 18
   m_Name: Ruby
   m_TagString: Gems
@@ -104,9 +105,22 @@ Rigidbody2D:
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!60 &2374387043024911186
-PolygonCollider2D:
+  m_Constraints: 4
+--- !u!114 &2265295623729208335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2374387043024911185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40cc580784929ef41a9c64476648849f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gemValue: 50
+--- !u!61 &5194769803785630844
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -118,7 +132,7 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.001613617, y: 0.0020923615}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -128,17 +142,6 @@ PolygonCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.28125, y: -0.140625}
-      - {x: 0.1875, y: -0.265625}
-      - {x: 0.0625, y: -0.296875}
-      - {x: -0.0625, y: -0.296875}
-      - {x: -0.1875, y: -0.265625}
-      - {x: -0.28125, y: -0.140625}
-      - {x: -0.3125, y: -0.015625}
-      - {x: -0.1875, y: 0.203125}
-      - {x: -0.03125, y: 0.296875}
-      - {x: 0.03125, y: 0.296875}
-      - {x: 0.1875, y: 0.203125}
-      - {x: 0.3125, y: -0.015625}
+  serializedVersion: 2
+  m_Size: {x: 0.62789154, y: 0.5909805}
+  m_EdgeRadius: 0

@@ -6,9 +6,6 @@ namespace MomodoraCopy
 {
     public class ChatInteraction : MonoBehaviour
     {
-        GameObject chatBox;
-        GameObject interactionBox;
-
         public Vector3 checkPlayerArea;
 
         LayerMask playerMask;
@@ -23,10 +20,10 @@ namespace MomodoraCopy
         string dialogueContext;
         int contextCount;
 
-        float typingCycle = 0.1f;
+        public float typingCycle = 0.1f;
         WaitForSeconds typingTime;
         bool isTyping;
-        float blinkCycle = 0.2f;
+        public float blinkCycle = 0.2f;
         WaitForSeconds blinkTime;
 
         BoxCollider2D boxCollider;

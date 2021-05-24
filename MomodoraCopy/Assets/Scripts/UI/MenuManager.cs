@@ -32,6 +32,7 @@ namespace MomodoraCopy
                 GameManager.instance.Resume();
             }
         }
+
         //void OnEnable()
         //{
         //    SceneManager.sceneLoaded += OnSceneLoaded;
@@ -39,6 +40,7 @@ namespace MomodoraCopy
         //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         //{
         //    StartCoroutine(ResetRenderCameras());
+
         //}
         //IEnumerator ResetRenderCameras()
         //{

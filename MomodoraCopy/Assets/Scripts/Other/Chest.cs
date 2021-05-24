@@ -26,8 +26,32 @@ namespace MomodoraCopy
 
         bool isClosed = true;
 
+        List<PoolingObjectInfo> gemsInfo = new List<PoolingObjectInfo>();
+
+        List<GameObject> gemList = new List<GameObject>();
+
         void Start()
         {
+            gemList.Add(diamondPrefab);
+            gemList.Add(rubyPrefab);
+            gemList.Add(emeraldPrefab);
+            gemList.Add(sapphirePrefab);
+            gemList.Add(goldBarPrefab);
+            gemList.Add(idolPrefab);
+
+            for(int i = 0; i < gemList.Count; i++)
+            {
+                PoolingObjectInfo gemInfo = new PoolingObjectInfo
+                {
+                    prefab = gemList[i],
+                    spawner = gameObject,
+                    position = transform.position,
+                    objectRotation = transform.rotation
+                };
+                gemsInfo.Add(gemInfo);
+                ObjectPooler.instance.CreatePoolingObjectQueue(gemsInfo[i], 100);
+            }
+
             closedChest = transform.GetChild(0).gameObject;
             openedChest = transform.GetChild(1).gameObject;
 
@@ -52,42 +76,10 @@ namespace MomodoraCopy
             {
                 int gemsRandom = Random.Range(0, 6);
 
-                if(gemsRandom == 0)
-                {
-                    GameObject gem = Instantiate(diamondPrefab, new Vector3(transform.position.x, transform.position.y, Random.Range(-1f, 1f)), Quaternion.identity);
-                    gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX), 
-                        Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
-                }
-                else if (gemsRandom == 1)
-                {
-                    GameObject gem = Instantiate(rubyPrefab, new Vector3(transform.position.x, transform.position.y, Random.Range(-1f, 1f)), Quaternion.identity);
-                    gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX), 
-                        Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
-                }
-                else if (gemsRandom == 2)
-                {
-                    GameObject gem = Instantiate(emeraldPrefab, new Vector3(transform.position.x, transform.position.y, Random.Range(-1f, 1f)), Quaternion.identity);
-                    gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX), 
-                        Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
-                }
-                else if (gemsRandom == 3)
-                {
-                    GameObject gem = Instantiate(sapphirePrefab, new Vector3(transform.position.x, transform.position.y, Random.Range(-1f, 1f)), Quaternion.identity);
-                    gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX),
-                        Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
-                }
-                else if (gemsRandom == 4)
-                {
-                    GameObject gem = Instantiate(goldBarPrefab, new Vector3(transform.position.x, transform.position.y, Random.Range(-1f, 1f)), Quaternion.identity);
-                    gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX),
-                        Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
-                }
-                else if (gemsRandom == 5)
-                {
-                    GameObject gem = Instantiate(idolPrefab, new Vector3(transform.position.x, transform.position.y, Random.Range(-1f, 1f)), Quaternion.identity);
-                    gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX),
-                        Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
-                }
+                gemsInfo[gemsRandom].position = transform.position;
+                GameObject gem = ObjectPooler.instance.GetPoolingObject(gemsInfo[gemsRandom]);
+                gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX),
+                    Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
             }
         }
     }

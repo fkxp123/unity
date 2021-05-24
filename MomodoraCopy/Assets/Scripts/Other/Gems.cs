@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gems : MonoBehaviour
+namespace MomodoraCopy
 {
-    // Start is called before the first frame update
-    void Start()
+    public class Gems : MonoBehaviour
     {
-        
+        public int gemValue;
+
+        void OnCollisionEnter2D(Collision2D coll)
+        {
+            if(coll.gameObject.tag == "Player")
+            {
+                GameManager.instance.SetTotalScore(gemValue);
+                gameObject.SetActive(false);
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
