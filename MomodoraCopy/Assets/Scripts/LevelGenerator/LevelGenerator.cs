@@ -36,6 +36,7 @@ namespace MomodoraCopy
 
     public class LevelGenerator : MonoBehaviour
     {
+        public Tilemap outFrame;
         public Tilemap platformTileMap;
         public Tilemap ladderTileMap;
         public Tilemap spikeTileMap;
@@ -131,6 +132,8 @@ namespace MomodoraCopy
             Debug.Log("total generate time :" + totalTime);
 
             StartCoroutine(ActivateObjects());
+
+            MapManager.instance.Tilemap = platformTileMap;
         }
 
         void InitLevelGenerator()

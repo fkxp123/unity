@@ -1,0 +1,6 @@
+﻿myStyle
+{
+	width:18px;
+	height:18px;
+	background-image: resource("Assets/Images/test_icon4.png");
+}

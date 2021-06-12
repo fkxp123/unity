@@ -31,6 +31,8 @@ namespace MomodoraCopy
         public bool isAnimationFinished = true;
         public bool AttackFlag = false; //Animation Event
 
+        public bool isCutScene;
+
         #region IState
         public IState idle;
         public IState crouch;
@@ -110,11 +112,16 @@ namespace MomodoraCopy
 
         void Update()
         {
+            if (isCutScene)
+            {
+                return;
+            }
             stateMachine.DoOperateUpdate();
         }
 
         public void CheckStates(Vector2 input)
         {
+
             //check player's state in ground
             if (playerMovement.isGround)
             {

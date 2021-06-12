@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine.SceneManagement;
-
 using UnityEngine.Experimental.Rendering.Universal;
 
 
@@ -42,6 +41,21 @@ namespace MomodoraCopy
         public GameObject globalLightPrefab;
         GameObject globalLightObject;
         Light2D globalLight;
+
+        public Image fadeMask;
+        RectTransform fadeRectTransform;
+        float fadeSpeed = 100;
+        float speedAccel = 5000f;
+
+        public GameObject ui;
+        public GameObject fadeEffect;
+        public GameObject invertMask;
+
+        PlayerInput playerInput;
+        PlayerMovement playerMovement;
+        Player playerFsm;
+        PlayerStatus playerStatus;
+
 
         void OnEnable()
         {
@@ -90,12 +104,20 @@ namespace MomodoraCopy
             }
             globalLightObject = Instantiate(globalLightPrefab, Vector3.zero, Quaternion.identity);
             globalLight = globalLightObject.GetComponent<Light2D>();
-        }
-        public void Start()
-        {
+            //ui.SetActive(false);
+            fadeRectTransform = fadeMask.GetComponent<RectTransform>();
+
             playerPhysicsComponents = playerPhysics.GetComponents<MonoBehaviour>();
             playerSpriteComponents = playerSprite.GetComponents<MonoBehaviour>();
             cameraComponents = mainCameraObject.GetComponents<MonoBehaviour>();
+
+            playerFsm = playerSprite.GetComponent<Player>();
+            playerMovement = playerPhysics.GetComponent<PlayerMovement>();
+            playerInput = playerPhysics.GetComponent<PlayerInput>();
+            playerStatus = playerSprite.GetComponent<PlayerStatus>();
+        }
+        public void Start()
+        {
         }
 
         //void SetSceneHashList()
@@ -175,6 +197,7 @@ namespace MomodoraCopy
         {
             if (File.Exists(Application.dataPath + "/playerData.json"))
             {
+                invertMask.SetActive(true);
                 string path = Path.Combine(Application.dataPath, "playerData.json");
                 string jsonData = File.ReadAllText(path);
                 playerData = JsonUtility.FromJson<PlayerData>(jsonData);
@@ -183,20 +206,43 @@ namespace MomodoraCopy
                 //SceneManager.LoadScene(playerData.sceneName);
                 StartCoroutine(LoadScene(playerData.sceneName));
             }
+            else
+            {
+                //OperateFadeIn();
+
+                scene = SceneManager.GetActiveScene();
+                currentScene = scene.name;
+                invertMask.SetActive(true);
+                StartCoroutine(LoadScene(currentScene, true));
+            }
         }
-        IEnumerator LoadScene(string sceneName)
+        IEnumerator LoadScene(string sceneName, bool isGeneratedMap = false)
         {
+            DisablePlayer();
             yield return null;
-            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-            asyncOperation.allowSceneActivation = true;
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
+            //asyncOperation.allowSceneActivation = false;
+            if (!isGeneratedMap)
+            {
+                currentScene = playerData.sceneName;
+                Vector3 relaxedLoadAmount = Vector2.up * 0.015f;
+                playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
+                transform.position = playerPhysics.transform.position;
+                totalScore = playerData.savedScore;
+                UpdateScoreBoard();
+            }
+            else
+            {
+
+            }
+
             while (!asyncOperation.isDone)
             {
                 yield return null;
             }
-            Vector3 relaxedLoadAmount = Vector2.up * 0.015f;
-            playerPhysics.transform.position = playerData.playerPosition + relaxedLoadAmount;
-            SetTotalScore(playerData.savedScore);
-            currentScene = playerData.sceneName;
+            OperateFadeIn();
+            EnablePlayer();
+            //ui.SetActive(true);
         }
 
         public int GetTotalScore()
@@ -213,11 +259,82 @@ namespace MomodoraCopy
             score.text = totalScore.ToString();
         }
 
+        public void OperateFadeIn()
+        {
+            StartCoroutine(FadeIn());
+        }
+        public void OperateFadeOut()
+        {
+            StartCoroutine(FadeOut());
+        }
+        IEnumerator FadeIn()
+        {
+            yield return null;
+            float fadeAmount = 0;
+            transform.position = playerPhysics.transform.position;
+            fadeRectTransform.sizeDelta = new Vector2(fadeAmount, fadeAmount);
+            while (fadeAmount < 1200)
+            {
+                invertMask.SetActive(false);
+                invertMask.SetActive(true);
+                fadeAmount += Time.deltaTime * fadeSpeed;
+                fadeSpeed += Time.deltaTime * speedAccel;
+                if (fadeAmount >= 600)
+                {
+                    //ui.SetActive(true);
+                }
+                fadeRectTransform.sizeDelta = new Vector2(fadeAmount, fadeAmount);
+                yield return null;
+            }
+        }
+        IEnumerator FadeOut()
+        {
+            yield return null;
+            //ui.SetActive(false);
+            float fadeAmount = 1200;
+            fadeRectTransform.sizeDelta = new Vector2(fadeAmount, fadeAmount);
+            transform.position = playerPhysics.transform.position;
+            while (fadeAmount > 0)
+            {
+                invertMask.SetActive(false);
+                invertMask.SetActive(true);
+                fadeAmount -= Time.deltaTime * fadeSpeed;
+                fadeSpeed += Time.deltaTime * speedAccel;
+                fadeRectTransform.sizeDelta = new Vector2(fadeAmount, fadeAmount);
+                yield return null;
+            }
+            Load();
+        }
+
+        public void DisablePlayer()
+        {
+            playerInput.enabled = false;
+            playerMovement.enabled = false;
+            playerFsm.enabled = false;
+            playerStatus.enabled = false;
+        }
+        public void EnablePlayer()
+        {
+            playerInput.enabled = true;
+            playerMovement.enabled = true;
+            playerFsm.enabled = true;
+            playerStatus.enabled = true;
+        }
+
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                StartCoroutine(LoadScene("test1-1"));
+            }
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                OperateFadeOut();
+            }
             if (Input.GetKeyDown(KeyCode.F5))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                OperateFadeOut();
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
     }

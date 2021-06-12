@@ -17,6 +17,7 @@ TagManager:
   - BossHitBox
   - Gems
   - Chest
+  - Map
   layers:
   - Default
   - TransparentFX

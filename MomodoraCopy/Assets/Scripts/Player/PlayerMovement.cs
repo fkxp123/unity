@@ -230,7 +230,6 @@ namespace MomodoraCopy
         #endregion
         void Start()
         {
-            GameManager.instance.Load();
             DontDestroyOnLoad(transform.parent.gameObject);
             
             playerInput = GetComponent<PlayerInput>();

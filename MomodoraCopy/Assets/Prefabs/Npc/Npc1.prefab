@@ -9705,7 +9705,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 292452913
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -9893,6 +9893,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4011235551168368963}
     m_Modifications:
+    - target: {fileID: 7709610035800424485, guid: 337feb11e6358c14f93ad86e1835ba33,
+        type: 3}
+      propertyPath: dialogueName
+      value: Prologue
+      objectReference: {fileID: 0}
     - target: {fileID: 7709610035800424486, guid: 337feb11e6358c14f93ad86e1835ba33,
         type: 3}
       propertyPath: m_Name

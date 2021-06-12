@@ -96,6 +96,13 @@
      <Compile Include="Assets\Aseprite2Unity\Editor\PixmanCombine.cs" />
      <Compile Include="Assets\Aseprite2Unity\Editor\SpriteAtlasUserAsset.cs" />
      <Compile Include="Assets\Aseprite2Unity\Editor\UniqueNameifier.cs" />
+     <Compile Include="Assets\DefaultPlayables\Editor\TimelinePlayableWizard.cs" />
+     <Compile Include="Assets\DefaultPlayables\LightControl\Editor\LightControlDrawer.cs" />
+     <Compile Include="Assets\DefaultPlayables\ScreenFader\Editor\ScreenFaderDrawer.cs" />
+     <Compile Include="Assets\DefaultPlayables\TextSwitcher\Editor\TextSwitcherDrawer.cs" />
+     <Compile Include="Assets\DefaultPlayables\TimeDilation\Editor\TimeDilationDrawer.cs" />
+     <Compile Include="Assets\DefaultPlayables\TransformTween\Editor\TransformTweenDrawer.cs" />
+     <None Include="Assets\Editor\Stylesheets\Extensions\common.uss" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.13f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

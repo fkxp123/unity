@@ -47,65 +47,48 @@ namespace MomodoraCopy
         {
             if (isNear)
             {
-                if (!isChatting)
+                if (!DialogueManager.instance.isChatting)
                 {
                     if (Input.GetKeyDown(KeyboardManager.instance.UpKey))
                     {
-                        isChatting = true;
+                        DialogueManager.instance.isChatting = true;
                         HideInteractionBox();
-                        ShowChatBox();
+                        DialogueManager.instance.ShowChatBox(dialogueName);
                     }
                 }
                 else
                 {
                     if (Input.GetKeyDown(KeyboardManager.instance.UpKey))
                     {
-                        if (isTyping)
+                        if (DialogueManager.instance.isTyping)
                         {
                             return;
                         }
-                        if(contextCount == dialogue.Count)
+                        if(DialogueManager.instance.contextCount == DialogueManager.instance.
+                            dialogueDictionary[dialogueName.GetHashCode()][DialogueManager.instance.currentLanguage].Count)
                         {
-                            HideChatBox();
+                            DialogueManager.instance.HideChatBox();
                             return;
                         }
-                        ShowChatContext();
+                        DialogueManager.instance.ShowChatContext(dialogueName);
                     }
                 }
             }
         }
-        void ShowChatContext()
-        {
-            dialogueContext = dialogue[contextCount];
-            StartCoroutine(TypeContexts(dialogueContext));
-            DialogueManager.instance.SetChatBox(dialogue[contextCount]);
-            Vector3 backgroundSize = DialogueManager.instance.GetBackgroundSize();
-            DialogueManager.instance.gameObject.transform.position =
-                new Vector3(transform.position.x, transform.position.y + backgroundSize.y * 0.0315f, transform.position.y);
-            contextCount++;
-        }
 
-        void ShowChatBox()
-        {
-            DialogueManager.instance.gameObject.transform.position = transform.position;
-            DialogueManager.instance.chatBox.SetActive(true);
-            if (dialogue.Count == 0)
-            {
-                return;
-            }
-            ShowChatContext();
-        }
+
         void ShowInteractionBox()
         {
             DialogueManager.instance.gameObject.transform.position = new Vector3(transform.position.x,
                 transform.position.y + boxCollider.size.y * 0.5f, transform.position.z);
             DialogueManager.instance.interactionBox.SetActive(true);
         }
+
         void HideChatBox()
         {
-            isTyping = false;
-            isChatting = false;
-            contextCount = 0;
+            DialogueManager.instance.isTyping = false;
+            DialogueManager.instance.isChatting = false;
+            DialogueManager.instance.contextCount = 0;
             DialogueManager.instance.chatContext.text = string.Empty;
             DialogueManager.instance.chatBox.SetActive(false);
         }
@@ -113,54 +96,14 @@ namespace MomodoraCopy
         {
             DialogueManager.instance.interactionBox.SetActive(false);
         }
-        
-        IEnumerator TypeContexts(string context)
-        {
-            yield return null;
-            isTyping = true;
-            for(int i = 0; i < context.Length; i++)
-            {
-                DialogueManager.instance.chatContext.text = context.Substring(0, i);
-                yield return typingTime;
-            }
-            if (!isChatting)
-            {
-                DialogueManager.instance.chatContext.text = string.Empty;
-                yield break;
-            }
-            yield return typingTime;
-            isTyping = false;
-            StartCoroutine(BlinkNextButton());
-        }
-
-        IEnumerator BlinkNextButton()
-        {
-            float i = 0;
-            RectTransform rectTransform = DialogueManager.instance.nextButtonRectTransform;
-            while (!isTyping)
-            {
-                i++;
-                if (i % 2 == 0)
-                { 
-                    rectTransform.anchoredPosition = 
-                        new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y + 1, 0);
-                }
-                else
-                {
-                    rectTransform.anchoredPosition =
-                        new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - 1, 0);
-
-                }
-                yield return blinkTime;
-            }
-        }
+       
 
         void OnTriggerStay2D(Collider2D other)
         {
             if (other.tag == "Player")
             {
                 isNear = true;
-                if (isChatting)
+                if (DialogueManager.instance.isChatting)
                 {
                     return;
                 }
@@ -186,7 +129,7 @@ namespace MomodoraCopy
             }
             if (!isNear)
             {
-                HideChatBox();
+                DialogueManager.instance.HideChatBox();
             }
         }
     }
