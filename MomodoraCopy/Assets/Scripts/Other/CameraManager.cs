@@ -64,7 +64,6 @@ namespace MomodoraCopy
             focusArea = new FocusArea(targetCollider.bounds, focusAreaSize);
             player = target.GetComponent<Player>();
             mainCamera = GetComponent<Camera>();
-
             halfHeight = mainCamera.orthographicSize;
             halfWidth = halfHeight * Screen.width / Screen.height;
         }

@@ -5,14 +5,8 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using System.IO;
 
-
 namespace MomodoraCopy
 {
-    public enum Language
-    {
-        Korean, English
-    }
-
     public class DialogueManager : Singleton<DialogueManager>
     {
         public GameObject chatBox;
@@ -38,19 +32,24 @@ namespace MomodoraCopy
         public Dictionary<int, Dictionary<Language, List<string>>> dialogueDictionary = 
             new Dictionary<int, Dictionary<Language, List<string>>>();
 
-        public Language currentLanguage;
+        public Dictionary<Language, int> letterSizeDictionary = new Dictionary<Language, int>();
 
         float currentTotalTypingDelay;
 
+        LocalizeManager localizeManager;
+        public bool ableToPassNext;
+
         void Start()
         {
+            localizeManager = LocalizeManager.instance;
+
             backgroundRectTransform = chatBox.transform.GetChild(0).GetComponent<RectTransform>();
             nextButtonRectTransform = nextButton.transform.GetComponent<RectTransform>();
 
             typingDelay = new WaitForSeconds(typingCycle);
             blinkTime = new WaitForSeconds(blinkCycle);
 
-            currentLanguage = Language.Korean;
+            SetLetterSizeDict();
 
             string[] files = Directory.GetFiles(Path.Combine(Application.dataPath, "Resources"), "*.*");
             foreach (string sourceFile in files)
@@ -67,6 +66,19 @@ namespace MomodoraCopy
                     dialogueDictionary.Add(dialogueName.GetHashCode(), localDictionary);
                 }
             }
+
+            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChange);
+        }
+
+        void OnLanguageChange()
+        {
+            HideChatBox();
+        }
+
+        public void SetLetterSizeDict()
+        {
+            letterSizeDictionary.Add(Language.Korean, 10);
+            letterSizeDictionary.Add(Language.English, 6);
         }
 
         public List<string> GetDialogue(string _CSVFileName, int localNumber)
@@ -102,14 +114,15 @@ namespace MomodoraCopy
                 }
             }
 
-            backgroundRectTransform.sizeDelta = 
-                new Vector2((maxLength * 10) + 8, (contexts.Length) * 10 + 22);
-            backgroundRectTransform.anchoredPosition = 
-                new Vector3(backgroundRectTransform.sizeDelta.x * 0.5f, 
-                backgroundRectTransform.sizeDelta.y * 0.5f, 0);
+            backgroundRectTransform.sizeDelta =
+                new Vector2((maxLength * letterSizeDictionary[localizeManager.CurrentLanguage]) + 8, 
+                            contexts.Length * 10 + 22);
+            backgroundRectTransform.anchoredPosition =
+                new Vector3(backgroundRectTransform.sizeDelta.x * 0.5f,
+                            backgroundRectTransform.sizeDelta.y * 0.5f, 0);
             nextButtonRectTransform.anchoredPosition =
                 new Vector3((backgroundRectTransform.sizeDelta.x * 0.5f) - 4,
-                (-1 * backgroundRectTransform.sizeDelta.y * 0.5f) + 2 + 4, 0);
+                            (-1 * backgroundRectTransform.sizeDelta.y * 0.5f) + 2 + 4, 0);
         }
         public Vector3 GetBackgroundSize()
         {
@@ -120,7 +133,7 @@ namespace MomodoraCopy
         {
             transform.position = transform.position;
             chatBox.SetActive(true);
-            if (dialogueDictionary[dialogueName.GetHashCode()][currentLanguage].Count == 0)
+            if (dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage].Count == 0)
             {
                 return;
             }
@@ -128,12 +141,12 @@ namespace MomodoraCopy
         }
         public void ShowChatContext(string dialogueName)
         {
-            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()][currentLanguage][contextCount];
+            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextCount];
             StartCoroutine(TypeContexts(dialogueContext));
-            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()][currentLanguage][contextCount]);
+            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextCount]);
             Vector3 backgroundSize = GetBackgroundSize();
             chatBox.transform.position = new Vector3(chatBox.transform.position.x,
-                transform.position.y + backgroundSize.y * 0.0315f, transform.position.y);
+                transform.position.y + backgroundSize.y * 0.035f, transform.position.y);
             contextCount++;
         }
 
@@ -141,7 +154,7 @@ namespace MomodoraCopy
         {
             transform.position = transform.position;
             chatBox.SetActive(true);
-            if (dialogueDictionary[dialogueName.GetHashCode()][currentLanguage].Count == 0)
+            if (dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage].Count == 0)
             {
                 return;
             }
@@ -149,17 +162,12 @@ namespace MomodoraCopy
         }
         public void ShowChatContext(string dialogueName, int contextLine)
         {
-            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()][currentLanguage][contextLine];
+            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextLine];
             StartCoroutine(TypeContexts(dialogueContext));
-            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()][currentLanguage][contextLine]);
+            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextLine]);
             Vector3 backgroundSize = GetBackgroundSize();
             chatBox.transform.position = new Vector3(chatBox.transform.position.x,
-                transform.position.y + backgroundSize.y * 0.0315f, transform.position.y);
-        }
-
-        public void Test()
-        {
-            Debug.Log("test");
+                transform.position.y + backgroundSize.y * 0.035f, transform.position.y);
         }
 
         public void HideChatBox()
@@ -168,24 +176,33 @@ namespace MomodoraCopy
             isChatting = false;
             contextCount = 0;
             chatContext.text = string.Empty;
+            ableToPassNext = true;
             chatBox.SetActive(false);
         }
-
         IEnumerator TypeContexts(string context)
         {
+            ableToPassNext = false;
             isTyping = true;
-            for (int i = 0; i < context.Length; i++)
+            for (int i = 0; i <= context.Length; i++)
             {
+                if (!isChatting)
+                {
+                    chatContext.text = string.Empty;
+                    HideChatBox();
+                    yield break;
+                }
                 chatContext.text = context.Substring(0, i);
                 yield return typingDelay;
             }
             if (!isChatting)
             {
                 chatContext.text = string.Empty;
+                HideChatBox();
                 yield break;
             }
             isTyping = false;
             StartCoroutine(BlinkNextButton());
+            ableToPassNext = true;
         }
 
         IEnumerator BlinkNextButton()

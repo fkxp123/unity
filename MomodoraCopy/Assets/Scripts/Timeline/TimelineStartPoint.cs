@@ -9,19 +9,28 @@ namespace MomodoraCopy
     {
         public PlayableDirector playableDirector;
 
-        bool played;
+        bool entered;
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.tag == "Player")
+            if (other.tag == "Player" && !entered)
             {
-                if (played)
-                {
-                    return;
-                }
-                played = true;
-                TimelineManager.instance.SetCurrentPlayableDirector(playableDirector);    
+                entered = true;
+                TimelineManager.instance.SetCurrentPlayableDirector(playableDirector);
+                StartCoroutine(WaitPlayerStateFinish());
             }
+        }
+
+        IEnumerator WaitPlayerStateFinish()
+        {
+            while(GameManager.instance.playerFsm.stateMachine.CurrentState != GameManager.instance.playerFsm.idle &&
+                GameManager.instance.playerFsm.stateMachine.CurrentState != GameManager.instance.playerFsm.run &&
+                GameManager.instance.playerFsm.stateMachine.CurrentState != GameManager.instance.playerFsm.land)
+            {
+                yield return null;
+            }
+            GameManager.instance.playerFsm.stateMachine.SetState(GameManager.instance.playerFsm.talking);
+            gameObject.SetActive(false);
         }
     }
 

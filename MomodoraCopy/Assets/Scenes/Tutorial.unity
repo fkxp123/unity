@@ -29437,6 +29437,14 @@ MonoBehaviour:
   chatContext: {fileID: 1585164198}
   nextButton: {fileID: 1853109150}
   nextButtonRectTransform: {fileID: 0}
+  dialogueContext: 
+  contextCount: 0
+  typingCycle: 0.1
+  isTyping: 0
+  blinkCycle: 0.2
+  isChatting: 0
+  dialogues: []
+  _currentLanguage: 0
 --- !u!4 &1382253310
 Transform:
   m_ObjectHideFlags: 0
@@ -57378,6 +57386,15 @@ MonoBehaviour:
     type: 3}
   fadeMask: {fileID: 1576512544}
   ui: {fileID: 2145513055}
+  fadeEffect: {fileID: 0}
+  invertMask: {fileID: 0}
+  playerInput: {fileID: 0}
+  playerMovement: {fileID: 0}
+  playerFsm: {fileID: 0}
+  playerStatus: {fileID: 0}
+  stopPlayerInput: 0
+  stopPlayerMovement: 0
+  stopPlayerFsm: 0
 --- !u!1 &1987109945
 GameObject:
   m_ObjectHideFlags: 0

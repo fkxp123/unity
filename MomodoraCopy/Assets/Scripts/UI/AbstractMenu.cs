@@ -66,7 +66,6 @@ namespace MomodoraCopy
             enabled = false;
             MenuManager.instance.isDisableByEscapeKey = true;
             MenuManager.instance.menuMemento.componentsStack.Clear();
-            GameManager.instance.Resume();
         }
 
         public abstract void CheckArrowKey();

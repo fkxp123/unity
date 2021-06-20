@@ -16,53 +16,39 @@ namespace MomodoraCopy
 
         public bool isDisableByEscapeKey = true;
 
-        bool _isGamePaused;
-        public bool IsGamePaused
-        {
-            get { return _isGamePaused; }
-            set
-            {
-                _isGamePaused = value;
-                if (value)
-                {
-                    GameManager.instance.Pause();
-                    mainMenu.enabled = true;
-                    return;
-                }
-                GameManager.instance.Resume();
-            }
-        }
+        bool isGamePaused;
 
-        //void OnEnable()
-        //{
-        //    SceneManager.sceneLoaded += OnSceneLoaded;
-        //}
-        //void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        //{
-        //    StartCoroutine(ResetRenderCameras());
-
-        //}
-        //IEnumerator ResetRenderCameras()
-        //{
-        //    yield return null;
-        //    Debug.Log(canvases[0].worldCamera);
-        //    for (int i = 0; i < canvases.Length; i++)
-        //    {
-        //        if (canvases[i].worldCamera == null)
-        //        {
-        //            canvases[i].worldCamera = GameManager.instance.mainCameraObject.GetComponent<Camera>();
-        //        }
-        //    }
-        //}
-        //void OnDisable()
-        //{
-        //    SceneManager.sceneLoaded -= OnSceneLoaded;
-        //}
         void Start()
         {
             canvases = GetComponentsInChildren<Canvas>();
             mainMenu = mainMenuObject.GetComponent<MainMenu>();
             menuMemento = new MenuMemento();
+
+            EventManager.instance.AddListener(EventType.GamePause, OnGamePause);
+            EventManager.instance.AddListener(EventType.GameResume, OnGameResume);
+        }
+
+        void OnGamePause()
+        {
+            isGamePaused = true;
+            mainMenu.enabled = true;
+        }
+        void OnGameResume()
+        {
+            isGamePaused = false;
+            mainMenu.enabled = false;
+        }
+
+        void Update()
+        {
+            if (!isGamePaused && Input.GetKeyDown(KeyboardManager.instance.MenuKey))
+            {
+                EventManager.instance.PostNotification(EventType.GamePause);
+            }
+            else if (isGamePaused && Input.GetKeyDown(KeyboardManager.instance.MenuKey))
+            {
+                EventManager.instance.PostNotification(EventType.GameResume);
+            }
         }
     }
 

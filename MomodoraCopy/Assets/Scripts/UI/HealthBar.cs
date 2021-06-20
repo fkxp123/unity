@@ -6,10 +6,12 @@ namespace MomodoraCopy
 {
     public class HealthBar : MonoBehaviour
     {
-        public Image fill;
-        public Image effectImg;
-        public Image blinkImg;
-        public Image background;
+        public Image fillImage;
+        public Image effectImage;
+        public Image blinkImage;
+        public Image backGroundImage;
+        public Image itemSlotImage;
+        public Image scoreImage;
 
         public static float currentHp;
         public static float maxHp;
@@ -20,44 +22,81 @@ namespace MomodoraCopy
         public GameObject playerObject;
         PlayerStatus playerStatus;
 
+        public float blinkCycle;
+        WaitForSeconds blinkTime;
+
+        Animator blinkAnimator;
+
         // Start is called before the first frame update
         void Start()
         {
             playerStatus = playerObject.GetComponent<PlayerStatus>();
-            setPositionX = blinkImg.rectTransform.anchoredPosition.x;
+            blinkAnimator = blinkImage.GetComponent<Animator>();
+            setPositionX = blinkImage.rectTransform.anchoredPosition.x;
             maxHp = playerStatus.maxHp;
             currentHp = maxHp;
+            blinkCycle = 0.01f;
+            blinkTime = new WaitForSeconds(blinkCycle);
+
+            EventManager.instance.AddListener(EventType.GamePause, OnGamePause);
+            EventManager.instance.AddListener(EventType.GameResume, OnGameResume);
+        }
+        public void ChangeAlpha(Image image, float newAlpha)
+        {
+            Color color = image.color;
+            color.a = newAlpha;
+            image.color = color;
+        }
+        void OnGamePause()
+        {
+            ChangeAlpha(fillImage, 0);
+            ChangeAlpha(effectImage, 0);
+            ChangeAlpha(blinkImage, 0);
+            ChangeAlpha(backGroundImage, 0);
+            ChangeAlpha(itemSlotImage, 0);
+            ChangeAlpha(scoreImage, 0);
+            blinkAnimator.enabled = false;
+        }
+        void OnGameResume()
+        {
+            ChangeAlpha(fillImage, 1);
+            ChangeAlpha(effectImage, 1);
+            ChangeAlpha(blinkImage, 1);
+            ChangeAlpha(backGroundImage, 1);
+            ChangeAlpha(itemSlotImage, 1);
+            ChangeAlpha(scoreImage, 1);
+            blinkAnimator.enabled = true;
         }
 
         IEnumerator LoseFillAmount()
         {
-            fill.fillAmount = currentHp / maxHp;
-            while(effectImg.fillAmount != fill.fillAmount)
+            fillImage.fillAmount = currentHp / maxHp;
+            while(effectImage.fillAmount != fillImage.fillAmount)
             {
-                if (effectImg.fillAmount > fill.fillAmount)
+                if (effectImage.fillAmount > fillImage.fillAmount)
                 {
-                    effectImg.fillAmount -= hurtSpeed;
+                    effectImage.fillAmount -= hurtSpeed;
                 }
                 else
                 {
-                    effectImg.fillAmount = fill.fillAmount;
+                    effectImage.fillAmount = fillImage.fillAmount;
                 }
                 SetBlinkImg();
-                yield return new WaitForSeconds(0.01f);
+                yield return blinkTime;
             }
         }
 
         public void PoisonedHealth()
         {
-            fill.color = new Color(0, 255, 0);
-            effectImg.color = new Color(0, 150, 0);
-            background.color = new Color(0, 150, 0);
+            fillImage.color = new Color(0, 255, 0);
+            effectImage.color = new Color(0, 150, 0);
+            backGroundImage.color = new Color(0, 150, 0);
         }
         public void NormalHealth()
         {
-            fill.color = new Color(255, 255, 255);
-            effectImg.color = new Color(255, 255, 255);
-            background.color = new Color(255, 255, 255);
+            fillImage.color = new Color(255, 255, 255);
+            effectImage.color = new Color(255, 255, 255);
+            backGroundImage.color = new Color(255, 255, 255);
         }
 
         public void LoseHp(float hp)
@@ -68,9 +107,9 @@ namespace MomodoraCopy
 
         public void SetBlinkImg()
         {
-            float moveDistance = (1 - effectImg.fillAmount) * 100;
-            blinkImg.rectTransform.anchoredPosition =
-                new Vector2(setPositionX - moveDistance, blinkImg.rectTransform.anchoredPosition.y);
+            float moveDistance = (1 - effectImage.fillAmount) * 100;
+            blinkImage.rectTransform.anchoredPosition =
+                new Vector2(setPositionX - moveDistance, blinkImage.rectTransform.anchoredPosition.y);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 
 namespace MomodoraCopy
 {
@@ -45,6 +46,11 @@ namespace MomodoraCopy
 
         void Update()
         {
+            if(TimelineManager.instance.currentPlayableDirector != null)
+            {
+                HideInteractionBox();
+                return;
+            }
             if (isNear)
             {
                 if (!DialogueManager.instance.isChatting)
@@ -65,7 +71,7 @@ namespace MomodoraCopy
                             return;
                         }
                         if(DialogueManager.instance.contextCount == DialogueManager.instance.
-                            dialogueDictionary[dialogueName.GetHashCode()][DialogueManager.instance.currentLanguage].Count)
+                            dialogueDictionary[dialogueName.GetHashCode()][LocalizeManager.instance.CurrentLanguage].Count)
                         {
                             DialogueManager.instance.HideChatBox();
                             return;
@@ -105,6 +111,7 @@ namespace MomodoraCopy
                 isNear = true;
                 if (DialogueManager.instance.isChatting)
                 {
+                    HideInteractionBox();
                     return;
                 }
                 ShowInteractionBox();

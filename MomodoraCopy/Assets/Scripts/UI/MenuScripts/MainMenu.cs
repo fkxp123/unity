@@ -36,6 +36,14 @@ namespace MomodoraCopy
         
         List<AbstractMenu> selectedMenuList = new List<AbstractMenu>();
 
+        string inventoryText;
+        string keyItemText;
+        string mapText;
+        string settingsText;
+        string returnToTitleScreenText;
+
+        LocalizeManager localizeManager;
+
         protected override void Awake()
         {
             base.Awake();
@@ -59,6 +67,36 @@ namespace MomodoraCopy
             selectedMenuList.Add(mappingMenu);
             selectedMenuList.Add(settingMenu);
             selectedMenuList.Add(logOutMenu);
+
+            localizeManager = LocalizeManager.instance;
+
+            inventoryText = localizeManager.descriptionsDict
+                ["InventoryDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            keyItemText = localizeManager.descriptionsDict
+                ["KeyItemDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            mapText = localizeManager.descriptionsDict
+                ["MapDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            settingsText = localizeManager.descriptionsDict
+                ["SettingsDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            returnToTitleScreenText = localizeManager.descriptionsDict
+                ["ReturnToTitleScreenDesc".GetHashCode()][localizeManager.CurrentLanguage];
+
+            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+        }
+
+        void OnLanguageChanged()
+        {
+            inventoryText = localizeManager.descriptionsDict
+                ["InventoryDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            keyItemText = localizeManager.descriptionsDict
+                ["KeyItemDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            mapText = localizeManager.descriptionsDict
+                ["MapDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            settingsText = localizeManager.descriptionsDict
+                ["SettingsDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            returnToTitleScreenText = localizeManager.descriptionsDict
+                ["ReturnToTitleScreenDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            ChangeMenuDescription(slotCount);
         }
 
         protected override void OnEnable()
@@ -93,7 +131,7 @@ namespace MomodoraCopy
         {
             enabled = false;
             MenuManager.instance.isDisableByEscapeKey = true;
-            GameManager.instance.Resume();
+            EventManager.instance.PostNotification(EventType.GameResume);
         }
 
         public override void CheckArrowKey()
@@ -124,19 +162,19 @@ namespace MomodoraCopy
             switch (selectedCount)
             {
                 case 0:
-                    mainMenuDescription.text = "장비";
+                    mainMenuDescription.text = inventoryText;
                     break;
                 case 1:
-                    mainMenuDescription.text = "주요 아이템";
+                    mainMenuDescription.text = keyItemText;
                     break;
                 case 2:
-                    mainMenuDescription.text = "지도";
+                    mainMenuDescription.text = mapText;
                     break;
                 case 3:
-                    mainMenuDescription.text = "설정";
+                    mainMenuDescription.text = settingsText;
                     break;
                 case 4:
-                    mainMenuDescription.text = "시작 화면으로 돌아가기";
+                    mainMenuDescription.text = returnToTitleScreenText;
                     break;
                 default:
                     break;

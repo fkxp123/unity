@@ -14,7 +14,19 @@ namespace MomodoraCopy
         GameObject playerPhysics;
         GameObject playerSprite;
 
-
+        public void SetPlayerState()
+        {
+            //PlayableDirector playableDirector
+            //TimelineAsset timelineAsset = (TimelineAsset)playableDirector.playableAsset;
+            //foreach (var track in timelineAsset.GetOutputTracks())
+            //{
+            //    if (track is DialogueTrack dialogueTrack)
+            //    {
+            //        dialogueTrack = (DialogueTrack)track;
+            //        dialogueTrack.AddClipToTrack();
+            //    }
+            //}
+        }
     }
 
 }

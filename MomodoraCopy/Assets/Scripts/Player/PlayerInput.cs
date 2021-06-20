@@ -21,6 +21,11 @@ namespace MomodoraCopy
 
         void Update()
         {
+            if (GameManager.instance.stopPlayerInput)
+            {
+                directionalInput = Vector2.zero;
+                return;
+            }
             directionalInput = CheckArrowKeyDown();
             CheckInputKey();
         }
@@ -71,10 +76,6 @@ namespace MomodoraCopy
             else if (Input.GetKeyDown(KeyboardManager.instance.RollKey))
             {
                 isKeyDownRoll = true;
-            }
-            else if (Input.GetKeyDown(KeyboardManager.instance.MenuKey))
-            {
-                MenuManager.instance.IsGamePaused = true;
             }
             if (isKeyDownAttack || isKeyDownBowAttack || isKeyDownJump || isKeyDownRoll)
             {

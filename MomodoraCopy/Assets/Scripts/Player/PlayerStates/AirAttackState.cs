@@ -1,4 +1,6 @@
-﻿namespace MomodoraCopy
+﻿using UnityEngine;
+
+namespace MomodoraCopy
 {
     public class AirAttackState : PlayerState
     {

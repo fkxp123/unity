@@ -51,11 +51,16 @@ namespace MomodoraCopy
         public GameObject fadeEffect;
         public GameObject invertMask;
 
-        PlayerInput playerInput;
-        PlayerMovement playerMovement;
-        Player playerFsm;
-        PlayerStatus playerStatus;
+        public PlayerInput playerInput;
+        public PlayerMovement playerMovement;
+        public Player playerFsm;
+        public PlayerStatus playerStatus;
 
+        public bool stopPlayerInput;
+        public bool stopPlayerMovement;
+        public bool stopPlayerFsm;
+
+        public bool isPaused;
 
         void OnEnable()
         {
@@ -118,6 +123,19 @@ namespace MomodoraCopy
         }
         public void Start()
         {
+            EventManager.instance.AddListener(EventType.GamePause, OnGamePause);
+            EventManager.instance.AddListener(EventType.GameResume, OnGameResume);
+        }
+
+        void OnGamePause()
+        {
+            Pause();
+            score.text = string.Empty;
+        }
+        void OnGameResume()
+        {
+            Resume();
+            UpdateScoreBoard();
         }
 
         //void SetSceneHashList()
@@ -173,16 +191,7 @@ namespace MomodoraCopy
                 component.enabled = false;
             }
         }
-        public void StopPlayerInput()
-        {
-            playerPhysics.GetComponent<PlayerInput>().enabled = false;
-            playerSprite.GetComponent<Player>().enabled = false;
-        }
-        public void StartPlayerInput()
-        {
-            playerPhysics.GetComponent<PlayerInput>().enabled = true;
-            playerSprite.GetComponent<Player>().enabled = true;
-        }
+
         public void Save(GameObject checkPoint)
         {
             playerData.playerPosition = checkPoint.transform.position;
@@ -323,6 +332,7 @@ namespace MomodoraCopy
 
         void Update()
         {
+            //for test------------------
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 StartCoroutine(LoadScene("test1-1"));
@@ -336,6 +346,11 @@ namespace MomodoraCopy
                 OperateFadeOut();
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                LocalizeManager.instance.CurrentLanguage = Language.English;
+            }
+            //--------------------------
         }
     }
 }

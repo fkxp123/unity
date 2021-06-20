@@ -18,20 +18,20 @@ namespace MomodoraCopy
 
         public Dictionary<Language, List<string>> dialogueDictionary = new Dictionary<Language, List<string>>();
 
-        Language currentLanguage;
+        public List<TimelineClip> clipList = new List<TimelineClip>();
 
         public void AddClipToTrack()
         {
             ClearAllClips();
 
-            currentLanguage = DialogueManager.instance.currentLanguage;
-            List<string> dialogueContext = GetDialogue(dialogueName, (int)currentLanguage);
+            List<string> dialogueContext = GetDialogue(dialogueName, (int)LocalizeManager.instance.CurrentLanguage);
             PlayableDirector playableDirector = TimelineManager.instance.playableDirectorNameDict[dialogueName];
-
+            clipList.Clear();
             float clipStartTime = dialogueStartTime;
             for (int i = 0; i <= dialogueContext.Count; i++)
             {
                 TimelineClip clip = CreateDefaultClip();
+                clipList.Add(clip);
                 DialogueControlAsset dialogueClip = clip.asset as DialogueControlAsset;
                 if (i == 0)
                 {
@@ -54,6 +54,7 @@ namespace MomodoraCopy
                            TimelineManager.instance.playableDirectorInfoDict[playableDirector].talkerPos;
                     dialogueClip.template.dialogueName = dialogueName;
                     dialogueClip.template.talkerName = dialogueName;
+                    dialogueClip.template.letterCount = dialogueContext[i].Length;
                     dialogueClip.template.context = dialogueContext[i];
                     dialogueClip.template.endLine = dialogueContext.Count - 1;
                     dialogueClip.template.contextLine = i;
@@ -79,8 +80,19 @@ namespace MomodoraCopy
         public void ClearAllClips()
         {
             var asset = TimelineEditor.inspectedAsset;
+            
             if (asset == null)
+            {
+                var trackAsset = clipList[0].parentTrack;
+                var timelineAsset = trackAsset.timelineAsset;
+                for(int i = 0; i < clipList.Count; i++)
+                {
+                    timelineAsset.DeleteClip(clipList[i]);
+                }
+                clipList.Clear();
                 return;
+            }
+
             foreach (var track in asset.GetRootTracks())
             {
                 if (track is DialogueTrack)
@@ -99,6 +111,7 @@ namespace MomodoraCopy
                 }
             }
             TimelineEditor.Refresh(RefreshReason.ContentsAddedOrRemoved);
+            TimelineEditor.Refresh(RefreshReason.ContentsModified);
         }
 
         List<string> GetDialogue(string _CSVFileName, int localNumber)

@@ -29,7 +29,7 @@ namespace MomodoraCopy
             TimelineManager.instance.RefreshDialogueTracks();
             TimelineManager.instance.playableDirectorInfoDict.Add(playableDirector, info);
             TimelineManager.instance.playableDirectorNameDict.Add(gameObject.name, playableDirector);
-            gameObject.SetActive(false);
+
         }
     }
 }

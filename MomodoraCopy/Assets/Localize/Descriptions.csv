@@ -1,0 +1,33 @@
+﻿,kor,eng
+UpKeyDesc,위,Up
+DownKeyDesc,아래,Down
+LeftKeyDesc,좌,Left
+RightKeyDesc,우,Right
+JumpKeyDesc,점프,Jump
+AttackKeyDesc,근접 공격,Attack
+BowAttackKeyDesc,원거리 공격,Bow Attack
+RollKeyDesc,구르기,Roll
+UseItemKeyDesc,아이템 사용,Use Item
+ChangeItemKeyDesc,아이템 교체,Change Item
+MappingKeyDesc,지도,Mapping
+MainMenuKeyDesc,메뉴,Menu
+ApplyChangesDesc,변경사항 적용,Apply Changes
+DefaultSettingsDesc,기본 설정,Default Settings
+BackDesc,이전으로,Back
+PressAnyKeyDesc,아무 키나 누르세요,Press Any Key
+InventoryDesc,장비,Inventory
+KeyItemDesc,주요아이템,Key Item
+MapDesc,지도,Map
+SettingsDesc,설정,Settings
+ReturnToTitleScreenDesc,시작 화면으로 돌아가기,Return To Title Screen
+SoundVolumeDesc,효과음 크기,Sound Volume
+MusicVolumeDesc,음악 크기,Music Volume
+ScreenResolutionDesc,해상도,Screen Resolution
+GraphicalQualityDesc,화질,Graphical Quality
+ScreenShakeDesc,화면 진동,Screen Shake
+VibrationDesc,진동,Vibration
+CustomizeKeysDesc,키 설정,Customize Keys
+ConfirmKeyDesc,확인,Confirm
+CancleKeyDesc,취소,Cancle
+LanguageDesc,언어,Language
+LocalLanguageDesc,한국어,English

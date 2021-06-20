@@ -15,6 +15,7 @@ namespace MomodoraCopy
         public override void OperateEnter()
         {
             base.OperateEnter();
+            playerMovement.AttackCount = 0;
             playerMovement.AttackCount += 1;
             if (playerMovement.AttackCount == 1)
             {
@@ -30,14 +31,14 @@ namespace MomodoraCopy
             CheckCanComboAttack();
             playerMovement.CheckCanFlip();
             OperateComboAttack();
-            if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("firstAttack") &&
-                !player.animator.GetCurrentAnimatorStateInfo(0).IsName("secondAttack") &&
-                !player.animator.GetCurrentAnimatorStateInfo(0).IsName("thirdAttack"))
-            {
-                player.isAnimationFinished = true;
-                player.stateMachine.SetState(player.idle);
-                return;
-            }
+            //if (!player.animator.GetCurrentAnimatorStateInfo(0).IsName("firstAttack") &&
+            //    !player.animator.GetCurrentAnimatorStateInfo(0).IsName("secondAttack") &&
+            //    !player.animator.GetCurrentAnimatorStateInfo(0).IsName("thirdAttack"))
+            //{
+            //    player.isAnimationFinished = true;
+            //    player.stateMachine.SetState(player.idle);
+            //    return;
+            //}
             if (player.isAnimationFinished && !comboFlag)
             {
                 playerMovement.stopCheckFlip = false;

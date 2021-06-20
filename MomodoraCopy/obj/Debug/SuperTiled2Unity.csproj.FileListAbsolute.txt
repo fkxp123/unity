@@ -518,3 +518,4 @@ C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\SuperTiled2Unity.csproj
 C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\SuperTiled2Unity.csproj.CopyComplete
 C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\SuperTiled2Unity.dll
 C:\Users\user\Documents\Unity_git\MomodoraCopy\obj\Debug\SuperTiled2Unity.pdb
+C:\Users\user\Documents\Unity_git\MomodoraCopy\Temp\bin\Debug\ICSharpCode.NRefactory.dll

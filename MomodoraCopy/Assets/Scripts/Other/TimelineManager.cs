@@ -21,6 +21,7 @@ namespace MomodoraCopy
             = new Dictionary<string, PlayableDirector>();
 
         public PlayableDirector currentPlayableDirector;
+        public PlayableDirector tempPlayableDirector;
         public string currentPlayableDirectorName;
 
         void OnEnable()
@@ -38,10 +39,22 @@ namespace MomodoraCopy
 
         void Start()
         {
-            currentPlayableDirector = playableDirectorNameDict["Prologue"];
             RefreshDialogueTracks();
+            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
         }
         
+        void OnLanguageChanged()
+        {
+            RefreshDialogueTracks();
+            tempPlayableDirector = currentPlayableDirector;
+            Stop();
+            currentPlayableDirector = tempPlayableDirector;
+            if(currentPlayableDirector != null)
+            {
+                currentPlayableDirector.Play();
+            }
+        }
+
         public void SetCurrentPlayableDirector(PlayableDirector playableDirector)
         {
             currentPlayableDirector = playableDirector;
@@ -56,14 +69,19 @@ namespace MomodoraCopy
                 playableDirector.time = 0;
                 playableDirector.Stop();
                 playableDirector.Evaluate();
-                playableDirector.gameObject.SetActive(false);
+                
                 TimelineAsset timelineAsset = (TimelineAsset)playableDirector.playableAsset;
                 foreach(var track in timelineAsset.GetOutputTracks())
                 {
-                    if(track.GetType().Name == "DialogueTrack")
+                    if(track is DialogueTrack dialogueTrack)
                     {
-                        DialogueTrack dialogueTrack = (DialogueTrack)track;
+                        dialogueTrack = (DialogueTrack)track;
                         dialogueTrack.AddClipToTrack();
+                        //var clips = dialogueTrack.GetClips();
+                        //foreach(var clip in clips)
+                        //{
+                        //    save dialoguetrack.dialoguename / clip.start / clip.end?
+                        //}
                     }
                 }
             }
@@ -76,6 +94,10 @@ namespace MomodoraCopy
 
         public void Pause()
         {
+            if (currentPlayableDirector == null)
+            {
+                return;
+            }
             if (currentPlayableDirector.state == PlayState.Paused)
             {
                 return;
@@ -84,6 +106,10 @@ namespace MomodoraCopy
         }
         public void Stop()
         {
+            if(currentPlayableDirector == null)
+            {
+                return;
+            }
             currentPlayableDirector.Stop();
             currentPlayableDirector = null;
         }
@@ -98,16 +124,16 @@ namespace MomodoraCopy
             {
                 return;
             }
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (DialogueManager.instance.ableToPassNext && Input.GetKeyDown(KeyCode.UpArrow))
             {
                 currentPlayableDirector.gameObject.SetActive(true);
                 currentPlayableDirector.Play();
             }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                //playableDirectorNameDict["Prologue"].Pause();
-                playableDirectorNameDict["Prologue"].gameObject.SetActive(false);
-            }
+            //if (Input.GetKeyDown(KeyCode.DownArrow))
+            //{
+            //    //playableDirectorNameDict["Prologue"].Pause();
+            //    playableDirectorNameDict["Prologue"].gameObject.SetActive(false);
+            //}
         }
     }
 }

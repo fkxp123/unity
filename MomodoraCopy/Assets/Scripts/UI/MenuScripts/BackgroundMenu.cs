@@ -9,12 +9,34 @@ namespace MomodoraCopy
     {
         public GameObject menuBackground;
         public GameObject keyDescriptionBar;
-        
+
+        Text confirmKeyText;
+        Text cancleKeyText;
+
+        LocalizeManager localizeManager;
+
         void Start()
         {
-            keyDescriptionBar.transform.GetChild(0).GetComponent<Text>().text = "확인 : A";
-            keyDescriptionBar.transform.GetChild(1).GetComponent<Text>().text = "취소 : S";
+            localizeManager = LocalizeManager.instance;
+
+            confirmKeyText = keyDescriptionBar.transform.GetChild(0).GetComponent<Text>();
+            cancleKeyText = keyDescriptionBar.transform.GetChild(1).GetComponent<Text>();
+            confirmKeyText.text = string.Format("{0} : A", localizeManager.descriptionsDict
+                ["ConfirmKeyDesc".GetHashCode()][localizeManager.CurrentLanguage]);
+            cancleKeyText.text = string.Format("{0} : S", localizeManager.descriptionsDict
+                ["CancleKeyDesc".GetHashCode()][localizeManager.CurrentLanguage]);
+
+            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
         }
+
+        void OnLanguageChanged()
+        {
+            confirmKeyText.text = string.Format("{0} : A", localizeManager.descriptionsDict
+                ["ConfirmKeyDesc".GetHashCode()][localizeManager.CurrentLanguage]);
+            cancleKeyText.text = string.Format("{0} : S", localizeManager.descriptionsDict
+                ["CancleKeyDesc".GetHashCode()][localizeManager.CurrentLanguage]);
+        }
+
         public void SetBackgroundAlpha(float alpha)
         {
             Image img = menuBackground.GetComponent<Image>();
@@ -25,13 +47,6 @@ namespace MomodoraCopy
         public void SetKeyDescriptionBarPosition(Vector3 position)
         {
             keyDescriptionBar.GetComponent<RectTransform>().localPosition = position;
-        }
-        public void SetKeyDescription()
-        {
-            keyDescriptionBar.transform.GetChild(0).GetComponent<Text>().text =
-                string.Format("확인 : {0}", KeyboardManager.instance.JumpKey.ToString());
-            keyDescriptionBar.transform.GetChild(1).GetComponent<Text>().text =
-                string.Format("취소 : {0}", KeyboardManager.instance.AttackKey.ToString());
         }
     }
 

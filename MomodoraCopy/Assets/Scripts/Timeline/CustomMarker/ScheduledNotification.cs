@@ -27,7 +27,7 @@ namespace MomodoraCopy
             //Add a notification on the time notification behaviour
             var notificationBehaviour = timeNotificationPlayable.GetBehaviour();
             //notificationBehaviour.AddNotification(19.1, new NotificationMarker());
-            //notificationBehaviour.AddNotification(2.0, new MyNotification());
+            notificationBehaviour.AddNotification(5.0, new MyNotification());
 
             playableGraph.Play();
         }

@@ -6,25 +6,23 @@ namespace MomodoraCopy
     {
         // Start is called before the first frame update
         Istate min = new Istate();
-        void Start()
-        {
-            EventManager.instance.AddListener(EVENT_TYPE.GAME_INIT, this);
-            min.OnEvent(EVENT_TYPE.DEAD, this);
-        }
 
-
-        // Update is called once per frame
-        void Update()
-        {
-        }
         public void OnEvent(EVENT_TYPE Event_Type, IListener Listener)
         {
             Debug.Log("Add " + Event_Type + " Event + in " + Listener);
-            if(Event_Type == EVENT_TYPE.GAME_END)
+            if (Event_Type == EVENT_TYPE.GAME_END)
             {
                 //~~~
             }
         }
+
+        void Start()
+        {
+            EventManagerTest.instance.AddListener(EVENT_TYPE.GAME_INIT, this);
+            min.OnEvent(EVENT_TYPE.DEAD, this);
+        }
+
+
     }
     public class Istate : IListener
     {

@@ -13,15 +13,15 @@ namespace MomodoraCopy
                 _health = Mathf.Clamp(value, 0, 100);
                 if (_health <= 0)
                 {
-                    EventManager.instance.PostNotification(EVENT_TYPE.GAME_END);
+                    EventManagerTest.instance.PostNotification(EVENT_TYPE.GAME_END);
                 }
             }
         }
         // Start is called before the first frame update
         void Start()
         {
-            EventManager.instance.PostNotification(EVENT_TYPE.GAME_INIT);
-            EventManager.instance.AddListener(EVENT_TYPE.GAME_END, this);
+            EventManagerTest.instance.PostNotification(EVENT_TYPE.GAME_INIT);
+            EventManagerTest.instance.AddListener(EVENT_TYPE.GAME_END, this);
         }
 
         // Update is called once per frame

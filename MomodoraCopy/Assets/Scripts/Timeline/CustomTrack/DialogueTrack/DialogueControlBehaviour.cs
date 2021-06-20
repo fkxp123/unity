@@ -18,6 +18,7 @@ namespace MomodoraCopy
         public string talkerName;
         [TextArea(5, 10)]
         public string context;
+        public int letterCount;
         public int contextLine;
         public int endLine;
         public bool finishWithDialogue;
@@ -34,6 +35,7 @@ namespace MomodoraCopy
                 DialogueManager.instance.HideChatBox();
                 if (finishWithDialogue)
                 {
+                    GameManager.instance.playerFsm.stateMachine.SetState(GameManager.instance.playerFsm.idle);
                     TimelineManager.instance.Stop();
                 }
                 return;

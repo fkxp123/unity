@@ -117,7 +117,7 @@
      <Compile Include="Assets\Scripts\Enemy\ImpScripts\ImpFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\MonkeyFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\PlantFsm.cs" />
-     <Compile Include="Assets\Scripts\EventManager.cs" />
+     <Compile Include="Assets\Scripts\EventManagerTest.cs" />
      <Compile Include="Assets\Scripts\EventTest.cs" />
      <Compile Include="Assets\Scripts\FadeController.cs" />
      <Compile Include="Assets\Scripts\InvertMask.cs" />
@@ -135,11 +135,13 @@
      <Compile Include="Assets\Scripts\Other\DebugGlobalLight2D.cs" />
      <Compile Include="Assets\Scripts\Other\ElevatorController.cs" />
      <Compile Include="Assets\Scripts\Other\Entrance.cs" />
+     <Compile Include="Assets\Scripts\Other\EventManager.cs" />
      <Compile Include="Assets\Scripts\Other\Exit.cs" />
      <Compile Include="Assets\Scripts\Other\Explosion.cs" />
      <Compile Include="Assets\Scripts\Other\FpsChecker.cs" />
      <Compile Include="Assets\Scripts\Other\GameManager.cs" />
      <Compile Include="Assets\Scripts\Other\Gems.cs" />
+     <Compile Include="Assets\Scripts\Other\LocalizeManager.cs" />
      <Compile Include="Assets\Scripts\Other\MainMap.cs" />
      <Compile Include="Assets\Scripts\Other\MapManager.cs" />
      <Compile Include="Assets\Scripts\Other\MovingTrapController.cs" />
@@ -150,7 +152,6 @@
      <Compile Include="Assets\Scripts\Other\PoisonBombController.cs" />
      <Compile Include="Assets\Scripts\Other\PushBlockController.cs" />
      <Compile Include="Assets\Scripts\Other\SceneTransferPoint.cs" />
-     <Compile Include="Assets\Scripts\Other\ScreenTransitionImageEffect.cs" />
      <Compile Include="Assets\Scripts\Other\SerializableDictionary\DictionaryDrawer.cs" />
      <Compile Include="Assets\Scripts\Other\SerializableDictionary\SerializableDictionary.cs" />
      <Compile Include="Assets\Scripts\Other\Singleton.cs" />
@@ -185,6 +186,7 @@
      <Compile Include="Assets\Scripts\Player\PlayerStates\RollState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\RunState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\SampleState.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerStates\TalkingState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStatus.cs" />
      <Compile Include="Assets\Scripts\Player\RaycastController.cs" />
      <Compile Include="Assets\Scripts\Pooling\EnemySpawner\EnemySpawner.cs" />
@@ -204,6 +206,9 @@
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\ManualNotification.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\MyNotification.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\MyReceiver.cs" />
+     <Compile Include="Assets\Scripts\Timeline\CustomMarker\New Folder\ReceiverExample.cs" />
+     <Compile Include="Assets\Scripts\Timeline\CustomMarker\New Folder\SignalTrackEx.cs" />
+     <Compile Include="Assets\Scripts\Timeline\CustomMarker\New Folder\SimpleMarker.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\NotificationMarker.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\ScheduledNotification.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomTrack\ActTrack\PlayerActTrack.cs" />

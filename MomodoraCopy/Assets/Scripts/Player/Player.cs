@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace MomodoraCopy
 {
@@ -50,6 +51,7 @@ namespace MomodoraCopy
         public IState climbLadder;
         public IState pushBlock;
         public IState blownUp;
+        public IState talking;
         #endregion
 
         #endregion
@@ -100,14 +102,10 @@ namespace MomodoraCopy
             climbLadder = new ClimbLadderState(this);
             pushBlock = new PushBlockState(this);
             blownUp = new BlownUpState(this);
+            talking = new TalkingState(this);
             #endregion
 
             stateMachine = new PlayerStateMachine(idle);
-        }
-        IEnumerator ResetEnabled()
-        {
-            yield return null;
-            enabled = true;
         }
 
         void Update()
@@ -214,7 +212,14 @@ namespace MomodoraCopy
                 }
             }
         }
-
+        public void EnablePlayerInput()
+        {
+            GameManager.instance.stopPlayerInput = false;
+        }
+        public void DisablePlayerInput()
+        {
+            GameManager.instance.stopPlayerInput = true;
+        }
         public void SetPreAnimationFinished()
         {
             isAnimationFinished = true;

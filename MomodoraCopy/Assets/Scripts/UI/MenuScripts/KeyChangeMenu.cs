@@ -8,14 +8,17 @@ namespace MomodoraCopy
 {
     public class KeyChangeMenu : AbstractMenu
     {
-        public GameObject contentSlot;
-        public GameObject selectedContentSlot;
+        public GameObject staticContentSlot;
+        public GameObject dynamicContentSlot;
         public GameObject menuInfo;
+        Text menuInfoText;
 
         SettingMenu settingMenu;
 
-        GameObject[] contentSlots;
+        GameObject[] dynamicContentSlots;
+        GameObject[] staticContentSlots;
         Text[] selectedKeyCodeText;
+        Text[] descriptionText;
         Image[] slotImage;
         int slotCount;
 
@@ -27,27 +30,65 @@ namespace MomodoraCopy
         KeyCode[] keyCodes;
         bool isWatingChangeKey;
         string selectedKeyName;
+        string pressAnyKeyText;
 
         public List<string> originKeyName = new List<string>();
         public List<string> changeKeyName = new List<string>();
 
+        LocalizeManager localizeManager;
+
         protected override void Awake()
         {
             base.Awake();
-            contentSlot.SetActive(false);
+            staticContentSlot.SetActive(false);
             
-            contentSlots = new GameObject[selectedContentSlot.transform.childCount];
-            selectedKeyCodeText = new Text[selectedContentSlot.transform.childCount];
-            slotImage = new Image[selectedContentSlot.transform.childCount];
-            for (int i = 0; i < selectedContentSlot.transform.childCount; i++)
+            dynamicContentSlots = new GameObject[dynamicContentSlot.transform.childCount];
+            staticContentSlots = new GameObject[staticContentSlot.transform.childCount];
+            selectedKeyCodeText = new Text[dynamicContentSlot.transform.childCount];
+            descriptionText = new Text[staticContentSlot.transform.childCount];
+            slotImage = new Image[dynamicContentSlot.transform.childCount];
+
+            for (int i = 0; i < dynamicContentSlot.transform.childCount; i++)
             {
-                contentSlots[i] = selectedContentSlot.transform.GetChild(i).gameObject;
-                slotImage[i] = contentSlots[i].GetComponent<Image>();
+                dynamicContentSlots[i] = dynamicContentSlot.transform.GetChild(i).gameObject;
+                slotImage[i] = dynamicContentSlots[i].GetComponent<Image>();
             }
 
-            scrollBarMoveAmount = 1.0f / (selectedContentSlot.transform.childCount - maxVisialbeSlotCount);
+            scrollBarMoveAmount = 1.0f / (dynamicContentSlot.transform.childCount - maxVisialbeSlotCount);
 
             keyCodes = (KeyCode[])Enum.GetValues(typeof(KeyCode));
+
+            localizeManager = LocalizeManager.instance;
+
+            for (int i = 0; i < staticContentSlot.transform.childCount; i++)
+            {
+                staticContentSlots[i] = staticContentSlot.transform.GetChild(i).gameObject;
+                descriptionText[i] = staticContentSlots[i].transform.GetChild(0).GetComponent<Text>();
+                descriptionText[i].text = localizeManager.descriptionsDict
+                    [descriptionText[i].name.GetHashCode()][localizeManager.CurrentLanguage];
+            }
+            menuInfoText = menuInfo.GetComponent<Text>();
+            menuInfoText.text = localizeManager.descriptionsDict
+                ["CustomizeKeysDesc".GetHashCode()][localizeManager.CurrentLanguage];
+
+            pressAnyKeyText = localizeManager.descriptionsDict
+                ["PressAnyKeyDesc".GetHashCode()][localizeManager.CurrentLanguage];
+
+            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+        }
+
+        void OnLanguageChanged()
+        {
+            menuInfoText.text = localizeManager.descriptionsDict
+                ["CustomizeKeysDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            pressAnyKeyText = localizeManager.descriptionsDict
+                ["PressAnyKeyDesc".GetHashCode()][localizeManager.CurrentLanguage];
+
+            for (int i = 0; i < descriptionText.Length; i++)
+            {
+                descriptionText[i].text = localizeManager.descriptionsDict
+                    [descriptionText[i].name.GetHashCode()][localizeManager.CurrentLanguage];
+            }
         }
 
         protected override void Update()
@@ -71,11 +112,11 @@ namespace MomodoraCopy
             KeyboardManager.instance.GetKeyCodes();
             for (int i = 0; i < KeyboardManager.instance.keyCodeList.Count; i++)
             {
-                selectedKeyCodeText[i] = contentSlots[i].transform.GetChild(0).GetComponent<Text>();
+                selectedKeyCodeText[i] = dynamicContentSlots[i].transform.GetChild(0).GetComponent<Text>();
                 selectedKeyCodeText[i].text = KeyboardManager.instance.keyCodeList[i].ToString();
             }
-            contentSlot.SetActive(true);
-            selectedContentSlot.SetActive(true);
+            staticContentSlot.SetActive(true);
+            dynamicContentSlot.SetActive(true);
             menuInfo.gameObject.SetActive(true);
             backgroundMenu.SetBackgroundAlpha(1f);
             backgroundMenu.SetKeyDescriptionBarPosition(KeyDescriptionBarLowPos);
@@ -86,8 +127,8 @@ namespace MomodoraCopy
         protected override void OnDisable()
         {
             base.OnDisable();
-            contentSlot.SetActive(false);
-            selectedContentSlot.SetActive(false);
+            staticContentSlot.SetActive(false);
+            dynamicContentSlot.SetActive(false);
             menuInfo.gameObject.SetActive(false);
             originKeyName.Clear();
             changeKeyName.Clear();
@@ -99,7 +140,7 @@ namespace MomodoraCopy
             {
                 isWatingChangeKey = true;
                 selectedKeyName = selectedKeyCodeText[slotCount].text;
-                selectedKeyCodeText[slotCount].text = "아무 버튼이나 누르세요";
+                selectedKeyCodeText[slotCount].text = pressAnyKeyText;
             }
             else if(slotCount == 12)
             {
@@ -121,7 +162,7 @@ namespace MomodoraCopy
             if (Input.GetKeyDown(KeyboardManager.instance.DownKey))
             {
                 slotCount += 1;
-                if (slotCount >= selectedContentSlot.transform.childCount)
+                if (slotCount >= dynamicContentSlot.transform.childCount)
                 {
                     slotCount = 0;
                     scrollBar.value = 1f;
@@ -149,7 +190,7 @@ namespace MomodoraCopy
                 }
                 if (slotCount < 0)
                 {
-                    slotCount = selectedContentSlot.transform.childCount - 1;
+                    slotCount = dynamicContentSlot.transform.childCount - 1;
                     scrollBar.value = 0f;
                 }
                 ChangeSelectedSlotMenu(slotImage, slotCount);
