@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3310588092294222210, guid: 1070e0d9746bc0146a2be65a8b2cc785, type: 3}
+  size: 2
   arrowRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1638660184133743619
 GameObject:
@@ -148,7 +149,7 @@ MonoBehaviour:
   poisonBombSpawnerObject: {fileID: 3335623825808426736}
   bloodEffect: {fileID: 1262917962455973348}
   hitEffect: {fileID: 115009070050383823}
-  siegeMode: 1
+  siegeMode: 0
   shielderMode: 0
   isInteract: 0
   impFriend: {fileID: 0}
@@ -173,6 +174,7 @@ MonoBehaviour:
   maxHp: 100
   hp: 100
   currentHp: 0
+  currentTakeDamage: 0
 --- !u!95 &6925628414246395896
 Animator:
   serializedVersion: 3
@@ -210,7 +212,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 0a2ee41aa37f50948a827db0b6a2a361, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -298,7 +300,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3335623825808426736}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.83, y: 0.21, z: -3.0875585}
+  m_LocalPosition: {x: 0.83, y: 0.21, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8071107270091605050}
@@ -316,8 +318,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 924903da1e6852a4696fab808c7200e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4069111507110485725, guid: 7827c68178965394cb1a99ba14a8cfd4, type: 3}
-  bombRotation: {x: 0, y: 0, z: 0, w: 0}
+  prefab: {fileID: 481931301552819836, guid: a52c9ecb850e03249a65ca13679ce69f, type: 3}
+  size: 2
+  isSpecific: 0
+  isParabolla: 1
 --- !u!1 &3924353815307326270
 GameObject:
   m_ObjectHideFlags: 0
@@ -5214,7 +5218,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 292452913
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0

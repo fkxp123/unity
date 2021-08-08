@@ -49,7 +49,7 @@ namespace MomodoraCopy
                     objectRotation = transform.rotation
                 };
                 gemsInfo.Add(gemInfo);
-                ObjectPooler.instance.CreatePoolingObjectQueue(gemsInfo[i], 100);
+                ObjectPooler.instance.CreatePoolingObjects(gemsInfo[i], 5);
             }
 
             closedChest = transform.GetChild(0).gameObject;
@@ -77,7 +77,7 @@ namespace MomodoraCopy
                 int gemsRandom = Random.Range(0, 6);
 
                 gemsInfo[gemsRandom].position = transform.position;
-                GameObject gem = ObjectPooler.instance.GetPoolingObject(gemsInfo[gemsRandom]);
+                GameObject gem = ObjectPooler.instance.GetStaticPoolingObject(gemsInfo[gemsRandom]);
                 gem.GetComponent<Rigidbody2D>().AddForce(new Vector3(Random.Range(minMoveAmountX, maxMoveAmountX),
                     Random.Range(minMoveAmountY, maxMoveAmountY), 0), ForceMode2D.Impulse);
             }

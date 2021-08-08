@@ -1,0 +1,10 @@
+﻿,kor,eng
+MoveKeyGuide,좌 / 우 / 위 / 아래 : 이동,Left / Right / Up / Down : Movement
+JumpKeyGuide,A : 점프(버튼을 길게 누르면 더 높게 점프 가능),A : Jump(Hold to jump higher)
+DoubleJumpGuide,공중에서 한번 더 뛰면 더 높이 올라갑니다!,jump again mid-air to reach greater heights!
+ThroughJumpGuide,아래 + 점프 : 얇은 바닥 통과하기,Down + Jump : Traverse narrow platforms
+ItemGuide,Esc : 메뉴 열기<br>W : 장착 아이템 사용,Esc : Open Menu<br>W : Use Equipped Item
+AttackKeyGuide,S : 근접 공격,S : Melee Attack
+BowAttackKeyGuide,D : 원거리 공격<br>(버튼을 길게 누르면 강력한 공격 가능),D : Ranged Attack(Hold the button for a charged shot)
+SaveGuide,종을 울리면 게임을 저장하고 회복 가능,Hit bells to save progress and restore
+RollKeyGuide,Q : 적 뒤로 굴러 공격하기,Q : Dodge through enemies and enemy attacks

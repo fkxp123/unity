@@ -37,20 +37,29 @@ namespace MomodoraCopy
         float bombRadius;
         float poisonBombDamage;
 
+        float accel = 1;
+        public bool isParabolla;
+        Vector3 aimDirection;
+
         public override void Start()
         {
             base.Start();
             sprite = transform.GetChild(0);
             gravity = 50f;
-            direction.x = transform.parent.transform.rotation.y == 0 ? 1 : -1;
-            direction.y = -1;
             //velocity.y = 20;
             //speed = 20;
             boxCollider = GetComponent<BoxCollider2D>();
             playerMask = 1 << 8;
             bombRadius = 0.2f;
             poisonBombDamage = 10f;
-            poisonBombSpawner = transform.parent.transform.parent.GetComponent<PoisonBombSpawner>();
+            try
+            {
+                poisonBombSpawner = transform.parent.transform.parent.GetComponent<PoisonBombSpawner>();
+            }
+            catch
+            {
+                poisonBombSpawner = null;
+            }
         }
 
         void OnEnable()
@@ -59,9 +68,19 @@ namespace MomodoraCopy
             {
                 return;
             }
-            speed = Mathf.Abs(transform.position.x - GameManager.instance.playerPhysics.transform.position.x +
-                Mathf.Sign(transform.position.x - GameManager.instance.playerPhysics.transform.position.x) * Random.Range(4.0f, 7.0f));
-            velocity.y = Mathf.Abs(speed);
+            aimDirection = Vector3.zero;
+            if (isParabolla)
+            {
+                //speed = 10;
+                speed = Mathf.Abs(transform.parent.transform.position.x - GameManager.instance.playerPhysics.transform.position.x) + 5;
+                velocity.y = Mathf.Abs(speed);
+                direction.x = transform.parent.transform.rotation.y == 0 ? 1 : -1;
+                direction.y = -1;
+                return;
+            }
+            speed = 40;
+            velocity.y = 0;
+            aimDirection = (GameManager.instance.playerPhysics.transform.position - transform.position).normalized;
         }
         void OnDisable()
         {
@@ -75,8 +94,15 @@ namespace MomodoraCopy
         {
             UpdateRaycastOrigins();
             CalculateVelocity();
-            sprite.Rotate(0, 0, 10);
-            Move(velocity * Time.deltaTime);
+            sprite.Rotate(0, 0, -10);
+            if (isParabolla)
+            {
+                Move(velocity * Time.deltaTime);
+            }
+            else
+            {
+                Move(velocity * Time.deltaTime);
+            }
             CheckPlayerCollisions();
             CheckVerticalCollisions();
         }
@@ -84,15 +110,21 @@ namespace MomodoraCopy
         {
             //float targetVelocityX = direction.x * speed;
             //velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-            velocity.x = direction.x * speed;
             //speed -= friction * Time.deltaTime;
             //speed -= 0.5f * speed * speed * direction.x * 0.1f * Time.deltaTime;
             //speed = Mathf.Clamp(speed, 0, 50);
-            velocity.y += gravity * direction.y * Time.deltaTime;
-            velocity.y = Mathf.Clamp(velocity.y, -50, 50);
             //friction += -1 * direction.x * Time.deltaTime;
             //friction = direction.x == 1 ? Mathf.Clamp(friction, -10, 0) : Mathf.Clamp(friction, 0, 10);
             //velocity.x -= friction * Time.deltaTime;
+
+            if (isParabolla)
+            {
+                velocity.x = direction.x * speed;
+                velocity.y += gravity * direction.y * Time.deltaTime;
+                velocity.y = Mathf.Clamp(velocity.y, -50, 50);
+                return;
+            }
+            velocity = aimDirection * speed;
         }
 
         void CheckPlayerCollisions()
@@ -101,8 +133,9 @@ namespace MomodoraCopy
             if (isPlayer)
             {
                 gameObject.SetActive(false);
-                GameManager.instance.playerPhysics.transform.GetChild(1)
-                    .GetComponent<PlayerStatus>().TakeDamage(poisonBombDamage, DamageType.Poisoned, transform.rotation);
+                GameManager.instance.playerPhysics.transform.GetChild(0)
+                    .GetComponent<PlayerStatus>().TakeDamage(poisonBombDamage, DamageType.Poisoned, 
+                    transform.parent.transform.rotation);
             }
             bool isCollision = Physics2D.OverlapCircle(transform.position, bombRadius, collisionMask);
             if (isCollision)
@@ -238,7 +271,7 @@ namespace MomodoraCopy
             {
             }
 
-            transform.Translate(newMoveAmount, Space.World);
+            transform.parent.transform.Translate(newMoveAmount, Space.World);
             velocity.x = 0;
             //direction.x = 0;
         }
@@ -257,6 +290,11 @@ namespace MomodoraCopy
                 above = below = false;
                 left = right = false;
             }
+        }
+
+        public void SetAccel(float value)
+        {
+            accel = value;
         }
 
         void OnDrawGizmos()

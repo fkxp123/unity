@@ -16,9 +16,10 @@ namespace MomodoraCopy
         {
             if (player.isAnimationFinished)
             {
-                player.animator.Play("idle");
+                player.animator.Play(player.idleHash);
             }
             base.OperateUpdate();
+
             if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
                 if (playerMovement.jumpCount < playerMovement.maxJumpCount)
@@ -37,9 +38,15 @@ namespace MomodoraCopy
                 player.stateMachine.SetState(player.attack);
                 return;
             }
-            else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
+            else if (playerInput.IsBowCharging && Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
+            //else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
             {
                 player.stateMachine.SetState(player.bowAttack);
+                return;
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.UseItemKey))
+            {
+                player.stateMachine.SetState(player.useItem);
                 return;
             }
             else if (playerInput.directionalInput.x != 0)

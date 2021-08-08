@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace MomodoraCopy
 {
@@ -12,15 +13,84 @@ namespace MomodoraCopy
         public bool isKeyDownRoll;
         public bool isKeyDownBowAttack;
 
+        public ParticleSystem startChargingEffect;
+        public ParticleSystem chargingEffect;
+        public bool isBowCharging;
+        public bool IsBowCharging
+        {
+            get { return isBowCharging; }
+            set
+            {
+                if (value)
+                {
+                    //startChargingEffect.Play();
+                    //chargingEffect.Play();
+                }
+                else
+                {
+                    //startChargingEffect.Stop();
+                    //chargingEffect.Stop();
+                }
+                isBowCharging = value;
+            }
+        }
+        bool maxBowCharged;
+        public bool MaxBowCharged
+        {
+            get { return maxBowCharged; }
+            set
+            {
+                maxBowCharged = value;
+                if (value)
+                {
+                    if (!chargeCircleEffect.isPlaying)
+                    {
+                        chargeCircleEffect.Play();
+                    }
+                }
+            }
+        }
+        float bowChargingTime = 1f;
+        WaitForSeconds bowChargingDelay;
+
         PlayerMovement playerMovement;
+
+        Coroutine bowChargingRoutine;
+        public ParticleSystem chargeCircleEffect;
+
+        IEnumerator ChargingBowAttack()
+        {
+            IsBowCharging = true;
+            yield return bowChargingDelay;
+            MaxBowCharged = true;
+        }
+
+        IEnumerator PlayChargeCircleEffect()
+        {
+            yield return bowChargingDelay;
+        }
+
+        public void UnchargingBowAttack()
+        {
+            StopCoroutine(bowChargingRoutine);
+            IsBowCharging = false;
+            MaxBowCharged = false;
+        }
 
         void Start()
         {
             playerMovement = GetComponent<PlayerMovement>();
+
+            bowChargingDelay = new WaitForSeconds(bowChargingTime);
         }
 
         void Update()
         {
+            if (chargeCircleEffect.isPlaying)
+            {
+                chargeCircleEffect.gameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
+            }
+
             if (GameManager.instance.stopPlayerInput)
             {
                 directionalInput = Vector2.zero;
@@ -55,8 +125,21 @@ namespace MomodoraCopy
 
         public void CheckInputKey()
         {
+            CheckKey();
             CheckKeyDown();
             CheckKeyUp();
+        }
+
+        public void CheckKey()
+        {
+            if (Input.GetKey(KeyboardManager.instance.BowAttackKey))
+            {
+                if (!IsBowCharging)
+                {
+                    bowChargingRoutine = StartCoroutine(ChargingBowAttack());
+                    StartCoroutine(PlayChargeCircleEffect());
+                }
+            }
         }
 
         public void CheckKeyDown()
@@ -77,7 +160,7 @@ namespace MomodoraCopy
             {
                 isKeyDownRoll = true;
             }
-            if (isKeyDownAttack || isKeyDownBowAttack || isKeyDownJump || isKeyDownRoll)
+            if (isKeyDownAttack  || isKeyDownJump || isKeyDownRoll)
             {
                 isKeyDown = true;
             }
@@ -100,6 +183,8 @@ namespace MomodoraCopy
             else if (Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
             {
                 isKeyDownBowAttack = false;
+                UnchargingBowAttack();
+                chargeCircleEffect.Stop();
             }
             else if (Input.GetKeyUp(KeyboardManager.instance.RollKey))
             {

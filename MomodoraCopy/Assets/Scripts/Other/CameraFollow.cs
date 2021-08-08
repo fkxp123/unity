@@ -62,7 +62,7 @@ namespace MomodoraCopy
 
         void Start()
         {
-            cameraTargetBounds = target.transform.GetChild(0);
+            cameraTargetBounds = target.transform.GetChild(1);
             targetCollider = cameraTargetBounds.GetComponent<BoxCollider2D>();
             focusArea = new FocusArea(targetCollider.bounds, focusAreaSize);
             player = target.GetComponent<Player>();

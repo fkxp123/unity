@@ -7,17 +7,20 @@ namespace MomodoraCopy
 {
     public enum EventType
     {
-        LanguageChanged,
+        LanguageChange,
         GamePause,
-        GameResume
+        GameResume,
+        MapChange,
     };
 
     public class EventManager : Singleton<EventManager>
     {
         public delegate void OnEvent();
 
-        private Dictionary<EventType, List<OnEvent>> listenerDict = new Dictionary<EventType, List<OnEvent>>();
-
+        public Dictionary<EventType, List<OnEvent>> listenerDict = new Dictionary<EventType, List<OnEvent>>();
+        ///<summary>
+        ///if object is NOT DontDestroyObject, you must call EventManager.instance.Unsubsribe() in OnDisable()
+        ///</summary>
         public void AddListener(EventType eventType, OnEvent listenerOnEvent)
         {
             if (listenerDict.ContainsKey(eventType))

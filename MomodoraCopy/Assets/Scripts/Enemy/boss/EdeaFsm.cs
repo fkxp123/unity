@@ -1,13 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace MomodoraCopy
 {
     public class EdeaFsm : BasicBossFsm
     {
-        System.Random random = new System.Random();
+        //System.Random random = new System.Random();
 
         public GameObject findPlayerBox;
         public Vector3 findPlayerBoxArea;
@@ -47,18 +46,15 @@ namespace MomodoraCopy
         WaitForSeconds hurtTime;
         WaitForSeconds deathTime;
 
-        float coroutineCycle = 0.1f;
-        WaitForSeconds waitTime;
-
         public ParticleSystem breathEffect;
         public ParticleSystem breathCollisions;
 
-        protected override void Start()
-        {
-            base.Start();
-            waitTime = new WaitForSeconds(coroutineCycle);
-            StartCoroutine(Fsm());
-        }
+        public GameObject poisonBombSpawnerObject;
+        PoisonBombSpawner poisonBombSpawner;
+        Vector3 poisonBombSpawnPosition;
+        PoolingObjectInfo poisonBombInfo;
+        int throwDirection = 1;
+
         protected override void CachingAnimation()
         {
             idleAnimHash = Animator.StringToHash("idle");
@@ -83,52 +79,21 @@ namespace MomodoraCopy
             hurtTime = new WaitForSeconds(animTimeDictionary[hurtAnimHash]);
             deathTime = new WaitForSeconds(animTimeDictionary[deathAnimHash]);
         }
-        void FindPlayer()
+
+        protected override void Start()
         {
-            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
-            foreach (Collider2D collider in colliders)
-            {
-                if (collider.tag == "Player")
-                {
-                    playerPosition = collider.transform.position;
-                    if (playerPosition.x < transform.position.x)
-                    {
-                        bossPhysics.rotation = Quaternion.Euler(0.0f, 180.0f, 0.0f);
-                    }
-                    else
-                    {
-                        bossPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                    }
-                    currentState = State.Idle;
-                }
-            }
+            base.Start();
+            poisonBombSpawner = poisonBombSpawnerObject.GetComponent<PoisonBombSpawner>();
+            poisonBombSpawnPosition = new Vector3(poisonBombSpawner.transform.localPosition.x,
+                poisonBombSpawner.transform.localPosition.y, Random.Range(0.0f, 1.0f));
         }
 
-        IEnumerator Fsm()
-        {
-            yield return null;
-            while (true)
-            {
-                if (bossStatus.currentHp <= 0)
-                {
-                    currentState = State.Die;
-                }
-                if (temporaryState != State.None)
-                {
-                    yield return StartCoroutine(temporaryState.ToString());
-                }
-                else
-                {
-                    yield return StartCoroutine(currentState.ToString());
-                }
-            }
-        }
-        IEnumerator Idle()
+        protected override IEnumerator Idle()
         {
             bossMovement.direction.x = 0;
             //int moveDesicion = random.Next(0, 5);
             int moveDesicion = 1;
-            float randomTime = random.Next(2, 3) + (float)random.NextDouble();
+            float randomTime = Random.Range(2.0f, 3.0f);
             animator.Play(idleAnimHash);
 
             switch (moveDesicion)
@@ -145,7 +110,7 @@ namespace MomodoraCopy
                     }
                     if (currentState == State.Idle)
                     {
-                        int attackDesicion = random.Next(0, 3);
+                        int attackDesicion = Random.Range(0, 3);
                         switch (attackDesicion)
                         {
                             case 0:
@@ -179,13 +144,13 @@ namespace MomodoraCopy
                     break;
             }
         }
-        IEnumerator MovePattern1()
+        protected override IEnumerator MovePattern1()
         {
             float lookAtPlayerRotationY;
 
             animator.Play(moveAnimHash);
             bossMovement.direction.x = GameManager.instance.playerPhysics.transform.position.x < bossPhysics.position.x ? -1 : 1;
-            float randomTime = random.Next(2, 4) + (float)random.NextDouble();
+            float randomTime = Random.Range(2.0f, 4.0f);
             while (randomTime > 0)
             {
                 lookAtPlayerRotationY = GameManager.instance.playerPhysics.transform.position.x < bossPhysics.position.x ? 180 : 0;
@@ -197,7 +162,7 @@ namespace MomodoraCopy
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
-            randomTime = random.Next(2, 4) + (float)random.NextDouble();
+            randomTime = Random.Range(2.0f, 4.0f);
             bossMovement.direction.x = GameManager.instance.playerPhysics.transform.position.x < bossPhysics.position.x ? 1 : -1;
             while (randomTime > 0)
             {
@@ -212,7 +177,7 @@ namespace MomodoraCopy
             }
             if (currentState == State.MovePattern1)
             {
-                currentState = State.AttackPattern4;
+                currentState = State.AttackPattern3;
                 //int attackDesicion = random.Next(0, 4);
                 //switch (attackDesicion)
                 //{
@@ -234,8 +199,7 @@ namespace MomodoraCopy
                 //}
             }
         }
-
-        IEnumerator AttackPattern1()
+        protected override IEnumerator AttackPattern1()
         {
             bossMovement.direction.x = 0;
             float lookAtPlayerRotationY;
@@ -263,8 +227,7 @@ namespace MomodoraCopy
                     {
                         if (collider.tag == "Player")
                         {
-                            collider.transform.GetChild(1).GetComponent<PlayerStatus>().
-                                TakeDamage(attackDamage, DamageType.Melee, transform.rotation);
+                            GameManager.instance.playerStatus.TakeDamage(attackDamage, DamageType.Melee, transform.rotation);
                         }
                         canAttack = false;
                     }
@@ -281,8 +244,7 @@ namespace MomodoraCopy
                 currentState = State.Idle;
             }
         }
-
-        IEnumerator AttackPattern2()
+        protected override IEnumerator AttackPattern2()
         {
             bossMovement.direction.x = 0;
             float lookAtPlayerRotationY;
@@ -300,8 +262,7 @@ namespace MomodoraCopy
                     {
                         if (collider.tag == "Player")
                         {
-                            collider.transform.GetChild(1).GetComponent<PlayerStatus>().
-                                TakeDamage(attackDamage, DamageType.Melee, transform.rotation);
+                            GameManager.instance.playerStatus.TakeDamage(attackDamage, DamageType.Melee, transform.rotation);
                         }
                         canAttack = false;
                     }
@@ -318,33 +279,24 @@ namespace MomodoraCopy
                 currentState = State.Idle;
             }
         }
-
-        IEnumerator AttackPattern3()
+        protected override IEnumerator AttackPattern3()
         {
             bossMovement.direction.x = 0;
             float lookAtPlayerRotationY;
             lookAtPlayerRotationY = GameManager.instance.playerPhysics.transform.position.x < bossPhysics.position.x ? 180 : 0;
             bossPhysics.rotation = Quaternion.Euler(0, lookAtPlayerRotationY, 0);
+
             bossMovement.direction.x = bossPhysics.rotation.y == 0 ? 1 : -1;
             animator.Play(vomitAnimHash);
             float attackTime = animTimeDictionary[vomitAnimHash];
-            while (attackTime > 0)
-            {
 
-                if (currentState != State.AttackPattern3)
-                {
-                    yield break;
-                }
-                attackTime -= coroutineCycle;
-                yield return waitTime;
-            }
+            yield return vomitTime;
             if (currentState == State.AttackPattern3)
             {
                 currentState = State.Idle;
             }
         }
-
-        IEnumerator AttackPattern4()
+        protected override IEnumerator AttackPattern4()
         {
             float lookAtPlayerRotationY;
             lookAtPlayerRotationY = GameManager.instance.playerPhysics.transform.position.x < bossPhysics.position.x ? 180 : 0;
@@ -377,6 +329,31 @@ namespace MomodoraCopy
             {
                 currentState = State.Idle;
             }
+        }
+        protected override IEnumerator Hurt()
+        {
+            bossMovement.direction.x = 0;
+            float hurtTime = animTimeDictionary[hurtAnimHash];
+            animator.Play(hurtAnimHash, -1, 0);
+            currentState = State.Idle;
+            while (hurtTime > 0)
+            {
+                hurtTime -= coroutineCycle;
+                yield return waitTime;
+                if (currentState == State.Hurt)
+                {
+                    bossMovement.direction.x = 0;
+                    hurtTime = animTimeDictionary[hurtAnimHash];
+                    animator.Play(hurtAnimHash, -1, 0);
+                    currentState = State.Idle;
+                }
+            }
+        }
+        protected override IEnumerator Die()
+        {
+            bossMovement.direction.x = 0;
+            animator.Play(hurtAnimHash);
+            yield return null;
         }
 
         //IEnumerator Chase()
@@ -545,30 +522,20 @@ namespace MomodoraCopy
         {
             canAttack = false;
         }
-        IEnumerator Hurt()
+
+        void SpawnPoisonBomb()
         {
-            bossMovement.direction.x = 0;
-            float hurtTime = animTimeDictionary[hurtAnimHash];
-            animator.Play(hurtAnimHash, -1, 0);
-            currentState = State.Idle;
-            while (hurtTime > 0)
-            {
-                hurtTime -= coroutineCycle;
-                yield return waitTime;
-                if (currentState == State.Hurt)
-                {
-                    bossMovement.direction.x = 0;
-                    hurtTime = animTimeDictionary[hurtAnimHash];
-                    animator.Play(hurtAnimHash, -1, 0);
-                    currentState = State.Idle;
-                }
-            }
-        }
-        IEnumerator Die()
-        {
-            bossMovement.direction.x = 0;
-            animator.Play(hurtAnimHash);
-            yield return null;
+            poisonBombInfo = poisonBombSpawner.info;
+            throwDirection = bossPhysics.rotation.y == 0 ? 1 : -1;
+            poisonBombSpawnPosition.x = throwDirection * Mathf.Abs(poisonBombSpawnPosition.x);
+            poisonBombInfo.position = transform.position + poisonBombSpawnPosition;
+            poisonBombInfo.objectRotation = bossPhysics.rotation;
+            poisonBombSpawner.OperateSpawn(poisonBombInfo, poisonBombSpawner.poolingObjectQueue, PoisonBombSpawner.ACTIVATE_TIME);
+            //GameObject poisonBomb = poisonBombSpawner.GetDynamicPoolingObject(poisonBombInfo, PoisonBombSpawner.ACTIVATE_TIME);
+            //if (poisonBomb != null)
+            //{
+            //    //poisonBomb.transform.GetChild(0).GetComponent<PoisonBombController>().isParabolla = false;
+            //}
         }
 
 

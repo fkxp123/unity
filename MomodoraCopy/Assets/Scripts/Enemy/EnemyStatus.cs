@@ -117,6 +117,19 @@ namespace MomodoraCopy
         WaitForSeconds stateRecoveryTime;
 
         Coroutine coroutine;
+        Color originColor;
+
+        public float currentTakeDamage;
+
+        void OnEnable()
+        {
+            maxHp = 100;
+            Hp = maxHp;
+            if(originColor != null && spriteRenderer != null)
+            {
+                spriteRenderer.color = originColor;
+            }
+        }
 
         void Start()
         {
@@ -130,12 +143,16 @@ namespace MomodoraCopy
             blinkWaitTime = new WaitForSeconds(blinkCycleTime);
             vibrationWaitTime = new WaitForSeconds(vibrationCycleTime);
 
-            maxHp = 100;
-            Hp = maxHp;
+            originColor = spriteRenderer.color;
 
             meleeKnockBackTime = new WaitForSeconds(0.3f); 
             rangeKnockBackTime = new WaitForSeconds(0.1f);
             stateRecoveryTime = new WaitForSeconds(0.6f);
+        }
+
+        public void RestoreDamage()
+        {
+            Hp += currentTakeDamage;
         }
 
         public void TakeDamage(float damage, DamageType damageType, Quaternion damagedRotation)
@@ -144,25 +161,29 @@ namespace MomodoraCopy
             {
                 return;
             }
+            currentTakeDamage = damage;
             Hp -= damage;
             if(Hp <= 0)
             {
                 enemyMovement.direction.x = 0;
                 return;
             }
-            fsm.currentState = fsm.hurt;
-            enemyPhysics.rotation = 
-                Quaternion.Euler(enemyPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, enemyPhysics.rotation.z);
+            if(damage >= 0)
+            {
+                fsm.currentState = fsm.hurt;
+                enemyPhysics.rotation = 
+                    Quaternion.Euler(enemyPhysics.rotation.x, damagedRotation.y == 0 ? 180 : 0, enemyPhysics.rotation.z);
 
-            if (damageType == DamageType.Range)
-            {
-                this.RestartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation), ref coroutine);
+                if (damageType == DamageType.Range)
+                {
+                    this.RestartCoroutine(KnockBack(rangeKnockBackTime, damagedRotation), ref coroutine);
+                }
+                else
+                {
+                    this.RestartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation), ref coroutine);
+                }
+                this.RestartCoroutine(SetStateChase(), ref coroutine);
             }
-            else
-            {
-                this.RestartCoroutine(KnockBack(meleeKnockBackTime, damagedRotation), ref coroutine);
-            }
-            this.RestartCoroutine(SetStateChase(), ref coroutine);
         }
         IEnumerator SetStateChase()
         {

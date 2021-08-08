@@ -61,12 +61,30 @@ namespace MomodoraCopy
             {
                 return;
             }
-            if (playerInput.isKeyDown)
+            if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
-                player.stateMachine.SetState(player.idle);
+                if (playerMovement.jumpCount < playerMovement.maxJumpCount)
+                {
+                    player.stateMachine.SetState(player.jump);
+                    return;
+                }
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.RollKey))
+            {
+                player.stateMachine.SetState(player.roll);
                 return;
             }
-            if(playerInput.directionalInput.y == -1)
+            else if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
+            {
+                player.stateMachine.SetState(player.attack);
+                return;
+            }
+            else if (playerInput.IsBowCharging && Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
+            {
+                player.stateMachine.SetState(player.bowAttack);
+                return;
+            }
+            if (playerInput.directionalInput.y == -1)
             {
                 player.stateMachine.SetState(player.crouch);
                 return;

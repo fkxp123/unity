@@ -13,11 +13,13 @@ namespace MomodoraCopy
         public CollisionInfo collisions;
         [HideInInspector]
         public Vector2 playerInput;
+        PlayerMovement playerMovement;
 
         public override void Start()
         {
             base.Start();
             collisions.faceDir = transform.rotation.y == 0 ? 1 : -1;
+            playerMovement = GetComponent<PlayerMovement>();
         }
 
         public void Move(Vector2 moveAmount, bool standingOnPlatform)
@@ -80,7 +82,11 @@ namespace MomodoraCopy
 
                 if (hit)
                 {
-
+                    if (hit.collider.tag == "Through")
+                    {
+                        isThroughPlatform = true;
+                        continue;
+                    }
                     if (hit.distance == 0)
                     {
                         continue;
@@ -146,7 +152,11 @@ namespace MomodoraCopy
                         isThroughPlatform = true;
                         if (directionY == 1 || hit.distance == 0)
                         {
-                            if(hit.collider.gameObject.layer == LayerMask.NameToLayer("ArrowPlatform"))
+                            //if(hit.collider.gameObject.layer == LayerMask.NameToLayer("ArrowPlatform"))
+                            //{
+                            //    continue;
+                            //}
+                            if(hit.collider.tag == "Through")
                             {
                                 continue;
                             }
@@ -155,11 +165,18 @@ namespace MomodoraCopy
                         {
                             continue;
                         }
+                        if(playerInput.y == -1 && playerMovement.ladderHit)
+                        {
+                            fallingThrough = true;
+                            collisions.fallingThroughPlatform = true;
+                            Invoke("ResetFallingThroughPlatform", .1f);
+                            continue;
+                        }
                         if (playerInput.y == -1 && Input.GetKeyDown(KeyboardManager.instance.JumpKey))
                         {
                             fallingThrough = true;
                             collisions.fallingThroughPlatform = true;
-                            Invoke("ResetFallingThroughPlatform", .5f);
+                            Invoke("ResetFallingThroughPlatform", .1f);
                             continue;
                         }
                     }

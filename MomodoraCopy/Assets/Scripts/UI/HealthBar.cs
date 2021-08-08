@@ -10,8 +10,13 @@ namespace MomodoraCopy
         public Image effectImage;
         public Image blinkImage;
         public Image backGroundImage;
-        public Image itemSlotImage;
+        public Image itemSlotBackground;
         public Image scoreImage;
+        public Text scoreText;
+        public GameObject itemSlots;
+
+        Image[] itemImages = new Image[3];
+        Text[] itemTexts = new Text[3];
 
         public static float currentHp;
         public static float maxHp;
@@ -27,11 +32,20 @@ namespace MomodoraCopy
 
         Animator blinkAnimator;
 
-        // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             playerStatus = playerObject.GetComponent<PlayerStatus>();
             blinkAnimator = blinkImage.GetComponent<Animator>();
+
+            for (int i = 0; i < itemSlots.transform.childCount; i++)
+            {
+                itemImages[i] = itemSlots.transform.GetChild(i).transform.GetChild(0).GetComponent<Image>();
+                itemTexts[i] = itemSlots.transform.GetChild(i).transform.GetChild(1).GetComponent<Text>();
+            }
+        }
+
+        void Start()
+        {
             setPositionX = blinkImage.rectTransform.anchoredPosition.x;
             maxHp = playerStatus.maxHp;
             currentHp = maxHp;
@@ -47,25 +61,19 @@ namespace MomodoraCopy
             color.a = newAlpha;
             image.color = color;
         }
+        public void ChangeAlpha(Text text, float newAlpha)
+        {
+            Color color = text.color;
+            color.a = newAlpha;
+            text.color = color;
+        }
         void OnGamePause()
         {
-            ChangeAlpha(fillImage, 0);
-            ChangeAlpha(effectImage, 0);
-            ChangeAlpha(blinkImage, 0);
-            ChangeAlpha(backGroundImage, 0);
-            ChangeAlpha(itemSlotImage, 0);
-            ChangeAlpha(scoreImage, 0);
-            blinkAnimator.enabled = false;
+            HideUI();
         }
         void OnGameResume()
         {
-            ChangeAlpha(fillImage, 1);
-            ChangeAlpha(effectImage, 1);
-            ChangeAlpha(blinkImage, 1);
-            ChangeAlpha(backGroundImage, 1);
-            ChangeAlpha(itemSlotImage, 1);
-            ChangeAlpha(scoreImage, 1);
-            blinkAnimator.enabled = true;
+            ShowUI();
         }
 
         IEnumerator LoseFillAmount()
@@ -84,6 +92,39 @@ namespace MomodoraCopy
                 SetBlinkImg();
                 yield return blinkTime;
             }
+        }
+
+        public void HideUI()
+        {
+            ChangeAlpha(fillImage, 0);
+            ChangeAlpha(effectImage, 0);
+            ChangeAlpha(blinkImage, 0);
+            ChangeAlpha(backGroundImage, 0);
+            ChangeAlpha(itemSlotBackground, 0);
+            ChangeAlpha(scoreImage, 0);
+            ChangeAlpha(scoreText, 0);
+            for(int i = 0; i < itemSlots.transform.childCount; i++)
+            {
+                ChangeAlpha(itemImages[i], 0);
+                ChangeAlpha(itemTexts[i], 0);
+            }
+            blinkAnimator.enabled = false;
+        }
+        public void ShowUI()
+        {
+            ChangeAlpha(fillImage, 1);
+            ChangeAlpha(effectImage, 1);
+            ChangeAlpha(blinkImage, 1);
+            ChangeAlpha(backGroundImage, 1);
+            ChangeAlpha(itemSlotBackground, 1);
+            ChangeAlpha(scoreImage, 1);
+            ChangeAlpha(scoreText, 1);
+            for (int i = 0; i < itemSlots.transform.childCount; i++)
+            {
+                ChangeAlpha(itemImages[i], 1);
+                ChangeAlpha(itemTexts[i], 1);
+            }
+            blinkAnimator.enabled = true;
         }
 
         public void PoisonedHealth()

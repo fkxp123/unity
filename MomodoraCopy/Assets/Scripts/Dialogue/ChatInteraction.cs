@@ -5,6 +5,8 @@ using UnityEngine.Playables;
 
 namespace MomodoraCopy
 {
+    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class ChatInteraction : MonoBehaviour
     {
         public Vector3 checkPlayerArea;
@@ -12,36 +14,24 @@ namespace MomodoraCopy
         LayerMask playerMask;
 
         bool isNear;
-        bool isChatting;
 
         public string dialogueName;
 
-        List<string> dialogue = new List<string>();
-        [TextArea]
-        string dialogueContext;
-        int contextCount;
+        Rigidbody2D rigid;
 
-        public float typingCycle = 0.1f;
-        WaitForSeconds typingTime;
-        bool isTyping;
-        public float blinkCycle = 0.2f;
-        WaitForSeconds blinkTime;
-
-        BoxCollider2D boxCollider;
+        BoxCollider2D physicsBoxCollider;
+        Animator interactBoxAnimator;
 
         void Start()
         {
-            typingTime = new WaitForSeconds(typingCycle);
-            blinkTime = new WaitForSeconds(blinkCycle);
-
             playerMask = 1 << 8;
 
-            if(dialogueName != string.Empty)
-            {
-                dialogue = DialogueManager.instance.GetDialogue(dialogueName, 0);
-            }
+            rigid = transform.GetComponent<Rigidbody2D>();
+            rigid.bodyType = RigidbodyType2D.Kinematic;
 
-            boxCollider = transform.parent.GetComponent<BoxCollider2D>();
+            physicsBoxCollider = transform.parent.GetComponent<BoxCollider2D>();
+            interactBoxAnimator = DialogueManager.instance.interactionBox.
+                transform.GetChild(0).GetComponent<Animator>();
         }
 
         void Update()
@@ -86,7 +76,8 @@ namespace MomodoraCopy
         void ShowInteractionBox()
         {
             DialogueManager.instance.gameObject.transform.position = new Vector3(transform.position.x,
-                transform.position.y + boxCollider.size.y * 0.5f, transform.position.z);
+                transform.position.y + physicsBoxCollider.size.y * 0.5f, transform.position.z);
+            DialogueManager.instance.interactionBox.SetActive(false);
             DialogueManager.instance.interactionBox.SetActive(true);
         }
 
@@ -100,9 +91,20 @@ namespace MomodoraCopy
         }
         void HideInteractionBox()
         {
-            DialogueManager.instance.interactionBox.SetActive(false);
+            if (!DialogueManager.instance.interactionBox.activeSelf)
+            {
+                return;
+            }
+            interactBoxAnimator.Play(Animator.StringToHash("Close"));
         }
        
+        void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.tag == "Player")
+            {
+                ShowInteractionBox();
+            }
+        }
 
         void OnTriggerStay2D(Collider2D other)
         {
@@ -114,7 +116,6 @@ namespace MomodoraCopy
                     HideInteractionBox();
                     return;
                 }
-                ShowInteractionBox();
             }
         }
         void OnTriggerExit2D(Collider2D other)

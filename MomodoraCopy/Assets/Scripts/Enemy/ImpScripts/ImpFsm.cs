@@ -52,7 +52,7 @@ namespace MomodoraCopy
         WaitForSeconds throwBombTime;
         WaitForSeconds hurtTime;
 
-        float coroutineCycle = 0.05f;
+        float coroutineCycle = 0.1f;
         WaitForSeconds waitTime;
 
         public bool siegeMode;
@@ -69,15 +69,16 @@ namespace MomodoraCopy
             transform.position = new Vector3(transform.position.x, transform.position.y, Random.Range(0.0f, 1.0f));
 
             daggerSpawner = daggerSpawnerObject.GetComponent<DaggerSpawner>();
-            daggerSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
+            daggerSpawnPosition = new Vector3(daggerSpawner.transform.localPosition.x,
+                daggerSpawner.transform.localPosition.y, Random.Range(0.0f, 1.0f));
             poisonBombSpawner = poisonBombSpawnerObject.GetComponent<PoisonBombSpawner>();
-            poisonBombSpawnPosition = new Vector3(0.8f, -0.3f, Random.Range(0.0f, 1.0f));
+            poisonBombSpawnPosition = new Vector3(poisonBombSpawner.transform.localPosition.x,
+                poisonBombSpawner.transform.localPosition.y, Random.Range(0.0f, 1.0f));
 
             siegeMode = true;
             shielderMode = false;
 
             waitTime = new WaitForSeconds(coroutineCycle);
-            StartCoroutine(Fsm());
 
             playerMask = 1 << 8;
         }
@@ -117,7 +118,7 @@ namespace MomodoraCopy
             //}
             #endregion
 
-            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, playerMask);
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(findPlayerBox.transform.position, findPlayerBoxArea, 0);
             foreach (Collider2D collider in colliders)
             {
                 if (collider.tag == "Player")
@@ -132,7 +133,7 @@ namespace MomodoraCopy
                     {
                         enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     }
-                    currentState = State.Chase;
+                    currentState = EnemyState.Chase;
                 }
             }
         }
@@ -154,40 +155,20 @@ namespace MomodoraCopy
                     {
                         enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     }
-                    if (currentState == State.Idle && collider.transform.GetChild(0).GetComponent<ImpFsm>().isInteract)
+                    if (currentState == EnemyState.Idle && collider.transform.GetChild(0).GetComponent<ImpFsm>().isInteract)
                     {
-                        currentState = State.Interact;
-                        collider.transform.GetChild(0).GetComponent<ImpFsm>().currentState = State.Interact;
+                        currentState = EnemyState.Interact;
+                        collider.transform.GetChild(0).GetComponent<ImpFsm>().currentState = EnemyState.Interact;
                         impFriend = collider.transform.GetChild(0).GetComponent<ImpFsm>();
                     }
                 }
             }
         }
-        IEnumerator Fsm()
-        {
-            yield return null;
-            while (true)
-            {
-                if (enemyStatus.currentHp <= 0)
-                {
-                    currentState = State.Die;
-                }
-                if (temporaryState != State.None)
-                {
-                    yield return StartCoroutine(temporaryState.ToString());
-                }
-                else
-                {
-                    yield return StartCoroutine(currentState.ToString());
-                }
-            }
-        }
+
         IEnumerator Idle()
         {
             enemyMovement.direction.x = 0;
-            //float randomTime = random.Next(2, 4) + (float)random.NextDouble();
             float randomTime = Random.Range(2.0f, 4.0f);
-            //int desicion = random.Next(0, 4);
             int desicion = Random.Range(0, 4);
             animator.Play(idleAnimHash);
             if (!animator.GetCurrentAnimatorStateInfo(0).IsName("idle"))
@@ -199,20 +180,16 @@ namespace MomodoraCopy
             {
                 case 0:
                     animator.Play(idleAnimHash);
-                    //transitionState = State.Patrol;
                     break;
                 case 1:
                     animator.CrossFade("sit", 0.3f);
-                    //transitionState = State.Idle;
                     break;
                 case 2:
                     animator.CrossFade("smileSit", 0.3f);
-                    //transitionState = State.Idle;
                     break;
                 case 3:
                     animator.Play(idleAnimHash);
                     isInteract = true;
-                    //transitionState = State.Idle;
                     break;
                 default:
                     break;
@@ -228,7 +205,7 @@ namespace MomodoraCopy
                 {
                     animator.Play(idleAnimHash);
                 }
-                if(currentState != State.Idle)
+                if(currentState != EnemyState.Idle)
                 {
                     isInteract = false;
                     yield break;
@@ -241,15 +218,15 @@ namespace MomodoraCopy
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
-            if (currentState == State.Idle)
+            if (currentState == EnemyState.Idle)
             {
                 switch (desicion)
                 {
                     case 0:
-                        currentState = State.Patrol;
+                        currentState = EnemyState.Patrol;
                         break;
                     case 1:
-                        currentState = State.Idle;
+                        currentState = EnemyState.Idle;
                         break;
                     default:
                         break;
@@ -260,9 +237,7 @@ namespace MomodoraCopy
         IEnumerator Patrol()
         {
             animator.Play(patrolAnimHash);
-            //int directionDesicion = random.Next(0, 2);
             int directionDesicion = Random.Range(0, 2);
-            //float randomTime = (float)(1 + random.NextDouble());
             float randomTime = Random.Range(1.0f, 2.0f);
             switch (directionDesicion)
             {
@@ -281,27 +256,25 @@ namespace MomodoraCopy
                 {
                     enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
                     enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
-                    //randomTime = (float)(1 + random.NextDouble());
                     randomTime = Random.Range(1.0f, 2.0f);
                 }
                 if (!isCliff)
                 {
                     enemyPhysics.rotation = Quaternion.Euler(0.0f, enemyPhysics.rotation.y == 0.0f ? 180.0f : 0.0f, 0.0f);
                     enemyMovement.direction.x = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
-                    //randomTime = random.Next(2, 4) + (float)random.NextDouble();
                     randomTime = Random.Range(2.0f, 4.0f);
                 }
                 FindPlayer();
-                if (currentState != State.Patrol)
+                if (currentState != EnemyState.Patrol)
                 {
                     yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
-            if (currentState == State.Patrol)
+            if (currentState == EnemyState.Patrol)
             {
-                currentState = State.Idle;
+                currentState = EnemyState.Idle;
             }
         }
         IEnumerator Interact()
@@ -328,7 +301,7 @@ namespace MomodoraCopy
                     }
                     while (interactTime > 0)
                     {
-                        if (currentState != State.Interact)
+                        if (currentState != EnemyState.Interact)
                         {
                             isInteract = false;
                             yield break;
@@ -340,7 +313,7 @@ namespace MomodoraCopy
                         interactTime -= coroutineCycle;
                         yield return waitTime;
                     }
-                    if (currentState != State.Interact)
+                    if (currentState != EnemyState.Interact)
                     {
                         isInteract = false;
                         yield break;
@@ -359,9 +332,9 @@ namespace MomodoraCopy
                 }
                 yield return randomTime;
             }
-            if(currentState == State.Interact)
+            if(currentState == EnemyState.Interact)
             {
-                currentState = State.Idle;
+                currentState = EnemyState.Idle;
             }
             isInteract = false;
         }
@@ -376,7 +349,7 @@ namespace MomodoraCopy
             float attackTime;
             while(randomTime > 0)
             {
-                if (currentState != State.Attack)
+                if (currentState != EnemyState.Attack)
                 {
                     yield break;
                 }
@@ -396,7 +369,7 @@ namespace MomodoraCopy
             }
             while (attackTime > 0)
             {
-                if (currentState != State.Attack)
+                if (currentState != EnemyState.Attack)
                 {
                     yield break;
                 }
@@ -404,9 +377,9 @@ namespace MomodoraCopy
                 yield return waitTime;
             }
             animator.Play(idleAnimHash);
-            if (currentState == State.Attack)
+            if (currentState == EnemyState.Attack)
             {
-                currentState = State.Chase;
+                currentState = EnemyState.Chase;
             }
         }
         IEnumerator Chase()
@@ -420,11 +393,11 @@ namespace MomodoraCopy
             {
                 if (enemyMovement.velocity.y > 0)
                 {
-                    animator.Play("jump");
+                    animator.Play(jumpAnimHash);
                 }
                 else if (enemyMovement.velocity.y < 0)
                 {
-                    animator.Play("fall");
+                    animator.Play(fallAnimHash);
                 }
                 else
                 {
@@ -448,7 +421,7 @@ namespace MomodoraCopy
                     enemyMovement.velocity.y = Random.Range(12.0f, 15.0f);
                 }
 
-                if (currentState != State.Chase)
+                if (currentState != EnemyState.Chase)
                 {
                     yield break;
                 }
@@ -461,15 +434,15 @@ namespace MomodoraCopy
             {
                 if (collider.tag == "Player")
                 {
-                    if (currentState == State.Chase)
+                    if (currentState == EnemyState.Chase)
                     {
-                        currentState = State.Attack;
+                        currentState = EnemyState.Attack;
                     }
                 }
             }
-            if (currentState == State.Chase)
+            if (currentState == EnemyState.Chase)
             {
-                currentState = State.Idle;
+                currentState = EnemyState.Idle;
             }
         }
         IEnumerator Hurt()
@@ -478,18 +451,18 @@ namespace MomodoraCopy
             bloodEffect.Play();
             float hurtTime = animTimeDictionary[hurtAnimHash] * 4;
             animator.Play(hurtAnimHash, -1, 0);
-            currentState = State.Idle;
+            currentState = EnemyState.Idle;
             while (hurtTime > 0)
             {
                 hurtTime -= coroutineCycle;
                 yield return waitTime;
-                if (currentState == State.Hurt)
+                if (currentState == EnemyState.Hurt)
                 {
                     enemyMovement.direction.x = 0;
                     bloodEffect.Play();
                     hurtTime = animTimeDictionary[hurtAnimHash] * 4;
                     animator.Play(hurtAnimHash, -1, 0);
-                    currentState = State.Idle;
+                    currentState = EnemyState.Idle;
                 }
             }
         }
@@ -503,20 +476,20 @@ namespace MomodoraCopy
         void SpawnDagger()
         {
             daggerInfo = daggerSpawner.info;
-            throwDirection = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+            throwDirection = enemyPhysics.rotation.y == 0 ? 1 : -1;
             daggerSpawnPosition.x = throwDirection * Mathf.Abs(daggerSpawnPosition.x);
             daggerInfo.position = transform.position + daggerSpawnPosition;
             daggerInfo.objectRotation = enemyPhysics.rotation;
-            daggerSpawner.OperateSpawn(daggerInfo, DaggerSpawner.ACTIVATE_TIME);
+            daggerSpawner.OperateDynamicSpawn(daggerInfo, DaggerSpawner.ACTIVATE_TIME);
         }
         void SpawnBomb()
         {
             poisonBombInfo = poisonBombSpawner.info;
-            throwDirection = enemyPhysics.rotation.y == 0.0f ? 1 : -1;
+            throwDirection = enemyPhysics.rotation.y == 0 ? 1 : -1;
             poisonBombSpawnPosition.x = throwDirection * Mathf.Abs(poisonBombSpawnPosition.x);
             poisonBombInfo.position = transform.position + poisonBombSpawnPosition;
             poisonBombInfo.objectRotation = enemyPhysics.rotation;
-            poisonBombSpawner.OperateSpawn(poisonBombInfo, PoisonBombSpawner.ACTIVATE_TIME);
+            poisonBombSpawner.OperateDynamicSpawn(poisonBombInfo, PoisonBombSpawner.ACTIVATE_TIME);
         }
 
         #region Update-based fsm

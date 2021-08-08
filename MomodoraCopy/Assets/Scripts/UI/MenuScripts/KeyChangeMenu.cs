@@ -21,6 +21,7 @@ namespace MomodoraCopy
         Text[] descriptionText;
         Image[] slotImage;
         int slotCount;
+        int maxSlotCount;
 
         int maxVisialbeSlotCount = 12;
 
@@ -47,6 +48,7 @@ namespace MomodoraCopy
             selectedKeyCodeText = new Text[dynamicContentSlot.transform.childCount];
             descriptionText = new Text[staticContentSlot.transform.childCount];
             slotImage = new Image[dynamicContentSlot.transform.childCount];
+            maxSlotCount = dynamicContentSlot.transform.childCount - 1;
 
             for (int i = 0; i < dynamicContentSlot.transform.childCount; i++)
             {
@@ -74,10 +76,15 @@ namespace MomodoraCopy
             pressAnyKeyText = localizeManager.descriptionsDict
                 ["PressAnyKeyDesc".GetHashCode()][localizeManager.CurrentLanguage];
 
-            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+            EventManager.instance.AddListener(EventType.LanguageChange, OnLanguageChange);
         }
 
-        void OnLanguageChanged()
+        void OnDestroy()
+        {
+            EventManager.instance.UnsubscribeEvent(EventType.LanguageChange, OnLanguageChange);
+        }
+
+        void OnLanguageChange()
         {
             menuInfoText.text = localizeManager.descriptionsDict
                 ["CustomizeKeysDesc".GetHashCode()][localizeManager.CurrentLanguage];
@@ -156,42 +163,44 @@ namespace MomodoraCopy
             }
             
         }
-        
+        float moveCount = 0;
         public override void CheckArrowKey()
         {
             if (Input.GetKeyDown(KeyboardManager.instance.DownKey))
             {
-                slotCount += 1;
-                if (slotCount >= dynamicContentSlot.transform.childCount)
+                if(slotCount + 1 > maxSlotCount)
                 {
                     slotCount = 0;
                     scrollBar.value = 1f;
                 }
-                if (slotCount >= maxVisialbeSlotCount)
-                {
-                    scrollBar.value -= scrollBarMoveAmount;
-                }
                 else
                 {
-                    scrollBar.value = 1f;
+                    slotCount += 1;
+                }
+                moveCount = (1 - scrollBar.value) * (maxSlotCount - maxVisialbeSlotCount);
+                if (slotCount >= maxVisialbeSlotCount + moveCount)
+                {
+                    scrollBar.value -= scrollBarMoveAmount;
+                    scrollBar.value = Mathf.Clamp(scrollBar.value, 0, 1);
                 }
                 ChangeSelectedSlotMenu(slotImage, slotCount);
             }
             else if (Input.GetKeyDown(KeyboardManager.instance.UpKey))
             {
-                slotCount -= 1;
-                if (slotCount >= maxVisialbeSlotCount)
+                if(slotCount - 1 < 0)
                 {
-                    scrollBar.value += scrollBarMoveAmount;
+                    slotCount = maxSlotCount;
+                    scrollBar.value = 0f;
                 }
                 else
                 {
-                    scrollBar.value = 1f;
+                    slotCount -= 1;
                 }
-                if (slotCount < 0)
+                moveCount = (1 - scrollBar.value) * (maxSlotCount - maxVisialbeSlotCount);
+                if (slotCount <= moveCount)
                 {
-                    slotCount = dynamicContentSlot.transform.childCount - 1;
-                    scrollBar.value = 0f;
+                    scrollBar.value += scrollBarMoveAmount;
+                    scrollBar.value = Mathf.Clamp(scrollBar.value, 0, 1);
                 }
                 ChangeSelectedSlotMenu(slotImage, slotCount);
             }

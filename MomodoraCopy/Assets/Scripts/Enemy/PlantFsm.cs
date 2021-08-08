@@ -103,30 +103,11 @@ namespace MomodoraCopy
                     {
                         enemyPhysics.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
                     }
-                    currentState = State.Chase;
+                    currentState = EnemyState.Chase;
                 }
             }
         }
 
-        IEnumerator Fsm()
-        {
-            yield return null;
-            while (true)
-            {
-                if(enemyStatus.currentHp <= 0)
-                {
-                    currentState = State.Die;
-                }
-                if (temporaryState != State.None)
-                {
-                    yield return StartCoroutine(temporaryState.ToString());
-                }
-                else
-                {
-                    yield return StartCoroutine(currentState.ToString());
-                }
-            }
-        }
         IEnumerator Idle()
         {
             enemyMovement.direction.x = 0;
@@ -135,7 +116,7 @@ namespace MomodoraCopy
             animator.Play(idleAnimHash);
             while(randomTime > 0)
             {
-                if(currentState != State.Idle)
+                if(currentState != EnemyState.Idle)
                 {
                     yield break;
                 }
@@ -146,15 +127,15 @@ namespace MomodoraCopy
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
-            if(currentState == State.Idle)
+            if(currentState == EnemyState.Idle)
             {
                 switch (desicion)
                 {
                     case 0:
-                        currentState = State.Patrol;
+                        currentState = EnemyState.Patrol;
                         break;
                     case 1:
-                        currentState = State.Idle;
+                        currentState = EnemyState.Idle;
                         break;
                     default:
                         break;
@@ -194,16 +175,16 @@ namespace MomodoraCopy
                     randomTime = random.Next(2, 4) + (float)random.NextDouble();
                 }
                 FindPlayer();
-                if (currentState != State.Patrol)
+                if (currentState != EnemyState.Patrol)
                 {
                     yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
-            if(currentState == State.Patrol)
+            if(currentState == EnemyState.Patrol)
             {
-                currentState = State.Idle;
+                currentState = EnemyState.Idle;
             }
         }
         IEnumerator Chase()
@@ -221,20 +202,20 @@ namespace MomodoraCopy
                 {
                     if (collider.tag == "Player")
                     {
-                        currentState = State.Attack;
+                        currentState = EnemyState.Attack;
                         yield break;
                     }
                 }
-                if(currentState != State.Chase)
+                if(currentState != EnemyState.Chase)
                 {
                     yield break;
                 }
                 randomTime -= coroutineCycle;
                 yield return waitTime;
             }
-            if(currentState == State.Chase)
+            if(currentState == EnemyState.Chase)
             {
-                currentState = State.Idle;
+                currentState = EnemyState.Idle;
             }
         }
         IEnumerator Attack()
@@ -254,22 +235,21 @@ namespace MomodoraCopy
                     {
                         if (collider.tag == "Player")
                         {
-                            collider.transform.GetChild(1).GetComponent<PlayerStatus>().
-                                TakeDamage(attackDamage, DamageType.Melee, transform.rotation);
+                            GameManager.instance.playerStatus.TakeDamage(attackDamage, DamageType.Melee, transform.rotation);
                         }
                         canAttack = false;
                     }
                 }
-                if(currentState != State.Attack)
+                if(currentState != EnemyState.Attack)
                 {
                     yield break;
                 }
                 attackTime -= coroutineCycle;
                 yield return waitTime;
             }
-            if(currentState == State.Attack)
+            if(currentState == EnemyState.Attack)
             {
-                currentState = State.Chase;
+                currentState = EnemyState.Chase;
             }
         }
         void SetAbleAttackBox()
@@ -286,18 +266,18 @@ namespace MomodoraCopy
             bloodEffect.Play();
             float hurtTime = animTimeDictionary[hurtAnimHash];
             animator.Play(hurtAnimHash, -1, 0);
-            currentState = State.Idle;
+            currentState = EnemyState.Idle;
             while(hurtTime > 0)
             {
                 hurtTime -= coroutineCycle;
                 yield return waitTime;
-                if(currentState == State.Hurt)
+                if(currentState == EnemyState.Hurt)
                 {
                     enemyMovement.direction.x = 0;
                     bloodEffect.Play();
                     hurtTime = animTimeDictionary[hurtAnimHash];
                     animator.Play(hurtAnimHash, -1, 0);
-                    currentState = State.Idle;
+                    currentState = EnemyState.Idle;
                 }
             }
         }

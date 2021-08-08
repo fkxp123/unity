@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using InventorySystem;
+using UnityEngine.Experimental.Rendering.Universal;
 
 namespace MomodoraCopy
 {
@@ -52,7 +54,62 @@ namespace MomodoraCopy
         public IState pushBlock;
         public IState blownUp;
         public IState talking;
+        public IState useItem;
+        public IState pray;
         #endregion
+
+        #region AnimHash
+        [HideInInspector]public int idleHash;
+        [HideInInspector]public int preRunHash;
+        [HideInInspector]public int runHash;
+        [HideInInspector]public int breakRunHash;
+        [HideInInspector]public int landingBlownUpHash;
+        [HideInInspector]public int landingSoftHash;
+        [HideInInspector]public int landingHardHash;
+        [HideInInspector]public int preFallHash;
+        [HideInInspector]public int fallHash;
+        [HideInInspector]public int climbLadderHash;
+        [HideInInspector]public int blownUpHash;
+        [HideInInspector]public int hurtHash;
+        [HideInInspector]public int doubleJumpHash;
+        [HideInInspector]public int jumpHash;
+        [HideInInspector]public int pushBlockHash;
+        [HideInInspector]public int bowAttackHash;
+        [HideInInspector]public int airBowAttackHash;
+        [HideInInspector]public int crouchBowAttackHash;
+        [HideInInspector]public int airAttackHash;
+        [HideInInspector]public int firstAttackHash;
+        [HideInInspector]public int secondAttackHash;
+        [HideInInspector]public int thirdAttackHash;
+        [HideInInspector]public int preCrouchHash;
+        [HideInInspector]public int crouchHash;
+        [HideInInspector]public int breakCrouchHash;
+        [HideInInspector]public int rollHash;
+        [HideInInspector]public int preTalkingHash;
+        [HideInInspector]public int talkingHash;
+        [HideInInspector]public int postTalkingHash;
+        [HideInInspector]public int useItemHash;
+        [HideInInspector]public int preStandPrayHash;
+        [HideInInspector]public int standPrayHash;
+        [HideInInspector]public int postStandPrayHash;
+        #endregion
+
+        public IUsable currentItem;
+        public ParticleSystem useItemEffect;
+
+        bool isFirst = true;
+
+        public bool isPause;
+
+        public GameObject prayEffects;
+        public Light2D prayLight;
+        public ParticleSystem cycloneEffect;
+        public ParticleSystem floatingEffect1;
+        public ParticleSystem floatingEffect2;
+        ParticleSystem.MainModule cycloneEffectMain;
+        ParticleSystem.MainModule floatingEffectMain1;
+        ParticleSystem.MainModule floatingEffectMain2;
+        Coroutine prayLightRoutine;
 
         #endregion
         //void OnEnable()
@@ -68,9 +125,12 @@ namespace MomodoraCopy
         //{
         //    SceneManager.sceneLoaded -= OnSceneLoaded;
         //}
-
         void Start()
         {
+            if (isFirst)
+            {
+                isFirst = false;
+            }
             //enabled = false;
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -103,13 +163,71 @@ namespace MomodoraCopy
             pushBlock = new PushBlockState(this);
             blownUp = new BlownUpState(this);
             talking = new TalkingState(this);
+            useItem = new UseItemState(this);
+            pray = new PrayState(this);
             #endregion
 
             stateMachine = new PlayerStateMachine(idle);
+
+            #region Set AnimHash
+            idleHash = Animator.StringToHash("idle");
+            preRunHash = Animator.StringToHash("preRun");
+            runHash = Animator.StringToHash("run");
+            breakRunHash = Animator.StringToHash("breakRun");
+            landingBlownUpHash = Animator.StringToHash("landingBlownUp");
+            landingSoftHash = Animator.StringToHash("landingSoft");
+            landingHardHash = Animator.StringToHash("landingHard");
+            preFallHash = Animator.StringToHash("preFall");
+            fallHash = Animator.StringToHash("fall");
+            climbLadderHash = Animator.StringToHash("climbLadder");
+            blownUpHash = Animator.StringToHash("blownUp");
+            hurtHash = Animator.StringToHash("hurt");
+            doubleJumpHash = Animator.StringToHash("doubleJump");
+            jumpHash = Animator.StringToHash("jump");
+            pushBlockHash = Animator.StringToHash("pushBlock");
+            bowAttackHash = Animator.StringToHash("bowAttack");
+            airBowAttackHash = Animator.StringToHash("airBowAttack");
+            crouchBowAttackHash = Animator.StringToHash("crouchBowAttack");
+            airAttackHash = Animator.StringToHash("airAttack");
+            firstAttackHash = Animator.StringToHash("firstAttack");
+            secondAttackHash = Animator.StringToHash("secondAttack");
+            thirdAttackHash = Animator.StringToHash("thirdAttack");
+            preCrouchHash = Animator.StringToHash("preCrouch");
+            crouchHash = Animator.StringToHash("crouch");
+            breakCrouchHash = Animator.StringToHash("breakCrouch");
+            rollHash = Animator.StringToHash("roll");
+            preTalkingHash = Animator.StringToHash("preTalking");
+            talkingHash = Animator.StringToHash("talking");
+            postTalkingHash = Animator.StringToHash("postTalking");
+            useItemHash = Animator.StringToHash("useItem");
+            preStandPrayHash = Animator.StringToHash("preStandPray");
+            standPrayHash = Animator.StringToHash("standPray");
+            postStandPrayHash = Animator.StringToHash("postStandPray");
+            #endregion
+
+            EventManager.instance.AddListener(EventType.GamePause, OnGamePause);
+            EventManager.instance.AddListener(EventType.GameResume, OnGameResume);
+
+            cycloneEffectMain = cycloneEffect.main;
+            floatingEffectMain1 = floatingEffect1.main;
+            floatingEffectMain2 = floatingEffect2.main;
+        }
+
+        void OnGamePause()
+        {
+            isPause = true;
+        }
+        void OnGameResume()
+        {
+            isPause = false;
         }
 
         void Update()
         {
+            if (isPause)
+            {
+                return;
+            }
             if (isCutScene)
             {
                 return;
@@ -233,5 +351,58 @@ namespace MomodoraCopy
             AttackFlag = false;
         }
 
+        public void UseItem()
+        {
+            if (currentItem != null)
+            {
+                useItemEffect.Play();
+                currentItem.UseItem();
+            }
+        }
+
+        public void ShowPrayEffects()
+        {
+            prayEffects.transform.position = transform.position;
+            this.RestartCoroutine(FadeInPrayLight(), ref prayLightRoutine);
+            cycloneEffect.Play();
+            floatingEffect1.Play();
+            floatingEffect2.Play();
+
+            cycloneEffectMain.maxParticles = 100;
+            floatingEffectMain1.maxParticles = 5;
+            floatingEffectMain1.maxParticles = 5;
+
+        }
+
+        public void HidePrayEffects()
+        {
+            this.RestartCoroutine(FadeOutPrayLight(), ref prayLightRoutine);
+            cycloneEffect.Stop();
+            floatingEffect1.Stop();
+            floatingEffect2.Stop();
+
+            cycloneEffectMain.maxParticles = 0;
+            floatingEffectMain1.maxParticles = 0;
+            floatingEffectMain1.maxParticles = 0;
+        }
+
+        IEnumerator FadeInPrayLight()
+        {
+            prayLight.gameObject.SetActive(true);
+            while(prayLight.intensity < 0.5f)
+            {
+                prayLight.intensity += Time.deltaTime;
+                yield return null;
+            }
+        }
+        IEnumerator FadeOutPrayLight()
+        {
+            while (prayLight.intensity > 0)
+            {
+                prayLight.intensity -= Time.deltaTime;
+                yield return null;
+            }
+            prayLight.gameObject.SetActive(false);
+        }
     }
 }

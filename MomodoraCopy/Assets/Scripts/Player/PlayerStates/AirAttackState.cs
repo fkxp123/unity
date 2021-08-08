@@ -12,7 +12,7 @@ namespace MomodoraCopy
         {
             base.OperateEnter();
             player.isAnimationFinished = false;
-            player.animator.Play("airAttack");
+            player.animator.Play(player.airAttackHash);
             playerMovement.OperateAirAttack();
         }
         public override void OperateUpdate()
@@ -24,7 +24,7 @@ namespace MomodoraCopy
             }
             if (player.isAnimationFinished)
             {
-                if(playerMovement.velocity.y == 0)
+                if(playerMovement.velocity.y == 0 && playerMovement.isGround)
                 {
                     player.stateMachine.SetState(player.idle);
                     return;
@@ -38,6 +38,7 @@ namespace MomodoraCopy
         public override void OperateExit()
         {
             base.OperateExit();
+            player.isAnimationFinished = true;
         }
     }
 }

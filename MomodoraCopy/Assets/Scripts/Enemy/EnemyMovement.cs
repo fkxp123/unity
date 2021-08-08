@@ -42,6 +42,26 @@ namespace MomodoraCopy
         float coroutineCycle;
         WaitForSeconds waitTime;
 
+        bool isCrushing;
+
+        Coroutine checkCrushedRoutine;
+        Coroutine checkSpikeRoutine;
+
+        void Awake()
+        {
+            boxCollider = GetComponent<BoxCollider2D>();
+        }
+
+        void OnEnable()
+        {
+            transform.localPosition = Vector3.zero;
+            transform.rotation = Quaternion.Euler(Vector3.zero);
+            transform.localScale = Vector3.one;
+
+            this.RestartCoroutine(CheckCrushed(), ref checkCrushedRoutine);
+            this.RestartCoroutine(CheckSpike(), ref checkSpikeRoutine);
+        }
+
         void Start()
         {
             gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
@@ -52,14 +72,12 @@ namespace MomodoraCopy
             direction = new Vector2(0, 0);
             CurrentHp = Hp;
             playerPos = GameObject.FindGameObjectWithTag("Player");
-            boxCollider = GetComponent<BoxCollider2D>();
             enemyStatus = transform.GetChild(0).GetComponent<EnemyStatus>();
 
             SetCrushedArea();
 
-            coroutineCycle = 0.1f;
+            coroutineCycle = 0.05f;
             waitTime = new WaitForSeconds(coroutineCycle);
-            StartCoroutine(CheckCrushed());
         }
 
         public void SetCrushedArea()
@@ -69,16 +87,57 @@ namespace MomodoraCopy
             bounds.Expand(0.015f * -4);
             crushedArea = bounds.size;
         }
+        IEnumerator WaitForCrushed()
+        {
+            yield return null;
+            yield return null;
+            Collider2D[] collider2Ds =
+                Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
+            foreach (Collider2D collider in collider2Ds)
+            {
+                if (collider.transform.tag == "Platform" ||
+                   (collider.transform.tag == "Trap" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")) ||
+                   (collider.transform.tag == "PushBlock" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")))
+                {
+
+                    enemyStatus.CrushedDeath();
+                }
+            }
+            isCrushing = false;
+        }
         IEnumerator CheckCrushed()
         {
+            if (isCrushing)
+            {
+                yield break;
+            }
             while (true)
             {
                 Collider2D[] collider2Ds =
                     Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
                 foreach (Collider2D collider in collider2Ds)
                 {
-                    if (collider.transform.CompareTag("Platform") ||
-                        collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
+                    if (collider.transform.tag == "Platform" ||
+                       (collider.transform.tag == "Trap" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")) ||
+                       (collider.transform.tag == "PushBlock" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")))
+                    {
+                        isCrushing = true;
+                        StartCoroutine(WaitForCrushed());
+                    }
+                }
+                yield return waitTime; 
+            }
+        }
+
+        IEnumerator CheckSpike()
+        {
+            while (true)
+            {
+                Collider2D[] collider2Ds =
+                    Physics2D.OverlapBoxAll(boxCollider.bounds.center, boxCollider.bounds.size, 0);
+                foreach (Collider2D collider in collider2Ds)
+                {
+                    if (collider.transform.tag == "Spike")
                     {
                         enemyStatus.CrushedDeath();
                     }

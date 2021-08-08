@@ -14,21 +14,21 @@ namespace MomodoraCopy
         {
             base.OperateEnter();
             player.isAnimationFinished = false;
-            player.animator.Play(Animator.StringToHash("preTalking"));
+            player.animator.Play(player.preTalkingHash);
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
             if(player.isAnimationFinished)
             {
-                player.animator.Play(Animator.StringToHash("talking"));
+                player.animator.Play(player.talkingHash);
             }
         }
         public override void OperateExit()
         {
             base.OperateExit();
             player.isAnimationFinished = false;
-            player.animator.Play(Animator.StringToHash("postTalking"));
+            player.animator.Play(player.postTalkingHash);
         }
     }
 

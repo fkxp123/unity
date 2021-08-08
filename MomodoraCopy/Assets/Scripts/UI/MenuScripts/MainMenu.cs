@@ -81,10 +81,13 @@ namespace MomodoraCopy
             returnToTitleScreenText = localizeManager.descriptionsDict
                 ["ReturnToTitleScreenDesc".GetHashCode()][localizeManager.CurrentLanguage];
 
-            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+            EventManager.instance.AddListener(EventType.LanguageChange, OnLanguageChange);
         }
-
-        void OnLanguageChanged()
+        void OnDestroy()
+        {
+            EventManager.instance.UnsubscribeEvent(EventType.LanguageChange, OnLanguageChange);
+        }
+        void OnLanguageChange()
         {
             inventoryText = localizeManager.descriptionsDict
                 ["InventoryDesc".GetHashCode()][localizeManager.CurrentLanguage];

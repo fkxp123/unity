@@ -184,6 +184,7 @@ namespace MomodoraCopy
         #endregion
 
         Vector2 crushedArea;
+        bool isCrushing;
 
         public Vector3 currentVelocity;
         Vector3 previousVelocity;
@@ -214,6 +215,11 @@ namespace MomodoraCopy
 
         Vector3 checkPushBlockArea;
 
+        public GameObject checkAlmostGroundPoint;
+        public bool isAlmostGround;
+        public LayerMask platform;
+        public LayerMask trap;
+
         void Awake()
         {
             if (instance == null)
@@ -236,7 +242,7 @@ namespace MomodoraCopy
             controller = GetComponent<Controller2D>();
             boxCollider = GetComponent<BoxCollider2D>();
 
-            playerSprite = transform.GetChild(1);
+            playerSprite = transform.GetChild(0);
             player = playerSprite.GetComponent<Player>();
             playerStatus = playerSprite.GetComponent<PlayerStatus>();
             //spriteRenderer = playerSprite.GetComponent<SpriteRenderer>();
@@ -258,6 +264,7 @@ namespace MomodoraCopy
             SetNormalBoxCollider2D();
             SetCrushedArea();
             SetCheckPushBlockArea();
+
         }
         void SetCrushedArea()
         {
@@ -273,20 +280,53 @@ namespace MomodoraCopy
             bounds.Expand(new Vector2(boxCollider.size.x * -0.5f, boxCollider.size.y * -0.75f));
             checkPushBlockArea = bounds.size;
         }
-        
-        void CheckCrushed()
+
+
+        void CheckAlmostGround()
         {
-            Collider2D[] collider2Ds = 
+            isAlmostGround = 
+                Physics2D.OverlapCircle(checkAlmostGroundPoint.transform.position, 0.1f, platform) || 
+                Physics2D.OverlapCircle(checkAlmostGroundPoint.transform.position, 0.1f, trap);
+        }
+
+        IEnumerator WaitForCrushed()
+        {
+            yield return null;
+            yield return null;
+            Collider2D[] collider2Ds =
                 Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
             foreach (Collider2D collider in collider2Ds)
             {
-                if (collider.transform.tag == "Platform" || 
+                if (collider.transform.tag == "Platform" ||
                    (collider.transform.tag == "Trap" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")) ||
                    (collider.transform.tag == "PushBlock" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")))
                 {
+
                     playerStatus.CrushedDeath();
                 }
             }
+            isCrushing = false;
+        }
+
+        void CheckCrushed()
+        {
+            if (isCrushing)
+            {
+                return;
+            }
+            Collider2D[] collider2Ds =
+                Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
+            foreach (Collider2D collider in collider2Ds)
+            {
+                if (collider.transform.tag == "Platform" ||
+                   (collider.transform.tag == "Trap" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")) ||
+                   (collider.transform.tag == "PushBlock" && collider.gameObject.layer == LayerMask.NameToLayer("Platform")))
+                {
+                    isCrushing = true;
+                    StartCoroutine(WaitForCrushed());
+                }
+            }
+
             //separate pushblock and trap??
             //Collider2D[] collider2D =
             //    Physics2D.OverlapBoxAll(boxCollider.bounds.center, crushedArea, 0);
@@ -386,6 +426,7 @@ namespace MomodoraCopy
             SetDirectionalInput(playerInput.directionalInput);
             SetPlayerMovement();
             CheckVerticalCollision();
+            CheckAlmostGround();
             CheckisGround();
             CalculateCurrentVelocity();
         }
@@ -676,12 +717,10 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                                StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(3f, .1f));
                             }
                             else if (collider.tag == "BossHitBox")
                             {
                                 collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                                //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -705,12 +744,11 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                                StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
+                                CameraManager.instance.ShakeCamera(2f, .1f);
                             }
                             else if (collider.tag == "BossHitBox")
                             {
                                 collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                                //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -734,12 +772,11 @@ namespace MomodoraCopy
                             if (collider.tag == "Enemy")
                             {
                                 collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                                StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(5f, .1f));
+                                CameraManager.instance.ShakeCamera(3f, .1f);
                             }
                             else if (collider.tag == "BossHitBox")
                             {
                                 collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                                //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                             }
                             else if (collider.tag == "CheckPoint")
                             {
@@ -771,12 +808,11 @@ namespace MomodoraCopy
                     if (collider.tag == "Enemy")
                     {
                         collider.transform.GetChild(0).GetComponent<EnemyStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                        StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
+                        CameraManager.instance.ShakeCamera(1f, .1f);
                     }
                     else if (collider.tag == "BossHitBox")
                     {
                         collider.transform.parent.GetComponent<BossStatus>().TakeDamage(playerStatus.meleeAtk, DamageType.Melee, transform.rotation);
-                        //StartCoroutine(GameManager.instance.mainCameraObject.transform.GetChild(2).GetComponent<CinemachineShake>().Shake(4f, .1f));
                     }
                     else if(collider.tag == "CheckPoint")
                     {

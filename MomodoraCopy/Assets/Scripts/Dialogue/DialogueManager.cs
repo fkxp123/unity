@@ -29,6 +29,7 @@ namespace MomodoraCopy
         public bool isChatting;
 
         public string[] dialogues;
+        public List<string> dialogueNameList = new List<string>();
         public Dictionary<int, Dictionary<Language, List<string>>> dialogueDictionary = 
             new Dictionary<int, Dictionary<Language, List<string>>>();
 
@@ -38,6 +39,13 @@ namespace MomodoraCopy
 
         LocalizeManager localizeManager;
         public bool ableToPassNext;
+
+        Text interactionText;
+        string talkText;
+
+        public bool isTimelineChatting;
+        public string currentDialogueName;
+        public int currentContentLine;
 
         void Start()
         {
@@ -51,28 +59,26 @@ namespace MomodoraCopy
 
             SetLetterSizeDict();
 
-            string[] files = Directory.GetFiles(Path.Combine(Application.dataPath, "Resources"), "*.*");
-            foreach (string sourceFile in files)
-            {
-                string fileName = Path.GetFileName(sourceFile);
-                if (fileName.Substring(fileName.Length - 4) == ".csv")
-                {
-                    string dialogueName = fileName.Substring(0, fileName.Length - 4);
-                    Dictionary<Language, List<string>> localDictionary = new Dictionary<Language, List<string>>();
-                    for (int i = 0; i < System.Enum.GetValues(typeof(Language)).Length; i++)
-                    {
-                        localDictionary.Add((Language)i, GetDialogue(dialogueName, i));
-                    }
-                    dialogueDictionary.Add(dialogueName.GetHashCode(), localDictionary);
-                }
-            }
+            SetDialougeNameList();
+            GetDialoguesData();
 
-            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChange);
+            interactionText = interactionBox.transform.GetChild(0).transform.GetChild(1).GetComponent<Text>();
+            talkText = localizeManager.descriptionsDict["TalkDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            interactionText.text = talkText;
+
+            EventManager.instance.AddListener(EventType.LanguageChange, OnLanguageChange);
+        }
+
+        void OnDestroy()
+        {
+            EventManager.instance.UnsubscribeEvent(EventType.LanguageChange, OnLanguageChange);
         }
 
         void OnLanguageChange()
         {
             HideChatBox();
+            talkText = localizeManager.descriptionsDict["TalkDesc".GetHashCode()][localizeManager.CurrentLanguage];
+            interactionText.text = talkText;
         }
 
         public void SetLetterSizeDict()
@@ -81,26 +87,97 @@ namespace MomodoraCopy
             letterSizeDictionary.Add(Language.English, 6);
         }
 
-        public List<string> GetDialogue(string _CSVFileName, int localNumber)
+
+        #region get data from StreamingAsset
+        //void GetDialoguesData()
+        //{
+        //    string[] files = Directory.GetFiles(Path.Combine(Application.dataPath, "StreamingAssets", "Dialogues"), "*.*");
+        //    foreach (string sourceFile in files)
+        //    {
+        //        string fileName = Path.GetFileName(sourceFile);
+        //        if (fileName.Substring(fileName.Length - 4) == ".csv")
+        //        {
+        //            string dialogueName = fileName.Substring(0, fileName.Length - 4);
+        //            Dictionary<Language, List<string>> localDictionary = new Dictionary<Language, List<string>>();
+        //            for (int i = 0; i < System.Enum.GetValues(typeof(Language)).Length; i++)
+        //            {
+        //                localDictionary.Add((Language)i, GetDialogue(dialogueName, i));
+        //            }
+        //            dialogueDictionary.Add(dialogueName.GetHashCode(), localDictionary);
+        //        }               
+        //    }
+        //}
+        //public List<string> GetDialogue(string csvFileName, int localNumber)
+        //{
+        //    List<string> dialogueList = new List<string>();
+        //    string path = Path.Combine(Application.dataPath, "StreamingAssets", "Dialogues", csvFileName + ".csv");
+        //    StreamReader streamReader = new StreamReader(path);
+        //    bool endLine = false;
+
+        //    streamReader.ReadLine();
+        //    while (!endLine)
+        //    {
+        //        string csvData = streamReader.ReadLine();
+        //        if (csvData == null)
+        //        {
+        //            endLine = true;
+        //            break;
+        //        }
+
+        //        var row = csvData.Split(',');
+
+
+        //        string context = row[localNumber];
+
+        //        context = context.Replace("<br>", "\n");
+        //        context = context.Replace("<c>", ",");
+        //        context = context.Replace("<..>", "..");
+
+        //        dialogueList.Add(context);
+        //    }
+        //    return dialogueList;
+        //}
+        #endregion
+
+        #region get data from Resources
+        void SetDialougeNameList()
+        {
+            dialogueNameList.Add("Prologue");
+        }
+        void GetDialoguesData()
+        {
+            for (int i = 0; i < dialogueNameList.Count; i++)
+            {
+                Dictionary<Language, List<string>> localDictionary = new Dictionary<Language, List<string>>();
+                for (int j = 0; j < System.Enum.GetValues(typeof(Language)).Length; j++)
+                {
+                    localDictionary.Add((Language)j, GetDialogue(dialogueNameList[i], j));
+                }
+                dialogueDictionary.Add(dialogueNameList[i].GetHashCode(), localDictionary);
+            }
+        }
+
+        public List<string> GetDialogue(string csvFilename, int localNumber)
         {
             List<string> dialogueList = new List<string>();
-            TextAsset csvData = Resources.Load<TextAsset>(_CSVFileName);
+            TextAsset csvData = Resources.Load<TextAsset>(Path.Combine("Dialogues", csvFilename));
 
             string[] data = csvData.text.Split(new char[] { '\n' });
 
             for (int i = 1; i < data.Length - 1; i++)
             {
                 string[] row = data[i].Split(new char[] { ',' });
-                string context = row[localNumber];
-                context = context.Replace("<br>", "\n");
-                context = context.Replace("<c>", ",");
-                context = context.Replace("<..>", "..");
+                string content = row[localNumber];
+                content = content.Replace("<br>", "\n");
+                content = content.Replace("<c>", ",");
+                content = content.Replace("<..>", "..");
 
-                dialogueList.Add(context);
+                dialogueList.Add(content);
             }
 
             return dialogueList;
         }
+        #endregion
         public void SetChatBox(string context)
         {
             string[] contexts = context.Split(new char[] { '\n' });
@@ -131,6 +208,7 @@ namespace MomodoraCopy
 
         public void ShowChatBox(string dialogueName)
         {
+            currentDialogueName = dialogueName;
             transform.position = transform.position;
             chatBox.SetActive(true);
             if (dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage].Count == 0)
@@ -141,9 +219,12 @@ namespace MomodoraCopy
         }
         public void ShowChatContext(string dialogueName)
         {
-            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextCount];
+            currentContentLine = contextCount;
+            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()]
+                [localizeManager.CurrentLanguage][contextCount];
             StartCoroutine(TypeContexts(dialogueContext));
-            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextCount]);
+            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()]
+                [localizeManager.CurrentLanguage][contextCount]);
             Vector3 backgroundSize = GetBackgroundSize();
             chatBox.transform.position = new Vector3(chatBox.transform.position.x,
                 transform.position.y + backgroundSize.y * 0.035f, transform.position.y);
@@ -152,6 +233,7 @@ namespace MomodoraCopy
 
         public void ShowChatBox(string dialogueName, int contextLine)
         {
+            currentDialogueName = dialogueName;
             transform.position = transform.position;
             chatBox.SetActive(true);
             if (dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage].Count == 0)
@@ -162,9 +244,12 @@ namespace MomodoraCopy
         }
         public void ShowChatContext(string dialogueName, int contextLine)
         {
-            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextLine];
+            currentContentLine = contextCount;
+            dialogueContext = dialogueDictionary[dialogueName.GetHashCode()]
+                [localizeManager.CurrentLanguage][contextLine];
             StartCoroutine(TypeContexts(dialogueContext));
-            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()][localizeManager.CurrentLanguage][contextLine]);
+            SetChatBox(dialogueDictionary[dialogueName.GetHashCode()]
+                [localizeManager.CurrentLanguage][contextLine]);
             Vector3 backgroundSize = GetBackgroundSize();
             chatBox.transform.position = new Vector3(chatBox.transform.position.x,
                 transform.position.y + backgroundSize.y * 0.035f, transform.position.y);
@@ -174,6 +259,7 @@ namespace MomodoraCopy
         {
             isTyping = false;
             isChatting = false;
+            isTimelineChatting = false;
             contextCount = 0;
             chatContext.text = string.Empty;
             ableToPassNext = true;
@@ -183,6 +269,7 @@ namespace MomodoraCopy
         {
             ableToPassNext = false;
             isTyping = true;
+
             for (int i = 0; i <= context.Length; i++)
             {
                 if (!isChatting)
@@ -226,6 +313,19 @@ namespace MomodoraCopy
                 yield return blinkTime;
             }
         }
+
+        //IEnumerator StartDialogue()
+        //{
+        //    yield return null;
+        //    if (dialogueName != null)
+        //    {
+        //        isChatting = true;
+        //        DialogueManager.instance.ShowChatBox(dialogueName);
+        //        DialogueManager.instance.transform.position =
+        //            TimelineManager.instance.playableDirectorInfoDict
+        //            [TimelineManager.instance.currentPlayableDirector].talkerPos;
+        //    }
+        //}
 
     }
 }

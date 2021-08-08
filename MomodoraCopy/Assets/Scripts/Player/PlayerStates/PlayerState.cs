@@ -27,6 +27,16 @@ namespace MomodoraCopy
 #if STATE_DEBUG_MOD
             Debug.Log(this + " 업데이트");
 #endif
+            if (!player.isAnimationFinished)
+            {
+                AnimatorStateInfo animationState = player.animator.GetCurrentAnimatorStateInfo(0);
+                AnimatorClipInfo[] myAnimatorClip = player.animator.GetCurrentAnimatorClipInfo(0);
+                float myTime = myAnimatorClip[0].clip.length * animationState.normalizedTime;
+                if(myTime >= myAnimatorClip[0].clip.length)
+                {
+                    player.isAnimationFinished = true;
+                }
+            }
         }
         public virtual void OperateExit()
         {

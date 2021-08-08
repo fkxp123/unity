@@ -133,7 +133,8 @@ namespace MomodoraCopy
 
             StartCoroutine(ActivateObjects());
 
-            MapManager.instance.Tilemap = platformTileMap;
+            //MapManager.instance.CurrentTilemap = platformTileMap;
+            MapManager.instance.SetCurrentTilemap(platformTileMap);
         }
 
         void InitLevelGenerator()
@@ -150,7 +151,7 @@ namespace MomodoraCopy
                 objectRotation = transform.rotation
             };
             //ObjectPooler.instance.CreatePoolingObjectQueue(pushBlockInfo, roomHeight * roomWidth * grid * grid / 4);
-            ObjectPooler.instance.CreatePoolingObjectQueue(pushBlockInfo, 100);
+            ObjectPooler.instance.CreatePoolingObjects(pushBlockInfo, 100);
         }
         IEnumerator ActivateObjects()
         {
@@ -599,7 +600,7 @@ namespace MomodoraCopy
             Vector3Int globalPosition = new Vector3Int(localPosition.x + roomGridPositionList[roomNumber].x * roomWidth,
                 localPosition.y + roomGridPositionList[roomNumber].y * roomHeight, 0);
             Vector3 position = new Vector3(globalPosition.x, globalPosition.y, globalPosition.z);
-            GameObject pushBlockObject = ObjectPooler.instance.GetPoolingObject(pushBlockInfo);
+            GameObject pushBlockObject = ObjectPooler.instance.GetStaticPoolingObject(pushBlockInfo);
             pushBlockObject.transform.position = position;
             List<GameObject> pushBlockObjectList = pushBlockObjectDict[roomNumber];
             pushBlockObjectList.Add(pushBlockObject);
@@ -613,7 +614,7 @@ namespace MomodoraCopy
             Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
                 + cellDicitonary[cellPosition];
             Vector3 position = new Vector3(globalPosition.x + 1, globalPosition.y + 1, globalPosition.z);
-            GameObject pushBlockObject = ObjectPooler.instance.GetPoolingObject(pushBlockInfo);
+            GameObject pushBlockObject = ObjectPooler.instance.GetStaticPoolingObject(pushBlockInfo);
             pushBlockObject.transform.position = position;
             List<GameObject> pushBlockObjectList = pushBlockObjectDict[roomNumber];
             pushBlockObjectList.Add(pushBlockObject);
@@ -627,7 +628,7 @@ namespace MomodoraCopy
             Vector3Int globalPosition = new Vector3Int(roomGridPositionList[roomNumber].x * roomWidth, roomGridPositionList[roomNumber].y * roomHeight, 0)
                 + cellDicitonary[cellPosition];
             Vector3 position = new Vector3(globalPosition.x + 1, globalPosition.y + 1, globalPosition.z);
-            GameObject pushBlockObject = ObjectPooler.instance.GetPoolingObject(pushBlockInfo);
+            GameObject pushBlockObject = ObjectPooler.instance.GetStaticPoolingObject(pushBlockInfo);
             pushBlockObject.transform.position = position;
             List<GameObject> pushBlockObjectList = pushBlockObjectDict[roomNumber];
             pushBlockObjectList.Add(pushBlockObject);

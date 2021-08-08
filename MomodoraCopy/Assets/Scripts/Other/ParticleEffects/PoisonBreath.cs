@@ -10,7 +10,7 @@ namespace MomodoraCopy
         {
             if (other.tag == "Player")
             {
-                GameManager.instance.playerPhysics.transform.GetChild(1)
+                GameManager.instance.playerPhysics.transform.GetChild(0)
                     .GetComponent<PlayerStatus>().TakeDamage(0, DamageType.Poisoned, transform.rotation);
             }
         }

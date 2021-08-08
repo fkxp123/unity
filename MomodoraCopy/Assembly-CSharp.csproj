@@ -104,6 +104,20 @@
      <Compile Include="Assets\FluidSim\CodeMonkey\Utils\World_Mesh.cs" />
      <Compile Include="Assets\FluidSim\CodeMonkey\Utils\World_Sprite.cs" />
      <Compile Include="Assets\FluidSim\_Done\Scripts\EnvironmentButtons.cs" />
+     <Compile Include="Assets\Foliage2D\Example\Scripts\Camera2DFollow.cs" />
+     <Compile Include="Assets\Foliage2D\Example\Scripts\CloudMovement.cs" />
+     <Compile Include="Assets\Foliage2D\Example\Scripts\Foliage2D_Sprite.cs" />
+     <Compile Include="Assets\Foliage2D\Example\Scripts\Platformer2DUserControl.cs" />
+     <Compile Include="Assets\Foliage2D\Example\Scripts\PlatformerCharacter2D.cs" />
+     <Compile Include="Assets\Foliage2D\Scripts\Foliage2D.cs" />
+     <Compile Include="Assets\Foliage2D\Scripts\Foliage2D_Animation.cs" />
+     <Compile Include="Assets\Foliage2D\Scripts\Foliage2D_Mesh.cs" />
+     <Compile Include="Assets\Foliage2D\Scripts\Foliage2D_Path.cs" />
+     <Compile Include="Assets\Foliage2D\Scripts\Foliage2D_PrefabTracker.cs" />
+     <Compile Include="Assets\Scripts\BehaviourTree\Inverter.cs" />
+     <Compile Include="Assets\Scripts\BehaviourTree\Node.cs" />
+     <Compile Include="Assets\Scripts\BehaviourTree\Selector.cs" />
+     <Compile Include="Assets\Scripts\BehaviourTree\Sequence.cs" />
      <Compile Include="Assets\Scripts\Dialogue\ChatInteraction.cs" />
      <Compile Include="Assets\Scripts\Dialogue\DialogueManager.cs" />
      <Compile Include="Assets\Scripts\Enemy\BasicEnemyFsm.cs" />
@@ -114,51 +128,64 @@
      <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyMovement.cs" />
      <Compile Include="Assets\Scripts\Enemy\EnemyStatus.cs" />
+     <Compile Include="Assets\Scripts\Enemy\ImpScripts\BombImpFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\ImpScripts\ImpFsm.cs" />
+     <Compile Include="Assets\Scripts\Enemy\ImpScripts\ShieldImpFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\MonkeyFsm.cs" />
      <Compile Include="Assets\Scripts\Enemy\PlantFsm.cs" />
      <Compile Include="Assets\Scripts\EventManagerTest.cs" />
      <Compile Include="Assets\Scripts\EventTest.cs" />
      <Compile Include="Assets\Scripts\FadeController.cs" />
-     <Compile Include="Assets\Scripts\InvertMask.cs" />
+     <Compile Include="Assets\Scripts\Item\Item.cs" />
+     <Compile Include="Assets\Scripts\Item\ItemDatabase.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator\LevelGenerator.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator\TempletToJsonConverter.cs" />
      <Compile Include="Assets\Scripts\LevelGenerator\TileMapTest.cs" />
+     <Compile Include="Assets\Scripts\Other\ArrowInteraction.cs" />
+     <Compile Include="Assets\Scripts\Other\AttachGameObjectsToParticles.cs" />
+     <Compile Include="Assets\Scripts\Other\BellflowerInspectInteraction.cs" />
+     <Compile Include="Assets\Scripts\Other\Camera\CameraManager.cs" />
+     <Compile Include="Assets\Scripts\Other\Camera\CinemachineShake.cs" />
      <Compile Include="Assets\Scripts\Other\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\Other\CameraManager.cs" />
      <Compile Include="Assets\Scripts\Other\CheckPoint\CheckPoint.cs" />
      <Compile Include="Assets\Scripts\Other\CheckPoint\CheckPointManager.cs" />
      <Compile Include="Assets\Scripts\Other\Chest.cs" />
-     <Compile Include="Assets\Scripts\Other\ChildGUI.cs" />
-     <Compile Include="Assets\Scripts\Other\CinemachineShake.cs" />
-     <Compile Include="Assets\Scripts\Other\CoroutineExtensions.cs" />
+     <Compile Include="Assets\Scripts\Other\CustomExtensions\CoroutineExtensions.cs" />
      <Compile Include="Assets\Scripts\Other\DebugGlobalLight2D.cs" />
-     <Compile Include="Assets\Scripts\Other\ElevatorController.cs" />
      <Compile Include="Assets\Scripts\Other\Entrance.cs" />
      <Compile Include="Assets\Scripts\Other\EventManager.cs" />
      <Compile Include="Assets\Scripts\Other\Exit.cs" />
      <Compile Include="Assets\Scripts\Other\Explosion.cs" />
-     <Compile Include="Assets\Scripts\Other\FpsChecker.cs" />
-     <Compile Include="Assets\Scripts\Other\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Other\FireFlyController.cs" />
+     <Compile Include="Assets\Scripts\Other\GameManager\FpsChecker.cs" />
+     <Compile Include="Assets\Scripts\Other\GameManager\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Other\GameManager\GuideInteraction.cs" />
+     <Compile Include="Assets\Scripts\Other\GameManager\IInpsectInteraction.cs" />
+     <Compile Include="Assets\Scripts\Other\GameManager\InspectInteraction.cs" />
+     <Compile Include="Assets\Scripts\Other\GameManager\InvertMask.cs" />
      <Compile Include="Assets\Scripts\Other\Gems.cs" />
      <Compile Include="Assets\Scripts\Other\LocalizeManager.cs" />
-     <Compile Include="Assets\Scripts\Other\MainMap.cs" />
-     <Compile Include="Assets\Scripts\Other\MapManager.cs" />
-     <Compile Include="Assets\Scripts\Other\MovingTrapController.cs" />
+     <Compile Include="Assets\Scripts\Other\Map\HorizontalBoundChecker.cs" />
+     <Compile Include="Assets\Scripts\Other\Map\MapInitializer.cs" />
+     <Compile Include="Assets\Scripts\Other\Map\MapManager.cs" />
+     <Compile Include="Assets\Scripts\Other\Map\VerticalBoundChecker.cs" />
+     <Compile Include="Assets\Scripts\Other\MapPortal.cs" />
+     <Compile Include="Assets\Scripts\Other\ParallaxBackground.cs" />
      <Compile Include="Assets\Scripts\Other\ParticleEffects\PoisonBombExplosion.cs" />
      <Compile Include="Assets\Scripts\Other\ParticleEffects\PoisonBreath.cs" />
      <Compile Include="Assets\Scripts\Other\ParticleEffects\PoisonExplosion.cs" />
      <Compile Include="Assets\Scripts\Other\PlatformController.cs" />
      <Compile Include="Assets\Scripts\Other\PoisonBombController.cs" />
-     <Compile Include="Assets\Scripts\Other\PushBlockController.cs" />
+     <Compile Include="Assets\Scripts\Other\PrayInteraction.cs" />
      <Compile Include="Assets\Scripts\Other\SceneTransferPoint.cs" />
-     <Compile Include="Assets\Scripts\Other\SerializableDictionary\DictionaryDrawer.cs" />
-     <Compile Include="Assets\Scripts\Other\SerializableDictionary\SerializableDictionary.cs" />
      <Compile Include="Assets\Scripts\Other\Singleton.cs" />
      <Compile Include="Assets\Scripts\Other\StartPoint.cs" />
-     <Compile Include="Assets\Scripts\Other\TestGUI.cs" />
      <Compile Include="Assets\Scripts\Other\TimelineManager.cs" />
+     <Compile Include="Assets\Scripts\Other\Trap\ElevatorController.cs" />
+     <Compile Include="Assets\Scripts\Other\Trap\MovingTrapController.cs" />
+     <Compile Include="Assets\Scripts\Other\Trap\PushBlockController.cs" />
      <Compile Include="Assets\Scripts\ParticleTest.cs" />
+     <Compile Include="Assets\Scripts\PixelRotate.cs" />
      <Compile Include="Assets\Scripts\Player\CheckAirBowPos.cs" />
      <Compile Include="Assets\Scripts\Player\Controller2D.cs" />
      <Compile Include="Assets\Scripts\Player\DamageType.cs" />
@@ -182,17 +209,19 @@
      <Compile Include="Assets\Scripts\Player\PlayerStates\JumpState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\LandState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\PlayerState.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerStates\PrayState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\PushBlockState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\RollState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\RunState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\SampleState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStates\TalkingState.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerStates\UseItemState.cs" />
      <Compile Include="Assets\Scripts\Player\PlayerStatus.cs" />
      <Compile Include="Assets\Scripts\Player\RaycastController.cs" />
+     <Compile Include="Assets\Scripts\PoisonBomb.cs" />
      <Compile Include="Assets\Scripts\Pooling\EnemySpawner\EnemySpawner.cs" />
      <Compile Include="Assets\Scripts\Pooling\ObjectPooler.cs" />
      <Compile Include="Assets\Scripts\Pooling\PoolingObject\EnemyPoolingObjects\Dagger.cs" />
-     <Compile Include="Assets\Scripts\Pooling\PoolingObject\EnemyPoolingObjects\PoisonBomb.cs" />
      <Compile Include="Assets\Scripts\Pooling\PoolingObject\Others\BigArrow.cs" />
      <Compile Include="Assets\Scripts\Pooling\PoolingObject\PlayerPoolingObjects\Arrow.cs" />
      <Compile Include="Assets\Scripts\Pooling\PoolingObjectInfo.cs" />
@@ -202,20 +231,22 @@
      <Compile Include="Assets\Scripts\Pooling\Spawner\DaggerSpawner.cs" />
      <Compile Include="Assets\Scripts\Pooling\Spawner\PoisonBombSpawner.cs" />
      <Compile Include="Assets\Scripts\PostTest.cs" />
+     <Compile Include="Assets\Scripts\ReactiveGrassSway.cs" />
+     <Compile Include="Assets\Scripts\Spring.cs" />
+     <Compile Include="Assets\Scripts\SpriteUVToShader.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\DialogueReceiver.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\ManualNotification.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\MyNotification.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\MyReceiver.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\New Folder\ReceiverExample.cs" />
-     <Compile Include="Assets\Scripts\Timeline\CustomMarker\New Folder\SignalTrackEx.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\New Folder\SimpleMarker.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\NotificationMarker.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomMarker\ScheduledNotification.cs" />
-     <Compile Include="Assets\Scripts\Timeline\CustomTrack\ActTrack\PlayerActTrack.cs" />
+     <Compile Include="Assets\Scripts\Timeline\CustomTrack\CharacterControlTrack\CharacterControlAsset.cs" />
+     <Compile Include="Assets\Scripts\Timeline\CustomTrack\CharacterControlTrack\CharacterControlBehaviour.cs" />
+     <Compile Include="Assets\Scripts\Timeline\CustomTrack\CharacterControlTrack\CharacterControlTrack.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomTrack\DialogueTrack\DialogueControlAsset.cs" />
      <Compile Include="Assets\Scripts\Timeline\CustomTrack\DialogueTrack\DialogueControlBehaviour.cs" />
-     <Compile Include="Assets\Scripts\Timeline\CustomTrack\DialogueTrack\DialogueTrack.cs" />
-     <Compile Include="Assets\Scripts\Timeline\CustomTrack\DialogueTrack\DialogueTrackButton.cs" />
      <Compile Include="Assets\Scripts\Timeline\InitTimeline.cs" />
      <Compile Include="Assets\Scripts\Timeline\TimelineStartPoint.cs" />
      <Compile Include="Assets\Scripts\UI\AbstractMenu.cs" />
@@ -236,6 +267,11 @@
      <Compile Include="Assets\Scripts\test2.cs" />
      <Compile Include="Assets\Scripts\test3.cs" />
      <Compile Include="Assets\Scripts\test4.cs" />
+     <Compile Include="Assets\Scripts\test5.cs" />
+     <Compile Include="Assets\Scripts\test6.cs" />
+     <Compile Include="Assets\SerializableDictionary\Example\SerializableDictionaryExample.cs" />
+     <Compile Include="Assets\SerializableDictionary\Example\UserSerializableDictionaries.cs" />
+     <Compile Include="Assets\SerializableDictionary\SerializableDictionary.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
@@ -277,14 +313,19 @@
      <None Include="Assets\Aseprite2Unity\Examples\MegaDad\readme.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <None Include="Assets\FluidSim\CodeMonkey\README.txt" />
+     <None Include="Assets\JsonDotNet\link.xml" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
      <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
+     <None Include="Assets\Materials\NewUnlitShader.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+     <None Include="Assets\Materials\spritePixelated.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+     <None Include="Assets\Foliage2D\Docs\Log.txt" />
+     <None Include="Assets\Foliage2D\Example\Scenes\Parallax.txt" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\Masks\ScreenTransitionImageEffect.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
@@ -475,6 +516,9 @@
  </Reference>
  <Reference Include="UnityEditor">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.13f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+ </Reference>
+ <Reference Include="Newtonsoft.Json">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Assets/JsonDotNet/Assemblies/Standalone/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/PackageCache/com.unity.analytics@3.3.5/Unity.Analytics.Editor.dll</HintPath>
@@ -848,8 +892,14 @@
  <Reference Include="Cinemachine">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.CacheServer">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEditor.CacheServer.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.Monetization">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEngine.Monetization.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.ScriptableBuildPipeline.Editor">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.PixelPerfect.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
@@ -887,6 +937,9 @@
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
+ <Reference Include="Unity.ResourceManager">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
+ </Reference>
  <Reference Include="Unity.RenderPipelines.Universal.Runtime">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
  </Reference>
@@ -898,6 +951,9 @@
  </Reference>
  <Reference Include="Unity.Timeline">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Addressables.Editor">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.CollabProxy.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
@@ -940,6 +996,12 @@
  </Reference>
  <Reference Include="UnityEngine.SpatialTracking">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/UnityEngine.SpatialTracking.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Addressables">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.ScriptableBuildPipeline">
+ <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.dll</HintPath>
  </Reference>
  <Reference Include="Unity.ShaderGraph.Editor">
  <HintPath>C:/Users/user/Documents/Unity_git/MomodoraCopy/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>

@@ -8,9 +8,9 @@ namespace MomodoraCopy
     {
         public int gemValue;
 
-        void OnCollisionEnter2D(Collision2D coll)
+        void OnTriggerEnter2D(Collider2D coll)
         {
-            if(coll.gameObject.tag == "Player")
+            if (coll.gameObject.tag == "Player")
             {
                 GameManager.instance.SetTotalScore(gemValue);
                 gameObject.SetActive(false);

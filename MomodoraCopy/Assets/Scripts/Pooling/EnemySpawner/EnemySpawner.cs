@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace MomodoraCopy
 {
@@ -25,6 +26,8 @@ namespace MomodoraCopy
 
         bool doneSpawn;
 
+        public Tilemap targetTilemap;
+
         void Start()
         {
             spawnPositionCount = transform.childCount;
@@ -43,32 +46,29 @@ namespace MomodoraCopy
                 ObjectPooler.instance.SetPoolingObject(infos[i]);
                 if(!isTriggerSpawner && !isUpdateSpawner)
                 {
-                    recycleObjects[i] = ObjectPooler.instance.GetPoolingObject(infos[i]);
+                    recycleObjects[i] = ObjectPooler.instance.GetStaticPoolingObject(infos[i]);
                 }
             }
 
-            //StartCoroutine("CheckSomething");
+            //MapManager.instance.enemySpawnerDict.Add(targetTilemap, this);
+            MapManager.instance.AddEnemySpawnerData(targetTilemap, this);
         }
-        IEnumerator CheckSomething()
+
+        public void SpawnEnemy()
         {
-            while (enabled)
+            for (int i = 0; i < spawnPositionCount; i++)
             {
-                Check();
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-        void Test()
-        {
-            Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(transform.position, findPlayerBoxSize, 0);
-            foreach (Collider2D collider in collider2Ds)
-            {
-                if (collider.tag == "Player")
-                {
-                    Debug.Log("find Player in coroutine : " + Time.time);
-                }
+                recycleObjects[i] = ObjectPooler.instance.GetStaticPoolingObject(infos[i]);
             }
         }
 
+        public void RecycleEnemy()
+        {
+            for (int i = 0; i < spawnPositionCount; i++)
+            {
+                RecyclePoolingObject(infos[i], recycleObjects[i]);
+            }
+        }
 
         void Check()
         {
@@ -99,7 +99,7 @@ namespace MomodoraCopy
                     }
                     for (int i = 0; i < spawnPositionCount; i++)
                     {
-                        recycleObjects[i] = ObjectPooler.instance.GetPoolingObject(infos[i], false);
+                        recycleObjects[i] = ObjectPooler.instance.GetDynamicPoolingObject(infos[i]);
                     }
                     doneSpawn = true;
                     return;
@@ -113,13 +113,17 @@ namespace MomodoraCopy
                     return;
                 }
                 currentTime = spawnTime;
-                recycleObjects[spawnIndex] = ObjectPooler.instance.GetPoolingObject(infos[spawnIndex], false);
+                recycleObjects[spawnIndex] = ObjectPooler.instance.GetDynamicPoolingObject(infos[spawnIndex]);
                 spawnIndex++;
             }
         }
 
         void Update()
         {
+            if(targetTilemap != null)
+            {
+                return;
+            }
             Check();
         }
 

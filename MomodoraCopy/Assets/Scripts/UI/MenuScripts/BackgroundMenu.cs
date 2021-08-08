@@ -26,10 +26,13 @@ namespace MomodoraCopy
             cancleKeyText.text = string.Format("{0} : S", localizeManager.descriptionsDict
                 ["CancleKeyDesc".GetHashCode()][localizeManager.CurrentLanguage]);
 
-            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+            EventManager.instance.AddListener(EventType.LanguageChange, OnLanguageChange);
         }
-
-        void OnLanguageChanged()
+        void OnDestroy()
+        {
+            EventManager.instance.UnsubscribeEvent(EventType.LanguageChange, OnLanguageChange);
+        }
+        void OnLanguageChange()
         {
             confirmKeyText.text = string.Format("{0} : A", localizeManager.descriptionsDict
                 ["ConfirmKeyDesc".GetHashCode()][localizeManager.CurrentLanguage]);

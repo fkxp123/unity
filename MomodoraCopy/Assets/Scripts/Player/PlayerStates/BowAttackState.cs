@@ -44,9 +44,22 @@ namespace MomodoraCopy
         }
         void OperateBowAttack()
         {
+            if (playerInput.MaxBowCharged)
+            {
+                info.position = new Vector3(player.transform.position.x, player.transform.position.y + bowPositionY, Random.Range(0.0f, 1.0f));
+                info.objectRotation = player.transform.rotation;
+                arrowSpawner.OperateDynamicSpawn(info, ArrowSpawner.ACTIVATE_TIME);
+                info.objectRotation = Quaternion.Euler(player.transform.rotation.x, player.transform.rotation.y, 
+                    player.transform.rotation.y == 0 ? 15f : 195f);
+                arrowSpawner.OperateDynamicSpawn(info, ArrowSpawner.ACTIVATE_TIME);
+                info.objectRotation = Quaternion.Euler(player.transform.rotation.x, player.transform.rotation.y, 
+                    player.transform.rotation.y == 0 ? -15f : 165f);
+                arrowSpawner.OperateDynamicSpawn(info, ArrowSpawner.ACTIVATE_TIME);
+                return;
+            }
             info.position = new Vector3(player.transform.position.x, player.transform.position.y + bowPositionY, Random.Range(0.0f, 1.0f));
             info.objectRotation = player.transform.rotation;
-            arrowSpawner.OperateSpawn(info, ArrowSpawner.ACTIVATE_TIME);
+            arrowSpawner.OperateDynamicSpawn(info, ArrowSpawner.ACTIVATE_TIME);
         }
 
         void CheckSomething()

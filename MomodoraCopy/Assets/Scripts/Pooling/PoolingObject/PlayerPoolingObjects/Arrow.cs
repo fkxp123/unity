@@ -13,6 +13,7 @@ namespace MomodoraCopy
         bool isHit;
 
         ArrowSpawner arrowSpawner;
+        public ParticleSystem arrowWind;
 
         void Start()
         {
@@ -27,13 +28,14 @@ namespace MomodoraCopy
             transform.tag = "Projectile";
             gameObject.layer = LayerMask.NameToLayer("Default");
             isStuckInWall = false;
+            //arrowWind.Play();
         }
-        //void OnDisable()
-        //{
-        //    transform.tag = "Projectile";
-        //    gameObject.layer = LayerMask.NameToLayer("Default");
-        //    isStuckInWall = false;
-        //}
+        void OnDisable()
+        {
+            transform.tag = "Projectile";
+            gameObject.layer = LayerMask.NameToLayer("Default");
+            isStuckInWall = false;
+        }
         //void HitCheck()
         //{
         //    if (isStuckInWall)
@@ -87,6 +89,13 @@ namespace MomodoraCopy
                 {
                     ObjectPooler.instance.RecyclePoolingObject(arrowSpawner.info, gameObject);
                     collider.transform.parent.GetComponent<BossStatus>().TakeDamage(arrowDamage, DamageType.Range, transform.rotation);
+                }
+                else if(collider.tag == "ArrowInteraction")
+                {
+                    transform.SetParent(collider.transform);
+                    isStuckInWall = true;
+
+                    collider.GetComponent<ArrowInteraction>().Interact();
                 }
             }
             transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);

@@ -26,7 +26,6 @@ namespace MomodoraCopy
                 talkerChatInteraction.transform.position.y + boxCollider.size.y / 2, 0)
             };
 
-            TimelineManager.instance.RefreshDialogueTracks();
             TimelineManager.instance.playableDirectorInfoDict.Add(playableDirector, info);
             TimelineManager.instance.playableDirectorNameDict.Add(gameObject.name, playableDirector);
 

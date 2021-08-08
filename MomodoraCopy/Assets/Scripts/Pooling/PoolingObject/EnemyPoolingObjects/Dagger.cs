@@ -11,7 +11,7 @@ namespace MomodoraCopy
         public GameObject daggerHitArea;
         public float areaRadius;
         public float daggerDamage = 10;
-
+        bool isStuckInWall;
         DaggerSpawner daggerSpawner;
 
         void Start()
@@ -19,19 +19,37 @@ namespace MomodoraCopy
             daggerSpawner = transform.parent.GetComponent<DaggerSpawner>();
         }
 
+        void OnEnable()
+        {
+            transform.tag = "Projectile";
+            isStuckInWall = false;
+            //arrowWind.Play();
+        }
+        void OnDisable()
+        {
+            transform.tag = "Projectile";
+            isStuckInWall = false;
+        }
+
         void Update()
         {
+            if (isStuckInWall)
+            {
+                return;
+            }
             Collider2D[] colliders = Physics2D.OverlapCircleAll(daggerHitArea.transform.position, areaRadius);
             foreach (Collider2D collider in colliders)
             {
                 if (collider.tag == "Platform" || collider.gameObject.layer == LayerMask.NameToLayer("Platform"))
                 {
-                    ObjectPooler.instance.RecyclePoolingObject(daggerSpawner.info, gameObject);
+                    transform.SetParent(collider.transform);
+                    isStuckInWall = true;
+                    transform.tag = "Untagged";
                 }
                 else if (collider.tag == "Player")
                 {
                     ObjectPooler.instance.RecyclePoolingObject(daggerSpawner.info, gameObject);
-                    collider.transform.GetChild(1).GetComponent<PlayerStatus>().TakeDamage(daggerDamage, DamageType.Range, transform.rotation);
+                    collider.transform.GetChild(0).GetComponent<PlayerStatus>().TakeDamage(daggerDamage, DamageType.Range, transform.rotation);
                 }
             }
             transform.Translate(Vector2.right * arrowSpeed * Time.deltaTime);

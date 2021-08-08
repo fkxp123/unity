@@ -12,6 +12,9 @@ namespace MomodoraCopy
         protected BossMovement bossMovement;
         protected Controller2D controller;
 
+        protected float coroutineCycle = 0.1f;
+        protected WaitForSeconds waitTime;
+
         public enum State
         {
             None, Idle,
@@ -54,6 +57,10 @@ namespace MomodoraCopy
 
             SetAnimTimeDictionary();
             CachingAnimation();
+
+            waitTime = new WaitForSeconds(coroutineCycle);
+
+            StartCoroutine(Fsm());
         }
 
         protected virtual void CachingAnimation()
@@ -70,5 +77,69 @@ namespace MomodoraCopy
             }
         }
 
+        protected virtual IEnumerator Fsm()
+        {
+            yield return null;
+            while (true)
+            {
+                if (bossStatus.currentHp <= 0)
+                {
+                    currentState = State.Die;
+                }
+                if (temporaryState != State.None)
+                {
+                    yield return StartCoroutine(temporaryState.ToString());
+                }
+                else
+                {
+                    yield return StartCoroutine(currentState.ToString());
+                }
+            }
+        }
+
+        protected virtual IEnumerator Idle()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator MovePattern1()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator MovePattern2()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator MovePattern3()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator MovePattern4()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator AttackPattern1()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator AttackPattern2()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator AttackPattern3()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator AttackPattern4()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator Hurt()
+        {
+            yield return null;
+        }
+        protected virtual IEnumerator Die()
+        {
+            yield return null;
+        }
     }
 }

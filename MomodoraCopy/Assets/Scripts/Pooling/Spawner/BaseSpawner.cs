@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MomodoraCopy
@@ -7,6 +8,8 @@ namespace MomodoraCopy
     {
         [SerializeField]
         protected GameObject prefab;
+        [SerializeField]
+        protected int size;
 
         protected PoolingObjectInfo SetPoolingObjectInfo(GameObject prefab, GameObject spawner, Vector3 position, Quaternion objectRotation)
         {
@@ -55,25 +58,75 @@ namespace MomodoraCopy
         }
         #endregion
 
-        public void OperateSpawn(PoolingObjectInfo info)
+        public void OperateSpawn(PoolingObjectInfo info, Queue<GameObject> queue, float objectActivateTime)
         {
-            GameObject poolingObject = ObjectPooler.instance.GetPoolingObject(info);
+            GameObject poolingObject = ObjectPooler.instance.GetActivatePoolingObjectFromQueue(info, queue);
+            ActivatePoolingObject(objectActivateTime, queue, poolingObject);
+        }
+        protected void ActivatePoolingObject(float objectActivateTime, Queue<GameObject> queue, GameObject poolingObject)
+        {
+            StartCoroutine(CheckActivateTimeCoroutine(objectActivateTime, queue, poolingObject));
+        }
+        IEnumerator CheckActivateTimeCoroutine(float objectActivateTime, Queue<GameObject> queue, GameObject poolingObject)
+        {
+            yield return new WaitForSeconds(objectActivateTime);
+            RecyclePoolingObject(queue, poolingObject);
+        }
+        protected void RecyclePoolingObject(Queue<GameObject> queue, GameObject poolingObject)
+        {
+            ObjectPooler.instance.RecyclePoolingObjectToQueue(poolingObject, queue);
         }
 
-        public void OperateSpawn(PoolingObjectInfo info, float objectActivateTime)
+        #region ActivatePoolingObject
+        public void OperateDynamicSpawn(PoolingObjectInfo info)
         {
-            GameObject poolingObject = ObjectPooler.instance.GetPoolingObject(info);
+            ObjectPooler.instance.ActivateDynamicPoolingObject(info);
+        }
+        public void OperateStaticSpawn(PoolingObjectInfo info)
+        {
+            ObjectPooler.instance.ActivateStaticPoolingObject(info);
+        }
+
+        public void OperateDynamicSpawn(PoolingObjectInfo info, float objectActivateTime)
+        {
+            GameObject poolingObject = ObjectPooler.instance.GetDynamicPoolingObject(info);
             ActivatePoolingObject(objectActivateTime, info, poolingObject);
         }
-
-        protected GameObject GetPoolingObject(PoolingObjectInfo info)
+        public void OperateStaticSpawn(PoolingObjectInfo info, float objectActivateTime)
         {
-            GameObject poolingObject = ObjectPooler.instance.GetPoolingObject(info);
+            GameObject poolingObject = ObjectPooler.instance.GetStaticPoolingObject(info);
+            ActivatePoolingObject(objectActivateTime, info, poolingObject);
+        }
+        #endregion
+
+        #region GetPoolingObject
+        public GameObject GetStaticPoolingObject(PoolingObjectInfo info)
+        {
+            GameObject poolingObject = ObjectPooler.instance.GetStaticPoolingObject(info);
             return poolingObject;
         }
+        public GameObject GetStaticPoolingObject(PoolingObjectInfo info, float objectActivateTime)
+        {
+            GameObject poolingObject = ObjectPooler.instance.GetStaticPoolingObject(info);
+            ActivatePoolingObject(objectActivateTime, info, poolingObject);
+            return poolingObject;
+        }
+        public GameObject GetDynamicPoolingObject(PoolingObjectInfo info)
+        {
+            GameObject poolingObject = ObjectPooler.instance.GetDynamicPoolingObject(info);
+            return poolingObject;
+        }
+        public GameObject GetDynamicPoolingObject(PoolingObjectInfo info, float objectActivateTime)
+        {
+            GameObject poolingObject = ObjectPooler.instance.GetDynamicPoolingObject(info);
+            ActivatePoolingObject(objectActivateTime, info, poolingObject);
+            return poolingObject;
+        }
+        #endregion
+
         protected void CreatePoolingObjectQueue(PoolingObjectInfo info, int size)
         {
-            ObjectPooler.instance.CreatePoolingObjectQueue(info, size);
+            ObjectPooler.instance.CreatePoolingObjects(info, size);
         }
         protected void RecyclePoolingObject(PoolingObjectInfo info, GameObject poolingObject)
         {
@@ -96,7 +149,7 @@ namespace MomodoraCopy
         }
         IEnumerator CheckAutoSpawnCoroutine(PoolingObjectInfo info, float objectActivateTime)
         {
-            GameObject poolingObject = ObjectPooler.instance.GetPoolingObject(info);
+            GameObject poolingObject = ObjectPooler.instance.GetStaticPoolingObject(info);
             yield return new WaitForSeconds(objectActivateTime);
             RecyclePoolingObject(info, poolingObject);
             SetAutoSpawn(info, objectActivateTime);

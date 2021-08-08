@@ -15,7 +15,7 @@ namespace MomodoraCopy
         void Start()
         {
             info = SetPoolingObjectInfo(prefab, gameObject, gameObject.transform.position, transform.rotation);
-            CreatePoolingObjectQueue(info, 10);
+            CreatePoolingObjectQueue(info, size);
         }
     }
 

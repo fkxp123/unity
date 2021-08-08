@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 using System.IO;
 
 namespace MomodoraCopy
 {
+    [System.Serializable]
     public class CheckPoint : MonoBehaviour
     {
         public GameObject bell;
@@ -31,6 +33,13 @@ namespace MomodoraCopy
         public GameObject playerObject;
 
         Vector3 relaxedLoadAmount;
+        public Tilemap startTilemap;
+        public GameObject currentMap;
+
+        void Awake()
+        {
+            transform.SetParent(currentMap.transform.parent);
+        }
 
         void Start()
         {
@@ -39,21 +48,17 @@ namespace MomodoraCopy
             CheckPointManager.instance.AddCheckPoint(scene.name.GetHashCode(), gameObject);
             relaxedLoadAmount = Vector2.up * 0.015f;
 
-            //if (playerObject == null || playerObject.tag != "Player")
-            //{
-            //    playerObject = GameObject.FindGameObjectWithTag("Player");
-            //}
-            //if (!File.Exists(Application.dataPath + "/playerData.json"))
-            //{
-            //    playerObject.transform.position = 
-            //        CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
-            //}
-            //else if(GameManager.instance.currentSceneNameHash != scene.name.GetHashCode())
-            //{
-            //    playerObject.transform.position =
-            //        CheckPointManager.instance.checkPointsDict[scene.name.GetHashCode()][0].transform.position + relaxedLoadAmount;
-            //    GameManager.instance.currentSceneNameHash = scene.name.GetHashCode();
-            //}
+            if (File.Exists(Application.dataPath + "/playerData.json"))
+            {
+                string path = Path.Combine(Application.dataPath, "playerData.json");
+                string jsonData = File.ReadAllText(path);
+                PlayerData playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+                if (playerData.checkPointNameHash == gameObject.name.GetHashCode())
+                {
+                    MapManager.instance.SetCurrentTilemap(startTilemap);
+                }
+            }
+            transform.SetParent(currentMap.transform);
         }
 
         //void Update()
@@ -94,7 +99,8 @@ namespace MomodoraCopy
         {
             this.playerDirection = playerDirection;
             MaxAngleDeflection = 30;
-            GameManager.instance.Save(gameObject);
+            GameManager.instance.Save(this);
         }
+
     }
 }

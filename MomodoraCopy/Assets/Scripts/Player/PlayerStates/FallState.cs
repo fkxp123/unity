@@ -16,22 +16,21 @@ namespace MomodoraCopy
             {
                 playerMovement.SaveFallPosY();
             }
-            player.isAnimationFinished = false;
-            if(player.stateMachine.PreviousState != player.land ||
-               !player.animator.GetCurrentAnimatorStateInfo(0).IsName("preFall") ||
-               !player.animator.GetCurrentAnimatorStateInfo(0).IsName("fall"))
+            //player.animator.Play(player.preFallHash);
+            if (player.stateMachine.PreviousState != player.land &&
+               !player.animator.GetCurrentAnimatorStateInfo(0).IsName("preFall") &&
+               !player.animator.GetCurrentAnimatorStateInfo(0).IsName("fall") &&
+               player.stateMachine.PreviousState != player.airAttack)
             {
-                player.animator.Play("preFall", -1, 0f);
+                player.isAnimationFinished = false;
+                player.animator.Play(player.preFallHash);
+                //player.animator.Play(player.preFallHash, -1, 0f);
             }
         }
         public override void OperateUpdate()
         {
             base.OperateUpdate();
             playerMovement.SaveHighPosY();
-            if (player.isAnimationFinished)
-            {
-                player.animator.Play("fall");
-            }
             if (Input.GetKeyDown(KeyboardManager.instance.AttackKey))
             {
                 player.stateMachine.SetState(player.airAttack);
@@ -39,15 +38,25 @@ namespace MomodoraCopy
             }
             else if (Input.GetKeyDown(KeyboardManager.instance.JumpKey))
             {
+                //if (playerMovement.jumpCount < playerMovement.maxJumpCount || playerMovement.isAlmostGround)
                 if (playerMovement.jumpCount < playerMovement.maxJumpCount)
                 {
                     player.stateMachine.SetState(player.jump);
                     return;
                 }
             }
-            else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
+            else if (playerInput.IsBowCharging && Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
             {
                 player.stateMachine.SetState(player.airBowAttack);
+                return;
+            }
+            else if (Input.GetKeyDown(KeyboardManager.instance.RollKey))
+            {
+                if (!playerMovement.isAlmostGround)
+                {
+                    return;
+                }
+                player.stateMachine.SetState(player.roll);
                 return;
             }
             if (playerMovement.velocity.y == 0)
@@ -55,6 +64,10 @@ namespace MomodoraCopy
                 playerMovement.fallPosY = 0;
                 player.stateMachine.SetState(player.land);
                 return;
+            }
+            if (player.isAnimationFinished)
+            {
+                player.animator.Play(player.fallHash);
             }
         }
         public override void OperateExit()

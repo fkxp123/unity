@@ -27,7 +27,7 @@ namespace MomodoraCopy
             {
                 player.animator.Play("crouch");
             }
-            if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
+            if (playerInput.IsBowCharging && Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
             {
                 player.stateMachine.SetState(player.crouchBowAttack);
                 return;

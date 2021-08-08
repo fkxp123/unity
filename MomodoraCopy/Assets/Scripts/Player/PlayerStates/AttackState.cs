@@ -20,7 +20,7 @@ namespace MomodoraCopy
             if (playerMovement.AttackCount == 1)
             {
                 player.isAnimationFinished = false;
-                player.animator.Play("firstAttack");
+                player.animator.Play(player.firstAttackHash);
                 playerMovement.OperateFirstAttack();
             }
         }
@@ -50,6 +50,7 @@ namespace MomodoraCopy
             base.OperateExit();
             playerMovement.AttackCount = 0;
             comboFlag = false;
+            player.isAnimationFinished = true;
             playerMovement.moveType = PlayerMovement.MoveType.Normal;
         }
         void CheckCanComboAttack()
@@ -67,14 +68,14 @@ namespace MomodoraCopy
             {
                 comboFlag = false;
                 player.isAnimationFinished = false;
-                player.animator.Play("secondAttack");
+                player.animator.Play(player.secondAttackHash);
                 playerMovement.OperateSecondAttack();
             }
             if (player.isAnimationFinished && comboFlag && playerMovement.AttackCount == 3)
             {
                 comboFlag = false;
                 player.isAnimationFinished = false;
-                player.animator.Play("thirdAttack");
+                player.animator.Play(player.thirdAttackHash);
                 playerMovement.OperateThirdAttack();
             }
         }

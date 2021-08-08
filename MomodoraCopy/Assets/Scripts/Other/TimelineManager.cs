@@ -24,28 +24,16 @@ namespace MomodoraCopy
         public PlayableDirector tempPlayableDirector;
         public string currentPlayableDirectorName;
 
-        void OnEnable()
-        {
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            RefreshDialogueTracks();
-        }
-        void OnDisable()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
+        public int currentDialogueLine;
+        public int targetDialogueLine;
 
         void Start()
         {
-            RefreshDialogueTracks();
-            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+            EventManager.instance.AddListener(EventType.LanguageChange, OnLanguageChanged);
         }
         
         void OnLanguageChanged()
         {
-            RefreshDialogueTracks();
             tempPlayableDirector = currentPlayableDirector;
             Stop();
             currentPlayableDirector = tempPlayableDirector;
@@ -60,31 +48,6 @@ namespace MomodoraCopy
             currentPlayableDirector = playableDirector;
             currentPlayableDirector.gameObject.SetActive(true);
             currentPlayableDirector.Play();
-        }
-
-        public void RefreshDialogueTracks()
-        {
-            foreach(PlayableDirector playableDirector in playableDirectorInfoDict.Keys)
-            {
-                playableDirector.time = 0;
-                playableDirector.Stop();
-                playableDirector.Evaluate();
-                
-                TimelineAsset timelineAsset = (TimelineAsset)playableDirector.playableAsset;
-                foreach(var track in timelineAsset.GetOutputTracks())
-                {
-                    if(track is DialogueTrack dialogueTrack)
-                    {
-                        dialogueTrack = (DialogueTrack)track;
-                        dialogueTrack.AddClipToTrack();
-                        //var clips = dialogueTrack.GetClips();
-                        //foreach(var clip in clips)
-                        //{
-                        //    save dialoguetrack.dialoguename / clip.start / clip.end?
-                        //}
-                    }
-                }
-            }
         }
 
         public void Play()
@@ -124,6 +87,30 @@ namespace MomodoraCopy
             {
                 return;
             }
+
+            if (currentDialogueLine < targetDialogueLine)
+            {
+                if (Input.GetKeyDown(KeyboardManager.instance.UpKey))
+                {
+                    if (DialogueManager.instance.isTyping)
+                    {
+                        return;
+                    }
+                    if (currentDialogueLine == targetDialogueLine - 1)
+                    {
+                        DialogueManager.instance.HideChatBox();
+                        currentPlayableDirector.Play();
+                        //currentDialogueLine = 0;
+                        return;
+                    }
+                    currentDialogueLine++;
+                    DialogueManager.instance.ShowChatContext(DialogueManager.instance.currentDialogueName, currentDialogueLine);
+                    return;
+                }
+            }
+
+
+
             if (DialogueManager.instance.ableToPassNext && Input.GetKeyDown(KeyCode.UpArrow))
             {
                 currentPlayableDirector.gameObject.SetActive(true);

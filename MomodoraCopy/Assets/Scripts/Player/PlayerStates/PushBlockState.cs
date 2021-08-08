@@ -37,7 +37,7 @@ namespace MomodoraCopy
                 player.stateMachine.SetState(player.attack);
                 return;
             }
-            else if (Input.GetKeyDown(KeyboardManager.instance.BowAttackKey))
+            else if (playerInput.IsBowCharging && Input.GetKeyUp(KeyboardManager.instance.BowAttackKey))
             {
                 player.stateMachine.SetState(player.bowAttack);
                 return;

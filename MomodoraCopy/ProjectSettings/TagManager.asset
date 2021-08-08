@@ -18,6 +18,8 @@ TagManager:
   - Gems
   - Chest
   - Map
+  - ArrowInteraction
+  - MapBoundChecker
   layers:
   - Default
   - TransparentFX
@@ -81,4 +83,7 @@ TagManager:
     locked: 0
   - name: Menu
     uniqueID: 4024772717
+    locked: 0
+  - name: Guide
+    uniqueID: 2847286123
     locked: 0

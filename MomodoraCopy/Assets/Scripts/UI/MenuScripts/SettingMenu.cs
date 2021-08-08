@@ -47,7 +47,6 @@ namespace MomodoraCopy
         
         protected override void Awake()
         {
-            base.Awake();
             localizeManager = LocalizeManager.instance;
             settingMenuSlot.SetActive(false);
             selectedSettingMenuSlot.SetActive(false);
@@ -100,7 +99,8 @@ namespace MomodoraCopy
             blinkArrowCycle = 0.1f;
             blinkTime = new WaitForSeconds(blinkArrowCycle);
 
-            EventManager.instance.AddListener(EventType.LanguageChanged, OnLanguageChanged);
+            EventManager.instance.AddListener(EventType.LanguageChange, OnLanguageChange);
+            base.Awake();
         }
 
         IEnumerator BlinkArrowImage(RectTransform leftRect, RectTransform rightRect)
@@ -131,7 +131,12 @@ namespace MomodoraCopy
             }
         }
 
-        void OnLanguageChanged()
+        void OnDestroy()
+        {
+            EventManager.instance.UnsubscribeEvent(EventType.LanguageChange, OnLanguageChange);
+        }
+
+        void OnLanguageChange()
         {
             settingsText = localizeManager.descriptionsDict
                 ["SettingsDesc".GetHashCode()][localizeManager.CurrentLanguage];

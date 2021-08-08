@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace MomodoraCopy
 {
+    public enum EnemyState
+    {
+        None, Idle, Patrol, Chase, Attack, Interact, Hurt, Die
+    }
+
     public class BasicEnemyFsm : MonoBehaviour
     {
         protected Animator animator;
@@ -12,33 +17,29 @@ namespace MomodoraCopy
         protected EnemyMovement enemyMovement;
         protected Controller2D controller;
 
-        public enum State
-        {
-            None, Idle, Patrol, Chase, Attack, Interact, Hurt, Die
-        }
 
-        public State currentState;       
+        public EnemyState currentState;       
         [SerializeField]
-        protected State transitionState;
+        protected EnemyState transitionState;
         [SerializeField]
-        protected State temporaryState;
+        protected EnemyState temporaryState;
 
         [HideInInspector]
-        public State none;
+        public EnemyState none;
         [HideInInspector]
-        public State idle;
+        public EnemyState idle;
         [HideInInspector]
-        public State patrol;
+        public EnemyState patrol;
         [HideInInspector]
-        public State chase;
+        public EnemyState chase;
         [HideInInspector]
-        public State attack;
+        public EnemyState attack;
         [HideInInspector]
-        public State interact;
+        public EnemyState interact;
         [HideInInspector]
-        public State hurt;
+        public EnemyState hurt;
         [HideInInspector]
-        public State die;
+        public EnemyState die;
 
         protected Dictionary<int, float> animTimeDictionary = new Dictionary<int, float>();
 
@@ -46,12 +47,9 @@ namespace MomodoraCopy
         protected Vector3 playerPosition;
         protected Transform enemyPhysics;
 
+        protected Coroutine fsmRoutine;
+
         protected virtual void Awake()
-        {
-
-        }
-
-        protected virtual void Start()
         {
             enemyPhysics = transform.parent;
 
@@ -62,21 +60,37 @@ namespace MomodoraCopy
             enemyMovement = enemyPhysics.GetComponent<EnemyMovement>();
             controller = enemyPhysics.GetComponent<Controller2D>();
 
-            currentState = State.Idle;
-            transitionState = State.Idle;
-            temporaryState = State.None;
+            currentState = EnemyState.Idle;
+            transitionState = EnemyState.Idle;
+            temporaryState = EnemyState.None;
 
-            none = State.None;
-            idle = State.Idle;
-            patrol = State.Patrol;
-            chase = State.Chase;
-            attack = State.Attack;
-            interact = State.Interact;
-            hurt = State.Hurt;
-            die = State.Die;
+            none = EnemyState.None;
+            idle = EnemyState.Idle;
+            patrol = EnemyState.Patrol;
+            chase = EnemyState.Chase;
+            attack = EnemyState.Attack;
+            interact = EnemyState.Interact;
+            hurt = EnemyState.Hurt;
+            die = EnemyState.Die;
 
             SetAnimTimeDictionary();
             CachingAnimation();
+        }
+
+        protected virtual void OnEnable()
+        {
+            currentState = EnemyState.Idle;
+            fsmRoutine = StartCoroutine(Fsm());
+        }
+
+        protected virtual void OnDisable()
+        {
+            enemyMovement.direction.x = 0;
+            StopCoroutine(fsmRoutine);
+        }
+
+        protected virtual void Start()
+        {
         }
 
         protected virtual void CachingAnimation()
@@ -93,26 +107,47 @@ namespace MomodoraCopy
             }
         }
 
+        protected IEnumerator Fsm()
+        {
+            yield return null;
+            while (true)
+            {
+                if (enemyStatus.currentHp <= 0)
+                {
+                    currentState = EnemyState.Die;
+                }
+                if (temporaryState != EnemyState.None)
+                {
+                    yield return StartCoroutine(temporaryState.ToString());
+                }
+                else
+                {
+                    yield return StartCoroutine(currentState.ToString());
+                }
+            }
+        }
+
+
         protected virtual void Update()
         {
             switch (currentState)
             {
-                case State.Idle:
+                case EnemyState.Idle:
                     DoIdle();
                     break;
-                case State.Patrol:
+                case EnemyState.Patrol:
                     DoPatrol();
                     break;
-                case State.Chase:
+                case EnemyState.Chase:
                     DoChase();
                     break;
-                case State.Attack:
+                case EnemyState.Attack:
                     DoAttack();
                     break;
-                case State.Hurt:
+                case EnemyState.Hurt:
                     DoHurt();
                     break;
-                case State.Die:
+                case EnemyState.Die:
                     DoDie();
                     break;
                 default:
@@ -120,26 +155,26 @@ namespace MomodoraCopy
             }
         }
 
-        protected virtual void ExecuteState(State executeState)
+        protected virtual void ExecuteState(EnemyState executeState)
         {
             switch (executeState)
             {
-                case State.Idle:
+                case EnemyState.Idle:
                     DoIdle();
                     break;
-                case State.Patrol:
+                case EnemyState.Patrol:
                     DoPatrol();
                     break;
-                case State.Chase:
+                case EnemyState.Chase:
                     DoChase();
                     break;
-                case State.Attack:
+                case EnemyState.Attack:
                     DoAttack();
                     break;
-                case State.Hurt:
+                case EnemyState.Hurt:
                     DoHurt();
                     break;
-                case State.Die:
+                case EnemyState.Die:
                     DoDie();
                     break;
                 default:
@@ -170,5 +205,34 @@ namespace MomodoraCopy
         {
 
         }
+
+        //protected virtual IEnumerator Idle()
+        //{
+        //    yield return null;
+        //}
+        //protected virtual IEnumerator Patrol()
+        //{
+        //    yield return null;
+        //}
+        //protected virtual IEnumerator Chase()
+        //{
+        //    yield return null;
+        //}
+        //protected virtual IEnumerator Attack()
+        //{
+        //    yield return null;
+        //}
+        //protected virtual IEnumerator Interact()
+        //{
+        //    yield return null;
+        //}
+        //protected virtual IEnumerator Hurt()
+        //{
+        //    yield return null;
+        //}
+        //protected virtual IEnumerator Die()
+        //{
+        //    yield return null;
+        //}
     }
 }

@@ -1,0 +1,21 @@
+﻿,kor,eng
+BellflowerName,초롱꽃,Bellflower
+BellflowerEffect,1회 사용 시 HP를 소량 회복,restores a small amount of HP per use
+BellflowerDescription,회복력이 있는 신 꽃,Sour flower with restorative powers
+GotBellflower,초롱꽃 획득,Got Bellflower
+TaintedMissiveName,얼룩진 편지,Tainted Missive
+TaintedMissiveEffect,HP를 희생하여 일시적으로 공격력 100% 증가,temporarily increases attack by 100% at the cost of HP
+TaintedMissiveDescription,에셀린 신도들은 설교에서 용서를 이야기하지만<br>정작 그들의 생각은 악의와 증오로 가득 차 있습니다.,The followers of Esselin preach forgiveness<c><br>but their thoughts are spiteful and filled with hatred
+GotTaintedMissive,얼룩진 편지 획득,Got Tainted Missive
+PassifloraName,시계꽃,Passiflora
+PassifloraEffect,사용자의 HP를 완전히 회복시킵니다.,fully restores the user's HP
+PassifloraDescription,말라버린 하얀잎 공원에서 딴 희귀한 꽃입니다.,"A rare flower, harvested from the dried Whiteleaf Park"
+GotPassiflora,시계꽃 획득,Got Passiflora
+Edea'sPearlName,에데아 진주,Edea's Pearl
+Edea'sPearlEffect,화살에 독성을 부여합니다.,grants poison properties to your arrows
+Edea'sPearlDescription,에데아는 동족을 배신한 죄인이었습니다.<br>그 죄로 고향에서 멀리 있는 신성한 숲으로 추방 당했습니다.,"Edea was a sinner who betrayed her own people.<br>For such acts, she was purged, and her body sent to a sacred grove, far from home"
+GotEdea'sPearl,에데아 진주 획득,Got Edea's Pearl
+MagnetStoneName,자석,Magnet Stone
+MagnetStoneEffect,무니를 끌어당깁니다.,Attracts munny stars.
+MagnetStoneDescription,땅 위에서 드물게 발견되는 특이한 돌입니다.,"A peculiar rock, rarely found on the surface."
+GotMagnetStone,자석 획득,Got Magnet Stone

@@ -15,7 +15,6 @@ namespace MomodoraCopy
 
         public Vector3 chatPosition;
         public string dialogueName;
-        public string talkerName;
         [TextArea(5, 10)]
         public string context;
         public int letterCount;
